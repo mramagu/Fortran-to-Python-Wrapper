@@ -3,16 +3,34 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30709.132
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "fparser", "fparser\fparser.pyproj", "{FB66DB17-44EC-49DE-A0D4-72AB28795A85}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "fparser", "fparser\fparser.pyproj", "{056C0D11-3ACB-4E61-AF02-73E71DE2C26C}"
+EndProject
+Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "FortranExamples", "FortranExamples\FortranExamples.vfproj", "{AF3D96B8-0E32-4BE2-868D-F7B03A35FE3E}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "fparser_GUI", "fparser_GUI\fparser_GUI.pyproj", "{B608F702-98A1-4287-99F7-8816C5D7959E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FB66DB17-44EC-49DE-A0D4-72AB28795A85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FB66DB17-44EC-49DE-A0D4-72AB28795A85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{056C0D11-3ACB-4E61-AF02-73E71DE2C26C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{056C0D11-3ACB-4E61-AF02-73E71DE2C26C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{056C0D11-3ACB-4E61-AF02-73E71DE2C26C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{056C0D11-3ACB-4E61-AF02-73E71DE2C26C}.Release|x86.ActiveCfg = Release|Any CPU
+		{AF3D96B8-0E32-4BE2-868D-F7B03A35FE3E}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{AF3D96B8-0E32-4BE2-868D-F7B03A35FE3E}.Debug|x86.ActiveCfg = Debug|Win32
+		{AF3D96B8-0E32-4BE2-868D-F7B03A35FE3E}.Debug|x86.Build.0 = Debug|Win32
+		{AF3D96B8-0E32-4BE2-868D-F7B03A35FE3E}.Release|Any CPU.ActiveCfg = Release|Win32
+		{AF3D96B8-0E32-4BE2-868D-F7B03A35FE3E}.Release|x86.ActiveCfg = Release|Win32
+		{AF3D96B8-0E32-4BE2-868D-F7B03A35FE3E}.Release|x86.Build.0 = Release|Win32
+		{B608F702-98A1-4287-99F7-8816C5D7959E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B608F702-98A1-4287-99F7-8816C5D7959E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B608F702-98A1-4287-99F7-8816C5D7959E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B608F702-98A1-4287-99F7-8816C5D7959E}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
