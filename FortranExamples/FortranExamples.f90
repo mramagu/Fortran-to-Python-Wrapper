@@ -20,5 +20,7 @@
 
     ! Body of FortranExamples
     print *, 'Hello World'
+    print*, 'GitHub clone test'
+    print*, 'Prueba'
 
     end program FortranExamples
