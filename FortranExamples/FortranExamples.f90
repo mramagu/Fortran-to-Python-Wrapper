@@ -12,16 +12,18 @@
 !
 !****************************************************************************
 
-    program FortranExamples
 
-    implicit none
+program FortranExamples
+use test_module_1
+implicit none
 
-    ! Variables
 
-    ! Body of FortranExamples
-    print *, 'Hello World'
-    print*, 'GitHub clone test'
-    print*, 'Prueba'
-
-    end program FortranExamples
+! Variables
+real(8):: x, y
+! Body of FortranExamples
+x = 3d0
+y = 4d0
+print *, test_function_1(x, y)
+read *, x
+end program FortranExamples
 

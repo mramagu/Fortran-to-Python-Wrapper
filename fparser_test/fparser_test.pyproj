@@ -2,15 +2,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>b608f702-98a1-4287-99f7-8816c5d7959e</ProjectGuid>
+    <ProjectGuid>bd2cd819-ab85-44f2-8e42-db5d3648bff1</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>fparser_GUI.py</StartupFile>
+    <StartupFile>fparser_test.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <Name>fparser_GUI</Name>
-    <RootNamespace>fparser_GUI</RootNamespace>
+    <Name>fparser_test</Name>
+    <RootNamespace>fparser_test</RootNamespace>
+    <TestFramework>Pytest</TestFramework>
     <InterpreterId>CondaEnv|CondaEnv|ampliacionmates</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -22,10 +23,17 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="fparser_GUI.py" />
+    <Compile Include="fparser_test.py" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="CondaEnv|CondaEnv|ampliacionmates" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\fparser\fparser.pyproj">
+      <Name>fparser</Name>
+      <Project>{056c0d11-3acb-4e61-af02-73e71de2c26c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
