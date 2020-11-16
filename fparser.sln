@@ -9,6 +9,8 @@ Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "FortranExamples", "FortranE
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "fparser_GUI", "fparser_GUI\fparser_GUI.pyproj", "{B608F702-98A1-4287-99F7-8816C5D7959E}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "fparser_test", "fparser_test\fparser_test.pyproj", "{BD2CD819-AB85-44F2-8E42-DB5D3648BFF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{B608F702-98A1-4287-99F7-8816C5D7959E}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{B608F702-98A1-4287-99F7-8816C5D7959E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B608F702-98A1-4287-99F7-8816C5D7959E}.Release|x86.ActiveCfg = Release|Any CPU
+		{BD2CD819-AB85-44F2-8E42-DB5D3648BFF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD2CD819-AB85-44F2-8E42-DB5D3648BFF1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BD2CD819-AB85-44F2-8E42-DB5D3648BFF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD2CD819-AB85-44F2-8E42-DB5D3648BFF1}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
