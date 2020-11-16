@@ -1,0 +1,10 @@
+QMainWindow{
+background-color:white;
+}
+QLabel{
+font-size:14px;
+color:#A0184B;
+}
+QLabel#label{
+border:2px solid rgb(0,0,255);
+}
