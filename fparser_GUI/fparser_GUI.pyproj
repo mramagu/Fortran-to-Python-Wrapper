@@ -27,6 +27,7 @@
     <Compile Include="Ejemplos_GUI\Tutorial_objetos.py" />
     <Compile Include="Ejemplos_GUI\Window_ui.py" />
     <Compile Include="fparser_GUI.py" />
+    <Compile Include="ui2py.py" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="CondaEnv|CondaEnv|ampliacionmates" />
