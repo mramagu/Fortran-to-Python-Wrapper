@@ -8,7 +8,6 @@ objetos=[QMainWindow,QLabel,label]
 
 #Creación del archivo .css
 for widget in objetos:
-    print(widget['name'])
     file.write(widget['name']+'{\n' )
     for i in range(1,len(widget)):
         parametro=list(widget)[i] 

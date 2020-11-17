@@ -7,7 +7,7 @@ class Widget(): #Definición del objeto
         self.position=[100,25] 
 
         #Almacenamos todas las propiedades
-        self.properties={'size':self.size,'color':self.color,'background_color':self.background_color,'position':self.position}  
+        self.properties={'size':self.size,'color':self.color,'background_color':self.background_color,'position':self.position} 
 
     #Métodos: funciones asociadas al objeto
     def resize(self,x,y):
