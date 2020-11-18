@@ -8,3 +8,8 @@ color:#A0184B;
 QLabel#label{
 border:2px solid rgb(0,0,255);
 }
+QTextEdit{
+font-size:14px;
+background-color:black;
+color:white;
+}

@@ -28,6 +28,8 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.ui.lineEdit_x.editingFinished.connect(self.resultado)
         self.ui.lineEdit_y.editingFinished.connect(self.resultado)
         self.ui.pushButton.clicked.connect(self.update)
+        self.ui.toolButton.clicked.connect(self.select_file)
+        self.ui.lineEdit_select.editingFinished.connect(self.write_file)
 
     def update(self):
         if self.result=='Suma':
@@ -35,6 +37,32 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         else:
             self.ui.label_resultado.setText(str(self.x-self.y))
         self.ui.label_resultado.adjustSize()
+
+    def select_file(self):
+        file_dialog=QtWidgets.QFileDialog()
+        file_dialog.setFileMode(QtWidgets.QFileDialog.ExistingFile) #Abrir un solo archivo 
+        file_dialog.setAcceptMode(QtWidgets.QFileDialog.AcceptOpen) #Opción de abrir 
+        file_dialog.setNameFilters(["Python files (*.py)","Fortran files (*.f90)"]) #Filtro 
+
+        if file_dialog.exec_():
+            filename = file_dialog.selectedFiles()
+            self.ui.lineEdit_select.setText(filename[0])
+            f = open(filename[0], 'r')
+			
+            with f:
+                data = f.read()
+                self.ui.textEdit.setText(data)
+            f.close()
+
+    def write_file(self):
+        try:
+            f=open(self.ui.lineEdit_select.text())
+            with f:
+                data = f.read()
+                self.ui.textEdit.setText(data)
+            f.close()
+        except:
+            pass
 
     def operacion(self,i):
         print('Selected index ',i,':',self.ui.comboBox.currentText())

@@ -3,8 +3,9 @@ file=open('style.css','w+')
 QMainWindow={'name':'QMainWindow','background-color': 'white'}
 QLabel={'name':'QLabel','font-size': '14px','color': '#A0184B'} 
 label={'name':'QLabel#label','border':'2px solid rgb(0,0,255)'}  
+QTextEdit={'name':'QTextEdit','font-size':'14px','background-color':'black','color':'white'} 
 
-objetos=[QMainWindow,QLabel,label] 
+objetos=[QMainWindow,QLabel,label,QTextEdit] 
 
 #Creación del archivo .css
 for widget in objetos:
