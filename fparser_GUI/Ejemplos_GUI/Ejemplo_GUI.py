@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Window_ui import Ui_MainWindow
 import sys
+import os
 
 class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la GUI 
     def __init__(self, *args, **kwargs):
@@ -21,6 +22,7 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         #Modificar objetos 
         self.ui.lineEdit_x.setValidator(QtGui.QDoubleValidator(-10**12.,10**12.,12))#min, max, N_decimales 
         self.ui.lineEdit_y.setValidator(QtGui.QDoubleValidator(-10**12.,10**12.,12))
+        self.ui.actionOpen.setShortcut("Ctrl+O")
        
 
         #Conectar señales con funciones 
@@ -30,6 +32,7 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.ui.pushButton.clicked.connect(self.update)
         self.ui.toolButton.clicked.connect(self.select_file)
         self.ui.lineEdit_select.editingFinished.connect(self.write_file)
+        self.ui.menuFile.triggered[QtWidgets.QAction] .connect(self.open_folder)
 
     def update(self):
         if self.result=='Suma':
@@ -63,6 +66,18 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
             f.close()
         except:
             pass
+
+    def open_folder(self):
+        file_dialog=QtWidgets.QFileDialog()
+        folder=file_dialog.getExistingDirectory()
+        dir_string=''
+        file_string=''
+        for dir_name, dirs, files in os.walk(folder):
+            dir_string=dir_string+dir_name+'\n '
+            for f in files:
+                file_string=file_string+f+'\n '    
+        self.ui.textEdit_2.setText(dir_string)  
+        self.ui.textEdit_3.setText(file_string)           
 
     def operacion(self,i):
         print('Selected index ',i,':',self.ui.comboBox.currentText())
