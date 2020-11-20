@@ -54,7 +54,11 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
 			
             with f:
                 data = f.read()
-                self.ui.textEdit.setText(data)
+                data_lines=''
+                self.ui.textEdit.setText(data) #Código principal 
+                for i in range(0,len(data.splitlines())+1):
+                    data_lines=data_lines+str(i)+'\n '
+                self.ui.textEdit_number.setText(data_lines) #Líneas del código 
             f.close()
 
     def write_file(self):
@@ -62,7 +66,11 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
             f=open(self.ui.lineEdit_select.text())
             with f:
                 data = f.read()
+                data_lines=''
                 self.ui.textEdit.setText(data)
+                for i in range(0,len(data.splitlines())+1):
+                    data_lines=data_lines+str(i)+'\n '
+                self.ui.textEdit_number.setText(data_lines) #Líneas del código 
             f.close()
         except:
             pass
@@ -75,9 +83,9 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         for dir_name, dirs, files in os.walk(folder):
             dir_string=dir_string+dir_name+'\n '
             for f in files:
-                file_string=file_string+f+'\n '    
-        self.ui.textEdit_2.setText(dir_string)  
-        self.ui.textEdit_3.setText(file_string)           
+                file_string=file_string+f+'\n '  
+        self.ui.textEdit_dir.setText(dir_string)  
+        self.ui.textEdit_file.setText(file_string)           
 
     def operacion(self,i):
         print('Selected index ',i,':',self.ui.comboBox.currentText())
