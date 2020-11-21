@@ -12,7 +12,7 @@
     <Name>fparser_test</Name>
     <RootNamespace>fparser_test</RootNamespace>
     <TestFramework>Pytest</TestFramework>
-    <InterpreterId>CondaEnv|CondaEnv|ampliacionmates</InterpreterId>
+    <InterpreterId>CondaEnv|CondaEnv|fparser</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -26,14 +26,14 @@
     <Compile Include="fparser_test.py" />
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="CondaEnv|CondaEnv|ampliacionmates" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\fparser\fparser.pyproj">
       <Name>fparser</Name>
       <Project>{056c0d11-3acb-4e61-af02-73e71de2c26c}</Project>
       <Private>True</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="CondaEnv|CondaEnv|fparser" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
