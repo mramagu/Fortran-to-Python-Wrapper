@@ -1,5 +1,3 @@
 [
-  "fparser_test.py::test_example",
-  "fparser_test.py::test_example2[3-4-7]",
-  "fparser_test.py::test_example2[4-4-8]"
+  "fparser_test.py::test_module_reader[TestModule1_f90-module_names0]"
 ]

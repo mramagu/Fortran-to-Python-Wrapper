@@ -2,20 +2,6 @@ import fobjects
 
 import os
 
-def example_add_func(x, y):
-    """
-    Adds two numbers together
-
-    Args:
-        x (float): Number to add
-        y (float): Number to add
-
-    Returns:
-        float: a sum of both numbers
-    """
-
-    return x + y
-
 if __name__ == '__main__':
     test_module1 = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                       '../FortranExamples/TestModules/TestModule1.f90')
