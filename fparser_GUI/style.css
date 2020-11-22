@@ -21,3 +21,7 @@ QTextEdit#textEdit_number{
 background-color:rgb(250,250,250,180);
 color:rgb(0,0,0,100);
 }
+QPlainTextEdit{
+font:OpenSans;
+font-size:14px;
+}

@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from Window_ui import Ui_MainWindow
 import sys
 import os
+from QCodeEditor import QCodeEditor, XMLHighlighter
 
 class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la GUI 
     def __init__(self, *args, **kwargs):
@@ -9,6 +10,13 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
 
         self.ui=Ui_MainWindow() #Inicializamos la ventanan de la GUI 
         self.ui.setupUi(self) #Renderizar GUI con el diseño de window_ui.py 
+
+        #Añadir custom widgets
+        self.code_editor=QCodeEditor(DISPLAY_LINE_NUMBERS=True, 
+                             HIGHLIGHT_CURRENT_LINE=True,
+                             SyntaxHighlighter=XMLHighlighter) 
+        self.code_editor.setObjectName('code_editor')
+        self.ui.verticalLayout_2.addWidget(self.code_editor)
 
         #Definir propiedades
         self.result='Suma'
@@ -56,6 +64,7 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
                 data = f.read()
                 data_lines=''
                 self.ui.textEdit.setText(data) #Código principal 
+                self.code_editor.setPlainText(data)
                 for i in range(0,len(data.splitlines())+1):
                     data_lines=data_lines+str(i)+'\n '
                 self.ui.textEdit_number.setText(data_lines) #Líneas del código 
