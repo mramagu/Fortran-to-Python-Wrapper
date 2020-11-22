@@ -11,7 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>fparser_GUI</Name>
     <RootNamespace>fparser_GUI</RootNamespace>
-    <InterpreterId>CondaEnv|CondaEnv|ampliacionmates</InterpreterId>
+    <InterpreterId>CondaEnv|CondaEnv|fparser</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,7 +30,7 @@
     <Compile Include="ui2py.py" />
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="CondaEnv|CondaEnv|ampliacionmates" />
+    <InterpreterReference Include="CondaEnv|CondaEnv|fparser" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ejemplos_GUI\" />

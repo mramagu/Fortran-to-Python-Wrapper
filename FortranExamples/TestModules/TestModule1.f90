@@ -1,15 +1,17 @@
-module test_module_1
+modUle test_module_1
 implicit none
 
 contains
 real  function test_function_1(x, y)
     real(8):: x, y
-    test_function_1 = x + y
+    test_function_1 = x + y 
 end function
 
 end module
     
-module test_module_2
+Module test_module_2
+use &
+    test_module_1
 implicit none
 
 contains
