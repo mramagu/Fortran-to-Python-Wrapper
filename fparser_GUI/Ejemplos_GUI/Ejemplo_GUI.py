@@ -23,8 +23,8 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.x=0
         self.y=0
 
-        #Aplicar estilo
-        with open("style.css") as f:
+        #Aplicar estilo  
+        with open(os.path.dirname(os.path.abspath(__file__))+"/style.css") as f:
             self.setStyleSheet(f.read()) 
 
         #Modificar objetos 
