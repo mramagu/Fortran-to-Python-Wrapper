@@ -26,7 +26,11 @@
     <Compile Include="Ejemplos_GUI\style.py" />
     <Compile Include="Ejemplos_GUI\Tutorial_objetos.py" />
     <Compile Include="Ejemplos_GUI\Window_ui.py" />
+    <Compile Include="fortran_files.py" />
     <Compile Include="fparser_GUI.py" />
+    <Compile Include="GUI.py" />
+    <Compile Include="GUI_style.py" />
+    <Compile Include="makefile.py" />
     <Compile Include="ui2py.py" />
   </ItemGroup>
   <ItemGroup>
@@ -39,6 +43,8 @@
     <Content Include="Ejemplos_GUI\Ejemplo_GUI.pyproj" />
     <Content Include="Ejemplos_GUI\style.css" />
     <Content Include="Ejemplos_GUI\Window.ui" />
+    <Content Include="GUI.ui" />
+    <Content Include="GUI_style.css" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
