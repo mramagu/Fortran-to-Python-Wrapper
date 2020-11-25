@@ -1,7 +1,7 @@
 import os
 file=open(os.path.dirname(os.path.abspath(__file__))+'/GUI_style.css','w+')
 #Definición de propiedades de los objetos de la GUI
-QMainWindow={'name':'QMainWindow','background-color': 'white'}
+QMainWindow={'name':'QMainWindow','background-color': 'black'}
 
 objetos=[QMainWindow] 
 
