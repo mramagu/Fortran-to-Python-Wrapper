@@ -47,11 +47,8 @@ def find_command(code_line, name):
                 raise Exception('Fortran character did not finish being declared from position {}: \n {}'.format(counter, code_line))
             counter += jump + 1
         
-<<<<<<< HEAD
-=======
         print(counter + len(name), len(code_line))
         print(code_line[counter:counter+len(name)], name)
->>>>>>> 33cbc6ce90b188375fe8c0d025d65579c62eea93
         if name == code_line[counter:counter+len(name)]: # If selection matches it studies the code
             if counter == 0: # Finds if selection before command is valid
                     before = True
