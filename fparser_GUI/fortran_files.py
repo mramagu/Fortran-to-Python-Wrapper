@@ -8,21 +8,28 @@ def open_files(ui):
 
     if file_dialog.exec_():
         filename = file_dialog.selectedFiles()
-        data=''
-        for i in range(0,len(filename)):
-            data=data+filename[i]+'\n' 
-            ui.listWidget_ffiles.addItem(filename[i])
-        ui.plainTextEdit_ffiles.setPlainText(data)
+        dir_name=filename[0].split('/')
+        dir_name='/'.join(dir_name[0:len(dir_name)-1])  
+        ui.treeWidget_ffiles.setHeaderLabel(dir_name)
+        for f in filename:
+            QtWidgets.QTreeWidgetItem(ui.treeWidget_ffiles,[f.split('/')[-1]])
 
 
 def open_folder(ui):
     file_dialog=QtWidgets.QFileDialog()
     folder=file_dialog.getExistingDirectory()
-    dir_string=''
-    file_string=''
+    ct=0
     for dir_name, dirs, files in os.walk(folder):
-        dir_string=dir_string+dir_name+'\n '
-        for f in files:
-            file_string=file_string+f+'\n '  
-    ui.plainTextEdit_dir.setPlainText(dir_string)  
-    ui.plainTextEdit_ffiles.setPlainText(file_string) 
+        if ct==0:
+            ui.treeWidget_ffiles.setHeaderLabel(dir_name)
+            for f in files:
+                QtWidgets.QTreeWidgetItem(ui.treeWidget_ffiles,[f.split('/')[-1]])
+            ct=1
+        else:
+            new_dir=QtWidgets.QTreeWidgetItem(ui.treeWidget_ffiles,[dir_name.split('/')[-1]])
+            for f in files:
+                QtWidgets.QTreeWidgetItem(new_dir,[f.split('/')[-1]])
+
+def clear(ui):
+    ui.treeWidget_ffiles.setHeaderLabel('')
+    ui.treeWidget_ffiles.clear()

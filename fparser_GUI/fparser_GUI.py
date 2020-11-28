@@ -24,6 +24,8 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
             ffiles.open_files(self.ui)
         elif selected_action.text()=='Open Folder':
             ffiles.open_folder(self.ui)
+        elif selected_action.text()=='Clear':
+            ffiles.clear(self.ui)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([]) #Definir aplicación 
