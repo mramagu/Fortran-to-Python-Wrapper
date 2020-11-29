@@ -1,5 +1,22 @@
 import fparsertools
 
+class Flibrary:
+    """
+        Fortran Library Class
+    """
+    def __init__(self, files):
+        """
+            Fortran Library Class initiator. 
+            Builds Library from Fortran files
+
+            Args:
+                filename (files): Fortran Library files 
+        """
+        self.filename = filename
+        self.file_code = file_code
+        self.modules = self.module_finder(file_code)
+
+
 class Ffile:
     """
         Fortran File Class
@@ -44,6 +61,7 @@ class Module:
         self.name = self.module_name(code)
         self.uses = self.find_uses(code)
         self.functionals = self.find_functionals(code)
+        self.find_and_set_descriptions(code, 'before')
 
     def module_name(self, code):
         """
@@ -64,17 +82,18 @@ class Module:
                 list of strings with the name of said modules or None
         """
         uses = list()
-        print(code)
-        for i, line in enumerate(code[1:]):
-            if 'use' in line.lower():
-                use_position = line.lower().find('use') # First instance of use in line
-                uses.append(line[use_position + len('use'):].strip()) # Line from first instance onwards and space deletion
-            else: # Once all uses have beew written in a Fortran module no more will appear
+        counter = 1 # Starts search at the second line of the code
+        while counter <= len(code): # Studies line of the code
+            use = fparsertools.find_command(code[counter], 'use')
+            if use != None:
+                line_no_comment = code[counter].split('!')[0] # Separates code in two fragments where a comment migh be declared and stores the first one
+                pure_use = line_no_comment.split(',')[0] # Separates code into two fragments in case a use only is being declared and stores the first one
+                uses.append(pure_use[use + len('use'):].strip()) # Line from first instance onwards and space deletion
+            elif fparsertools.find_command(code[counter], 'contains') != None or \
+                fparsertools.find_command(code[counter], 'implicit') != None: # Once one of these commands has been declared no more uses will appear
                 break 
+            counter += 1
         return uses
-
-    def find_contains(self):
-        pass
 
     def find_functionals(self, code):
         """
@@ -83,20 +102,57 @@ class Module:
             Returns:
                 list of functionals of the module
         """
-        functions_str = fparsertools.section(code, 'function')
-        functions = list()
-        for f in functions_str:
-            functions.append(Function(f))
-        del functions_str, f
+        functions_str = fparsertools.section(code, 'function') # Sections all functions in the code
+        functions = [Function(f) for f in functions_str] # Processes all functions in the module
+        del functions_str
 
-        subroutines_str = fparsertools.section(code, 'subroutine')
-        subroutines = list()
-        for s in subroutines_str:
-            subroutines.append(Subroutine(s))
+        subroutines_str = fparsertools.section(code, 'subroutine') # Sections all subroutines in the code
+        subroutines = [Subroutine(s) for s in subroutines_str] # Processes all subroutines in the module
         del subroutines_str
 
         functionals = functions + subroutines
         return functionals
+
+    def find_and_set_descriptions(self, code, description_format):
+        """
+            Sets descriptions for all the elements of a module.
+
+            Args:
+                code (list): Code of the module.
+                description_format (string): Type of description format (before, after).
+        """
+        functionals = list(self.functionals)
+        for i, line in enumerate(code): # Iterates over every line in the code
+            for j, f in enumerate(functionals): # Iterates over every functional not yet described
+                # command for each type of functional
+                if type(f) == Function:
+                    search = 'function'
+                elif type(f) == Subroutine:
+                    search = 'subroutine'
+                else:
+                    raise Exception('Type {} functional not supported in set descriptions'.format(f))
+
+                # Finds definition of functional
+                if fparsertools.find_command(line, search) != None and  fparsertools.find_command(line, f.name) != None:
+                    # Adds description according to format
+                    if description_format == 'before': # Looks for description before function definition
+                        temp_code = list(code[0:i])
+                        temp_code.reverse()
+                        comments = fparsertools.block_comments(temp_code)
+                        del temp_code
+                        comments.reverse()
+                    elif description_format == 'after': # Looks for description before function definition
+                        comments = fparsertools.block_comments(code[i+1:])
+                    else:
+                        raise Exception('Description format {} not supported in set descriptions'.format(description_format))
+
+                    f.set_comments(comments) # Adds description
+                    functionals.pop(j) # Once described it no longer needs to be found so it removes it from the search list
+                    break # Exits loop to search for next definition
+            # If all functionals have been described it exits the loop
+            if not bool(functionals):
+                break
+
 
 class Ffunctional:
     """
@@ -133,11 +189,19 @@ class Ffunctional:
             for i, line in enumerate(code[1:]):
                 if bool(fparsertools.find_command(line, entry.strip())):
                     variables.append(Variable(entry.strip(), line))
-                    print(variables)
                     break
                 if i == len(code[1:]):
                     raise Exception('Could not find variable definition {} in Ffunctional {}: \n{}'.format(entry, self.name, code))
         return variables
+
+    def set_comments(self, comment):
+        """
+            Method to add a block comment to a Ffunctional.
+
+            Args:
+                comment (list): Comment of functional element
+        """
+        self.commentary = comment
 
 
 class Subroutine(Ffunctional):
@@ -256,19 +320,24 @@ class Variable:
             dim_position = variable_definition.lower().find('dimension')
             dim_def_start = variable_definition[dim_position + len('dimension'):].lower().find('(')
             dim_def_end = variable_definition[dim_position + len('dimension'):].lower().find(')')
-            dimension.join(variable_definition[dim_position + len('dimension') + dim_def_start + 1:\
-                dim_position + len('dimension') + dim_def_end])
+            dimension += variable_definition[dim_position + len('dimension') + dim_def_start + 1:\
+                dim_position + len('dimension') + dim_def_end]
 
         written_variable = code_line.split("::")[1] # Extracts the definition of the variable after ::
         vposition = fparsertools.find_command(written_variable, self.name)  # Finds variable name in line
         if vposition == None:
             raise Exception('Variable {} not found in expected line: \n{}'.format(self.name, code_line))
         elif vposition + len(self.name) != len(written_variable): # Checks if additional dimensions are declared
-            if written_variable[vposition + len(self.name):].strip()[0] == '(': 
-                dim_def_start = written_variable[vposition + len(self.name):].lower().find('(')
-                dim_def_end = written_variable[vposition + len(self.name):].lower().find(')')
-                dimension.join(variable_definition[vposition + len(self.name) + dim_def_start + 1:\
-                    vposition + len(self.name) + dim_def_end])
+            if bool(written_variable[vposition + len(self.name):].strip()):
+                if written_variable[vposition + len(self.name):].strip()[0] == '(': 
+                    dim_def_start = written_variable[vposition + len(self.name):].lower().find('(')
+                    dim_def_end = written_variable[vposition + len(self.name):].lower().find(')')
+                    add_d = written_variable[vposition + len(self.name) + dim_def_start + 1:\
+                            vposition + len(self.name) + dim_def_end]
+                    if bool(dimension):
+                        dimension += ',' + add_d
+                    else:
+                        dimension += add_d
 
         if dimension == '': # If no dimensions have been declared returns None
             return None

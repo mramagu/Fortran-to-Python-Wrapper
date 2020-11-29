@@ -13,9 +13,9 @@ def section(code, command):
     section_str = list()
     present = False
     for i, line in enumerate(code):
-        if bool(find_command(line.lower(), command)) and not bool(find_command(line.lower(), 'end')):
+        if find_command(line.lower(), command) != None and find_command(line.lower(), 'end') == None:
             present = True
-        elif bool(find_command(line.lower(), command)) and bool(find_command(line.lower(), 'end')):
+        elif find_command(line.lower(), command) != None and find_command(line.lower(), 'end') != None:
             present = False
             section_str.append(line)
             sections.append(section_str)
@@ -46,10 +46,7 @@ def find_command(code_line, name):
             if jump == -1:
                 raise Exception('Fortran character did not finish being declared from position {}: \n {}'.format(counter, code_line))
             counter += jump + 1
-        
-        print(counter + len(name), len(code_line))
-        print(code_line[counter:counter+len(name)], name)
-        if name == code_line[counter:counter+len(name)]: # If selection matches it studies the code
+        if name.lower() == code_line[counter:counter+len(name)].lower(): # If selection matches it studies the code
             if counter == 0: # Finds if selection before command is valid
                     before = True
             else:
@@ -102,3 +99,24 @@ def identify_comment(code_line):
         counter += 1 # Advances counter
     else: # If it reaches the end of the code without finding comment it returns none
         return None
+
+def block_comments(code):
+    """
+        Finds the comment block between two points in the code.
+
+        Args:
+            code (list): List of strings of the fortran code.
+            start (integer): Point at which to start selecting the comment blocks
+            end (integer): Point at which selection should end.
+
+        Returns:
+            List of str of the code that are pure comments.
+    """
+    block = list()
+    for line in code:
+        if bool(line.strip()): # If line is not empty
+            if line.strip()[0] == '!': # If the first character of the string is the start of a comment it adds it
+                block.append(identify_comment(line))
+            elif bool(line.strip()): # If the first character of the string is not the start of a comment or its not empty it exits
+                break
+    return block
