@@ -80,3 +80,7 @@ def clear(ui):
     ui.treeWidget_ffiles.setHeaderLabel('')
     ui.treeWidget_ffiles.clear()
     ui.listWidget_selffiles.clear()
+
+class Window_fmodule(QtWidgets.QMainWindow):
+    def __init__(self):
+        super().__init__()
