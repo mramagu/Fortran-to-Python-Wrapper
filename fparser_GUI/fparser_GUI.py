@@ -15,17 +15,23 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         with open(os.path.dirname(os.path.abspath(__file__))+'/GUI_style.css') as f:
             self.setStyleSheet(f.read())
 
+        #Properties 
+        self.main_dir=''
+        self.files=[] 
+
         #Connect signals
         #Use .connect(lambda: function(args)) to send extra arguments through the function 
         self.ui.menuFile.triggered[QtWidgets.QAction].connect(self.action)
+        self.ui.toolButton_arrow.clicked.connect(lambda: ffiles.select_ffiles(self.ui,self))
 
     def action(self,selected_action):
         if selected_action.text()=='Open Files':
-            ffiles.open_files(self.ui)
+            ffiles.open_files(self.ui,self)
         elif selected_action.text()=='Open Folder':
-            ffiles.open_folder(self.ui)
+            ffiles.open_folder(self.ui,self)
         elif selected_action.text()=='Clear':
             ffiles.clear(self.ui)
+        print(self.main_dir)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([]) #Definir aplicación 
