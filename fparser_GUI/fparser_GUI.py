@@ -7,25 +7,43 @@ import makefile as make
 
 class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la GUI 
     def __init__(self, *args, **kwargs):
+        #Configuration 
         QtWidgets.QMainWindow.__init__(self, *args, **kwargs) #Inicializar clases heredadas
         self.ui=Ui_MainWindow() #Inicializamos la ventanan de la GUI 
         self.ui.setupUi(self)
+        #Arrow
+        icon = QtGui.QIcon()
+        arrow=os.path.dirname(os.path.abspath(__file__))+'/Arrow.jpg'
+        icon.addPixmap(QtGui.QPixmap(arrow), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(arrow), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.ui.toolButton_arrow.setIcon(icon)
         
         #Set style 
         with open(os.path.dirname(os.path.abspath(__file__))+'/GUI_style.css') as f:
             self.setStyleSheet(f.read())
 
+        #Properties 
+        self.main_dir=''
+        self.files=[] 
+        self.window_fmodule=ffiles.Window_fmodule(self_fparser=self)
+        # self.makefile=make.Makefile()
+
         #Connect signals
         #Use .connect(lambda: function(args)) to send extra arguments through the function 
         self.ui.menuFile.triggered[QtWidgets.QAction].connect(self.action)
+        self.ui.toolButton_arrow.clicked.connect(lambda: ffiles.select_ffiles(self))
+        self.ui.pushButton_fparser.clicked.connect(lambda: ffiles.fortran_parser(self))
+        # self.ui.combobox.signal.connect(lambda: make.function(self.ui,self.makefile))
+        self.ui.pushButton_make1.clicked.connect(lambda: make.selectOS(self.ui))
 
     def action(self,selected_action):
         if selected_action.text()=='Open Files':
-            ffiles.open_files(self.ui)
+            ffiles.open_files(self)
         elif selected_action.text()=='Open Folder':
-            ffiles.open_folder(self.ui)
+            ffiles.open_folder(self)
         elif selected_action.text()=='Clear':
             ffiles.clear(self.ui)
+        print(self.main_dir)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([]) #Definir aplicación 
