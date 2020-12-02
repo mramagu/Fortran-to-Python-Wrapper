@@ -17,12 +17,6 @@
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <widget class="QTabWidget" name="tabWidget">
-      <property name="focusPolicy">
-       <enum>Qt::TabFocus</enum>
-      </property>
-      <property name="tabShape">
-       <enum>QTabWidget::Rounded</enum>
-      </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -331,10 +325,19 @@
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <property name="leftMargin">
+           <number>100</number>
+          </property>
+          <property name="rightMargin">
+           <number>100</number>
+          </property>
           <item>
            <widget class="QLabel" name="label_make_OS">
             <property name="text">
-             <string>Seleccione su sistema operativo y pulse OK.</string>
+             <string>Seleccione su sistema operativo.</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -355,16 +358,6 @@
             </item>
            </widget>
           </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_make1">
-            <property name="text">
-             <string>OK</string>
-            </property>
-            <property name="default">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
          </layout>
         </item>
         <item>
@@ -373,6 +366,13 @@
            <widget class="QLabel" name="label_make_env">
             <property name="text">
              <string>Seleccione el entorno de Pyhton en el que desea trabajar.</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButton">
+            <property name="text">
+             <string>RadioButton</string>
             </property>
            </widget>
           </item>
@@ -399,6 +399,16 @@
           </item>
          </layout>
         </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_make1">
+          <property name="text">
+           <string>OK</string>
+          </property>
+          <property name="default">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>
@@ -411,7 +421,7 @@
      <x>0</x>
      <y>0</y>
      <width>880</width>
-     <height>20</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
