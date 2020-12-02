@@ -17,6 +17,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
+        self.tabWidget.setFocusPolicy(QtCore.Qt.TabFocus)
+        self.tabWidget.setTabShape(QtWidgets.QTabWidget.Rounded)
         self.tabWidget.setElideMode(QtCore.Qt.ElideNone)
         self.tabWidget.setDocumentMode(False)
         self.tabWidget.setTabsClosable(False)
@@ -128,7 +130,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.addWidget(self.label_fsummary)
         self.treeWidget_fsummary = QtWidgets.QTreeWidget(self.tab_fconfig)
         self.treeWidget_fsummary.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.treeWidget_fsummary.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.treeWidget_fsummary.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.treeWidget_fsummary.setLineWidth(1)
         self.treeWidget_fsummary.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.treeWidget_fsummary.setAnimated(True)
@@ -208,7 +210,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuFile.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

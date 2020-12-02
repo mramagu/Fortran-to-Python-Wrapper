@@ -18,7 +18,7 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         #Properties 
         self.main_dir=''
         self.files=[] 
-        self.window_fmodule=ffiles.Window_fmodule()
+        self.window_fmodule=ffiles.Window_fmodule(self_fparser=self)
         # self.makefile=make.Makefile()
 
         #Connect signals
