@@ -1,5 +1,5 @@
 [
   "fparser_test/fparser_test.py::test_example",
   "fparser_test/fparser_test.py::test_example2[3-4-7]",
-  "fparser_test/fparser_test.py::test_example2[3-4-8]"
+  "fparser_test/fparser_test.py::test_example2[4-4-8]"
 ]

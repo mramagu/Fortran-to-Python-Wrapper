@@ -12,10 +12,42 @@ class Flibrary:
             Args:
                 filename (files): Fortran Library files 
         """
-        self.filename = filename
-        self.file_code = file_code
-        self.modules = self.module_finder(file_code)
+        self.modules = list()
+        for f in files:
+            self.modules += f.modules
+        self.module_reordering()
 
+    def module_reordering(self):
+        """
+            Reorders all modules in the Library to match dependencies.
+        """
+        self.modules = [x for x in sorted(self.modules, key=lambda m: len(self.find_dependencies(m)))]
+
+    def find_dependencies(self, module):
+        """
+            Finds all uses of a certain module.
+
+            Args:
+                module (Module): Module in which to search for dependencies.
+
+            Returns:
+                Returns a list of dependencies for the module.
+        """
+        dependencies = module.uses
+        for use in module.uses:
+            counter = 0
+            while counter + 1 <= len(self.modules):
+                if self.modules[counter].name.lower() == use.lower():
+                    if bool(self.modules[counter].uses):
+                        temp_dependencies = self.find_dependencies(self.modules[counter])
+                        for temp in temp_dependencies:
+                            if not temp in dependencies:
+                                dependencies += temp
+                    break
+                counter += 1
+            else:
+                raise Exception('Could not find module {} within library'.format(use))
+        return dependencies
 
 class Ffile:
     """
@@ -215,22 +247,23 @@ class Subroutine(Ffunctional):
             Args:
                 code (str): Functional element code
         """
-        super().__init__(code, self.read_name(code))
+        super().__init__(code, self.read_name(code[0]))
 
-    def read_name(self, code):
+    def read_name(self, first_line):
         """
-            Determines the name of the fortran function
+            Determines the name of the fortran subroutine
 
             Args:
-                code (list): Code of the function
+                code (first_line): Definition of the subroutine
 
             Returns:
-                string: name of the function
+                string: name of the subroutine
         """
-        name = code[0] # First line of the function where the name is defined
-        func_position = name.lower().find('subroutine') # First instance of function in line
-        variable_def_position = name.lower().find('(') # Function name stops when variables are defined
-        return name[func_position + len('subroutine'):variable_def_position].strip() # Function name and space deletion
+        subr_position = fparsertools.find_command(first_line.lower(), 'subroutine') # First instance of Subroutine in line
+        if subr_position == None:
+            raise Exception('Subroutine name cannot be read from: \n {}'.format(first_line))
+        variable_def_position = first_line[subr_position + len('subroutine'):].lower().find('(') # Subroutine name stops when variables are defined
+        return first_line[subr_position + len('subroutine'): subr_position + len('subroutine') + variable_def_position].strip() # Subroutine name and space deletion
 
 class Function(Ffunctional):
     """
@@ -243,22 +276,40 @@ class Function(Ffunctional):
             Args:
                 code (list): Functional element code
         """
-        super().__init__(code, self.read_name(code))
+        super().__init__(code, self.read_name(code[0]))
+        self.func_type = self.find_function_type(code[0])
 
-    def read_name(self, code):
+    def read_name(self, first_line):
         """
             Determines the name of the fortran function
 
             Args:
-                code (list): Code of the function
+                first_line (list): Code of the function
 
             Returns:
                 string: name of the function
         """
-        name = code[0] # First line of the function where the name is defined
-        func_position = name.lower().find('function') # First instance of function in line
-        variable_def_position = name.lower().find('(') # Function name stops when variables are defined
-        return name[func_position + len('function'):variable_def_position].strip() # Function name and space deletion
+        func_position = fparsertools.find_command(first_line.lower(), 'function') # First instance of function in line
+        if func_position == None:
+            raise Exception('Function name cannot be read from: \n {}'.format(first_line))
+        variable_def_position = first_line[func_position + len('function'):].lower().find('(') # Function name stops when variables are defined
+        return first_line[func_position + len('function'): func_position + len('function') + variable_def_position].strip() # Function name and space deletion
+
+    def find_function_type(self, first_line):
+        """
+            Finds additional information on the type of function
+
+            Args:
+                first_line (list): Code of the function
+
+            Returns:
+                string with type of the function or none
+        """
+        func_position = fparsertools.find_command(first_line, 'function') # First instance of function in line
+        if bool(first_line[0:func_position].strip()):
+            return first_line[0:func_position]
+        else: 
+            return None
 
 class Variable:
     """
@@ -274,6 +325,7 @@ class Variable:
         self.name = name
         self.type = self.identify_vtype(code_line)
         self.dimensions = self.identify_dimensions(code_line)
+        self.other_def = self.identify_other_def(code_line)
         self.comment = fparsertools.identify_comment(code_line)
 
     def identify_vtype(self, code_line):
@@ -343,3 +395,21 @@ class Variable:
             return None
         else: # If not it returns the string of dimensions
             return dimension.strip()
+
+    def identify_other_def(self, code_line):
+        """
+            Identifies other details in variable definition not explicitely defined.
+
+            Args:
+                code_line (string): Line in which the variable is defined
+
+            Returns:
+                list of strings with additional code definitions.
+        """
+        variable_definition = code_line.split("::")[0] # Extracts the definition of the variable before ::
+        definitions = variable_definition.split(",") # Divides it into smaller sections
+        other_def = list()
+        for d in definitions:
+            if not self.type.lower() in d.lower() and 'dimension' not in d.lower():
+                other_def += d
+        return other_def
