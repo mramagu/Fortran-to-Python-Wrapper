@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from Window_fmodules import Ui_MainWindow
 import os
 def open_files(self):
     clear(self.ui) #Clean tree and list 
@@ -84,8 +85,18 @@ def clear(ui):
 def fortran_parser(self):
     self.window_fmodule.show()
 
-class Window_fmodule(QtWidgets.QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setObjectName("Fortran modules selection")
-        self.resize(800, 600)
+
+class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow):
+    def __init__(self,self_fparser):
+        QtWidgets.QMainWindow.__init__(self) #Inheritance
+        self.ui=Ui_MainWindow() #Initiate GUI window 
+        self.ui.setupUi(self)
+        #Properties
+        self.self_fparser=self_fparser 
+        #Signals 
+        self.ui.toolButton_arrow.clicked.connect(self.select_fmod)
+
+    def select_fmod(self):
+        self.ui.listWidget_selfmod.addItem('mod1')
+        QtWidgets.QTreeWidgetItem(self.self_fparser.ui.treeWidget_fsummary,['mod1'])
+        
