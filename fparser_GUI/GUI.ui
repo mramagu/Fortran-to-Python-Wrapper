@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>880</width>
+    <height>657</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -316,34 +316,106 @@
        </layout>
       </widget>
       <widget class="QWidget" name="tab_makefile">
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
        <attribute name="title">
         <string>Makefile</string>
        </attribute>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QLabel" name="label_make_env">
         <property name="geometry">
          <rect>
-          <x>160</x>
-          <y>170</y>
-          <width>93</width>
-          <height>28</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>PushButton</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label">
-        <property name="geometry">
-         <rect>
-          <x>460</x>
-          <y>180</y>
-          <width>55</width>
+          <x>40</x>
+          <y>120</y>
+          <width>361</width>
           <height>16</height>
          </rect>
         </property>
         <property name="text">
-         <string>TextLabel</string>
+         <string>Seleccione el entorno de Pyhton en el que desea trabajar.</string>
         </property>
+       </widget>
+       <widget class="QLabel" name="label_make_FC">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>190</y>
+          <width>271</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Seleccione su compilador de Fortran.</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="comboBox">
+        <property name="geometry">
+         <rect>
+          <x>430</x>
+          <y>190</y>
+          <width>161</width>
+          <height>22</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit">
+        <property name="geometry">
+         <rect>
+          <x>450</x>
+          <y>110</y>
+          <width>113</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QWidget" name="horizontalLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>851</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_make_OS">
+           <property name="text">
+            <string>Seleccione su sistema operativo y pulse OK.</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboBox_make">
+           <property name="editable">
+            <bool>false</bool>
+           </property>
+           <item>
+            <property name="text">
+             <string>Windows</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Linux</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_make1">
+           <property name="text">
+            <string>OK</string>
+           </property>
+           <property name="default">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </widget>
      </widget>
@@ -355,8 +427,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>20</height>
+     <width>880</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

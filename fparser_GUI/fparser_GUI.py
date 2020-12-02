@@ -25,6 +25,7 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.ui.menuFile.triggered[QtWidgets.QAction].connect(self.action)
         self.ui.toolButton_arrow.clicked.connect(lambda: ffiles.select_ffiles(self.ui,self))
         # self.ui.combobox.signal.connect(lambda: make.function(self.ui,self.makefile))
+        self.ui.pushButton_make1.clicked.connect(lambda: make.selectOS(self.ui))
 
     def action(self,selected_action):
         if selected_action.text()=='Open Files':
