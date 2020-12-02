@@ -94,9 +94,16 @@ def fortran_parser(self):
 
 class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self,self_fparser):
+        #Configuration 
         QtWidgets.QMainWindow.__init__(self) #Inheritance
         self.ui=Ui_MainWindow() #Initiate GUI window 
         self.ui.setupUi(self)
+        #Arrow
+        icon = QtGui.QIcon()
+        arrow=os.path.dirname(os.path.abspath(__file__))+'/Arrow.jpg'
+        icon.addPixmap(QtGui.QPixmap(arrow), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(arrow), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.ui.toolButton_arrow.setIcon(icon)
         #Properties
         self.self_fparser=self_fparser 
         #Signals 

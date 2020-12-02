@@ -7,9 +7,16 @@ import makefile as make
 
 class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la GUI 
     def __init__(self, *args, **kwargs):
+        #Configuration 
         QtWidgets.QMainWindow.__init__(self, *args, **kwargs) #Inicializar clases heredadas
         self.ui=Ui_MainWindow() #Inicializamos la ventanan de la GUI 
         self.ui.setupUi(self)
+        #Arrow
+        icon = QtGui.QIcon()
+        arrow=os.path.dirname(os.path.abspath(__file__))+'/Arrow.jpg'
+        icon.addPixmap(QtGui.QPixmap(arrow), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(arrow), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.ui.toolButton_arrow.setIcon(icon)
         
         #Set style 
         with open(os.path.dirname(os.path.abspath(__file__))+'/GUI_style.css') as f:
