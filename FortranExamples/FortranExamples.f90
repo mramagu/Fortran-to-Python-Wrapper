@@ -27,4 +27,3 @@ y = 4d0
 print *, test_function_1(x, y)
 read *, x
 end program FortranExamples
-

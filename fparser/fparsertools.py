@@ -1,3 +1,6 @@
+import random
+import string
+
 def section(code, command):
     """
     Function that sections a code according to a command
@@ -106,8 +109,6 @@ def block_comments(code):
 
         Args:
             code (list): List of strings of the fortran code.
-            start (integer): Point at which to start selecting the comment blocks
-            end (integer): Point at which selection should end.
 
         Returns:
             List of str of the code that are pure comments.
@@ -120,3 +121,20 @@ def block_comments(code):
             elif bool(line.strip()): # If the first character of the string is not the start of a comment or its not empty it exits
                 break
     return block
+
+def name_generator(suggested, forbidden_names):
+    """
+        Generates a name for an object that is not included in the forbidden names list (no spaces).
+        Names are generated from the suggested name.
+
+        Args:
+            suggested (string): Initial suggestion with which to generate the new name.
+            forbidden_names (list): List of names the new name cannot take (lowercase).
+
+        Returns:
+            String with the new name.
+    """
+    new_name = suggested.strip()
+    while new_name.lower() in [x.lower() for x in forbidden_names]:
+        new_name += str(random.choice(string.ascii_lowercase))
+    return new_name.strip()
