@@ -56,13 +56,13 @@ class Flibrary:
         """
         for m in self.modules:
             og_module_names = [i.name for i in self.modules]
-            og_func_names = [j.name for i in self.modules for j in i.functionals]
+            og_func_names = [j.name for i in self.modules for j in i.contents]
             other_fake_modules = [i.fake_name for i in self.modules if i != m]
-            other_fake_func = [j.fake_name for i in self.modules if i != m for j in i.functionals]
+            other_fake_func = [j.fake_name for i in self.modules if i != m for j in i.contents]
             forbidden_names = og_module_names + other_fake_modules + og_func_names
             m.change_fake_name(fparsertools.name_generator(m.fake_name, forbidden_names))
-            for f in m.functionals:
-                other_fake_func_names = [i.name for i in m.functionals if i != f]
+            for f in m.contents:
+                other_fake_func_names = [i.name for i in m.contents if i != f]
                 f_variables = [i.name for i in f.variables]
                 forbidden_names2 = forbidden_names + other_fake_func_names + f_variables + [m.fake_name]
                 f.change_fake_name(fparsertools.name_generator(f.fake_name, forbidden_names2))
@@ -111,7 +111,7 @@ class Module:
         self.name = self.module_name(code)
         self.fake_name = self.name + '_py'
         self.uses = self.find_uses(code)
-        self.functionals = self.find_functionals(code)
+        self.contents = self.find_functionals(code)
         self.find_and_set_descriptions(code, 'before')
 
     def change_fake_name(self, new_fake_name):
@@ -170,8 +170,8 @@ class Module:
         subroutines = [Subroutine(s) for s in subroutines_str] # Processes all subroutines in the module
         del subroutines_str
 
-        functionals = functions + subroutines
-        return functionals
+        contents = functions + subroutines
+        return contents
 
     def find_and_set_descriptions(self, code, description_format):
         """
@@ -181,7 +181,7 @@ class Module:
                 code (list): Code of the module.
                 description_format (string): Type of description format (before, after).
         """
-        functionals = list(self.functionals)
+        functionals = list(self.contents)
         for i, line in enumerate(code): # Iterates over every line in the code
             for j, f in enumerate(functionals): # Iterates over every functional not yet described
                 # command for each type of functional
