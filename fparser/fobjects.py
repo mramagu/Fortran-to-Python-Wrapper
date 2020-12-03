@@ -15,6 +15,7 @@ class Flibrary:
         self.modules = list()
         for f in files:
             self.modules += f.modules
+        self.solve_fake_names()
         self.module_reordering()
 
     def module_reordering(self):
@@ -48,6 +49,23 @@ class Flibrary:
             else:
                 raise Exception('Could not find module {} within library'.format(use))
         return dependencies
+
+    def solve_fake_names(self):
+        """
+            Solves fake names contradictions for the library.
+        """
+        for m in self.modules:
+            og_module_names = [i.name for i in self.modules]
+            og_func_names = [j.name for i in self.modules for j in i.functionals]
+            other_fake_modules = [i.fake_name for i in self.modules if i != m]
+            other_fake_func = [j.fake_name for i in self.modules if i != m for j in i.functionals]
+            forbidden_names = og_module_names + other_fake_modules + og_func_names
+            m.change_fake_name(fparsertools.name_generator(m.fake_name, forbidden_names))
+            for f in m.functionals:
+                other_fake_func_names = [i.name for i in m.functionals if i != f]
+                f_variables = [i.name for i in f.variables]
+                forbidden_names2 = forbidden_names + other_fake_func_names + f_variables + [m.fake_name]
+                f.change_fake_name(fparsertools.name_generator(f.fake_name, forbidden_names2))
 
 class Ffile:
     """
@@ -91,9 +109,19 @@ class Module:
                 module_code (list): List of str of the fortran code
         """
         self.name = self.module_name(code)
+        self.fake_name = self.name + '_py'
         self.uses = self.find_uses(code)
         self.functionals = self.find_functionals(code)
         self.find_and_set_descriptions(code, 'before')
+
+    def change_fake_name(self, new_fake_name):
+        """
+            Method to change the method's fake name
+            
+            Args:
+                new_fake_name (str): New fake name
+        """
+        self.fake_name = new_fake_name
 
     def module_name(self, code):
         """
@@ -198,9 +226,19 @@ class Ffunctional:
                 code (str): Functional element code
         """
         self.name = name
+        self.fake_name = name + '_py'
         self.variables = self.read_variables(code)
         self.procedures = list()
         self.commentary = list()
+
+    def change_fake_name(self, new_fake_name):
+        """
+            Method to change the function's fake name
+            
+            Args:
+                new_fake_name (str): New fake name
+        """
+        self.fake_name = new_fake_name
 
     def read_variables(self, code):
         """
