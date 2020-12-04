@@ -94,7 +94,11 @@ def clear(ui):
     ui.listWidget_selffiles.clear()
 
 def fortran_parser(self):
+    files=[self.main_dir+'/'+self.files[i] for i in range(0,len(self.files))]
+    lib=fparser.library_maker(files)
+    print([f.name for f in lib.modules])
     self.window_fmodule.show()
+
 
 class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self,self_fparser):
@@ -119,4 +123,4 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow):
         
 if __name__ == "__main__":
     print(sys.path)
-    fparser.library_maker([])
+    

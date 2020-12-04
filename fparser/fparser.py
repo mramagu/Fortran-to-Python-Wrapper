@@ -23,7 +23,8 @@ def library_maker(files, **reading_options):
             file_code[i] = line.replace('\n', '')
         file.close()
         fortran_files.append(fobjects.Ffile(file_dir, file_code))
-    Lib = fobjects.Flibrary([file_2, file_1])
+    # Lib = fobjects.Flibrary([file_2, file_1])
+    Lib=fobjects.Flibrary(fortran_files)
     return Lib
 
 if __name__ == '__main__':
