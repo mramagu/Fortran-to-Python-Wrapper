@@ -22,7 +22,7 @@ def library_maker(files, **reading_options):
         for i, line in enumerate(file_code):
             file_code[i] = line.replace('\n', '')
         file.close()
-        fortran_files.append(fobjects.Ffile(fil_dir, file_code))
+        fortran_files.append(fobjects.Ffile(file_dir, file_code))
     Lib = fobjects.Flibrary([file_2, file_1])
     return Lib
 
