@@ -25,6 +25,7 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         #Properties 
         self.main_dir=''
         self.files=[] 
+        self.filter=["Python (*.py)","Fortran files (*.f90)"]
         self.window_fmodule=ffiles.Window_fmodule(self_fparser=self)
         # self.makefile=make.Makefile()
 
@@ -43,7 +44,6 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
             ffiles.open_folder(self)
         elif selected_action.text()=='Clear':
             ffiles.clear(self.ui)
-        print(self.main_dir)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([]) #Definir aplicación 

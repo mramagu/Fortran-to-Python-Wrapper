@@ -11,7 +11,7 @@ def open_files(self):
     file_dialog=QtWidgets.QFileDialog()
     file_dialog.setFileMode(QtWidgets.QFileDialog.ExistingFiles) #Open files
     file_dialog.setAcceptMode(QtWidgets.QFileDialog.AcceptOpen) #Open option
-    file_dialog.setNameFilters(["Python (*.py)","Fortran files (*.f90)"]) #Filter
+    file_dialog.setNameFilters(self.filter) #Filter
 
     if file_dialog.exec_():
         filename = file_dialog.selectedFiles()
@@ -96,7 +96,8 @@ def clear(ui):
 def fortran_parser(self):
     files=[self.main_dir+'/'+self.files[i] for i in range(0,len(self.files))]
     lib=fparser.library_maker(files)
-    print([f.name for f in lib.modules])
+    modules=[mod.name for mod in lib.modules]
+    self.window_fmodule.ui.listWidget_fmod.addItems(modules)
     self.window_fmodule.show()
 
 
@@ -116,10 +117,25 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow):
         self.self_fparser=self_fparser 
         #Signals 
         self.ui.toolButton_arrow.clicked.connect(self.select_fmod)
+        self.ui.buttonBox_accept.accepted.connect(self.accept_selection)
+        self.ui.buttonBox_accept.rejected.connect(self.reject_selection)
 
     def select_fmod(self):
-        self.ui.listWidget_selfmod.addItem('mod1')
-        QtWidgets.QTreeWidgetItem(self.self_fparser.ui.treeWidget_fsummary,['mod1'])
+        items=self.ui.listWidget_fmod.selectedItems()
+        for item in items:
+            self.ui.listWidget_selfmod.addItem(item.text())
+            
+    def accept_selection(self):
+        for i in range(0,self.ui.listWidget_selfmod.count()):
+            item=self.ui.listWidget_selfmod.item(i)
+            QtWidgets.QTreeWidgetItem(self.self_fparser.ui.treeWidget_fsummary,[item.text()])
+        self.close()
+    
+    def reject_selection(self):
+        self.ui.listWidget_fmod.clear()
+        self.ui.listWidget_selfmod.clear()
+        self.close()
+
         
 if __name__ == "__main__":
     print(sys.path)
