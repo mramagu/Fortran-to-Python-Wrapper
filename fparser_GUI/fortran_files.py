@@ -1,6 +1,11 @@
+import os
+import sys
+sys.path.insert(1, '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[0:-1])+'/fparser')
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Window_fmodules import Ui_MainWindow
-import os
+import fparser
+
+
 def open_files(self):
     clear(self.ui) #Clean tree and list 
     file_dialog=QtWidgets.QFileDialog()
@@ -91,7 +96,6 @@ def clear(ui):
 def fortran_parser(self):
     self.window_fmodule.show()
 
-
 class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self,self_fparser):
         #Configuration 
@@ -113,3 +117,6 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.listWidget_selfmod.addItem('mod1')
         QtWidgets.QTreeWidgetItem(self.self_fparser.ui.treeWidget_fsummary,['mod1'])
         
+if __name__ == "__main__":
+    print(sys.path)
+    fparser.library_maker([])
