@@ -196,8 +196,11 @@ class Ui_MainWindow(object):
         self.actionOpen_Directory.setObjectName("actionOpen_Directory")
         self.actionClear = QtWidgets.QAction(MainWindow)
         self.actionClear.setObjectName("actionClear")
+        self.actionOptions = QtWidgets.QAction(MainWindow)
+        self.actionOptions.setObjectName("actionOptions")
         self.menuFile.addAction(self.actionOpen_Files)
         self.menuFile.addAction(self.actionOpen_Directory)
+        self.menuFile.addAction(self.actionOptions)
         self.menuFile.addAction(self.actionClear)
         self.menubar.addAction(self.menuFile.menuAction())
 
@@ -238,6 +241,7 @@ class Ui_MainWindow(object):
         self.actionOpen_Files.setText(_translate("MainWindow", "Open Files"))
         self.actionOpen_Directory.setText(_translate("MainWindow", "Open Folder"))
         self.actionClear.setText(_translate("MainWindow", "Clear"))
+        self.actionOptions.setText(_translate("MainWindow", "Options"))
 
 
 if __name__ == "__main__":
