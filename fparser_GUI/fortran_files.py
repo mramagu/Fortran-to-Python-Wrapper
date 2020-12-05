@@ -1,10 +1,13 @@
 import os
 import sys
-sys.path.insert(1, '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[0:-1])+'/fparser')
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Window_fmodules import Ui_MainWindow
-import fparser
-
+try:
+    sys.path.insert(1, '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[0:-1])+'/fparser')
+    import fparser
+except:
+    sys.path.insert(1, '/'.join(os.path.dirname(os.path.abspath(__file__)).split('\\')[0:-1])+'/fparser')
+    import fparser
 
 def open_files(self):
     clear(self.ui) #Clean tree and list 
