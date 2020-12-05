@@ -23,8 +23,8 @@ def library_maker(files, **reading_options):
             file_code[i] = line.replace('\n', '')
         file.close()
         fortran_files.append(fobjects.Ffile(fil_dir, file_code))
-    Lib = fobjects.Flibrary([file_2, file_1])
-    return Lib
+    lib = fobjects.Flibrary([file_2, file_1])
+    return lib
 
 if __name__ == '__main__':
     test_module1 = os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -44,4 +44,4 @@ if __name__ == '__main__':
     file_2 = fobjects.Ffile('TestModule2', file_code)
     file2.close()
     Lib = fobjects.Flibrary([file_2, file_1])
-    print(Lib)
+    print(Lib.write_interface())

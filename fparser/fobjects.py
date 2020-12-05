@@ -67,6 +67,18 @@ class Flibrary:
                 forbidden_names2 = forbidden_names + other_fake_func_names + f_variables + [m.fake_name]
                 f.change_fake_name(fparsertools.name_generator(f.fake_name, forbidden_names2))
 
+    def write_interface(self):
+        """
+            Generates the code for the library interface 
+
+            Returns:
+                A list of strings with to print on a file.
+        """
+        interface = list()
+        for m in self.modules:
+            interface += m.write_interface()
+        return interface
+
 class Ffile:
     """
         Fortran File Class
@@ -213,6 +225,21 @@ class Module:
             if not bool(functionals):
                 break
 
+    def write_interface(self):
+        """
+            Generates the code for the module interface 
+
+            Returns:
+                A list of strings with to print on a file.
+        """
+        interface = list()
+        interface.append('module {}'.format(self.fake_name))
+        interface.append('use {}'.format(self.name))
+        for c in self.contents:
+            interface += c.write_interface()
+        interface.append('end module')
+        return interface
+
 
 class Ffunctional:
     """
@@ -228,6 +255,8 @@ class Ffunctional:
         self.name = name
         self.fake_name = name + '_py'
         self.variables = self.read_variables(code)
+        self.additional_variables = list()
+        #self.solve_assume_shape(code)
         self.procedures = list()
         self.commentary = list()
 
@@ -239,6 +268,25 @@ class Ffunctional:
                 new_fake_name (str): New fake name
         """
         self.fake_name = new_fake_name
+
+    def set_comments(self, comment):
+        """
+            Method to add a block comment to a Ffunctional.
+
+            Args:
+                comment (list): Comment of functional element
+        """
+        self.commentary = comment
+
+    def add_additional_variables(self, var_name, var_type):
+        """
+            Method to add an additional optional variable.
+
+            Args:
+                var_name (string): Name of the variable.
+                var_type (string): Type of new variable
+        """
+        self.additional_variables.append(Variable(var_name, '{}, optional:: {}'.format(var_type, var_name)))
 
     def read_variables(self, code):
         """
@@ -264,15 +312,22 @@ class Ffunctional:
                     raise Exception('Could not find variable definition {} in Ffunctional {}: \n{}'.format(entry, self.name, code))
         return variables
 
-    def set_comments(self, comment):
+    def solve_assume_shape(self):
         """
-            Method to add a block comment to a Ffunctional.
-
-            Args:
-                comment (list): Comment of functional element
+            Method to identify variables that have a assume shape definition and altering them to fit f2py.
         """
-        self.commentary = comment
-
+        for v in self.variables: # Iterates thorugh all explicit function variables
+            if v.dimensions != None: # If variable has dimension definition
+                dimensions = (v.dimensions).split(',') # Dimensions are split into sub-sections
+                for d in dimensions:
+                    if ':' in d: # If a sub-section has an interval in it proceeds to analyze it
+                        a = (d.strip()).split(':') # Subsection is split at interval and spaces are eliminated
+                        if len(a) != 2: # All subsections should contain just 1 :, if more then raises error
+                            raise Exception('Error solving assume shape of variable {} in {}:\n {}'.format(self.name, v.name, v.dimensions))
+                        elif not bool(a[0]) or not bool(a[1]): # If either side of the interval is empty then the shape will be assumed
+                            d = fparsertools.name_generator('N_' + v.name, # Generates a new optional integer to define its size.
+                                [self.name] + [w.name for w in self.variables + self.additional_variables]) 
+                            self.add_additional_variables(d, 'integer')
 
 class Subroutine(Ffunctional):
     """
@@ -302,6 +357,21 @@ class Subroutine(Ffunctional):
             raise Exception('Subroutine name cannot be read from: \n {}'.format(first_line))
         variable_def_position = first_line[subr_position + len('subroutine'):].lower().find('(') # Subroutine name stops when variables are defined
         return first_line[subr_position + len('subroutine'): subr_position + len('subroutine') + variable_def_position].strip() # Subroutine name and space deletion
+
+    def write_interface(self):
+        """
+            Generates the code for the interface of the subroutine.
+
+            Returns:
+                A list of strings to be added to the rest of the module interface.
+        """
+        interface = list()
+        interface.append('subroutine {}({})'.format(self.fake_name, ','.join([v.name for v in self.variables])))
+        for v in self.variables:
+            interface += v.write_interface()
+        interface.append('call {}({})'.format(self.name, ','.join([v.name for v in self.variables])))
+        interface.append('end subroutine')
+        return interface
 
 class Function(Ffunctional):
     """
@@ -348,6 +418,21 @@ class Function(Ffunctional):
             return first_line[0:func_position]
         else: 
             return None
+
+    def write_interface(self):
+        """
+            Generates the code for the interface of the function.
+
+            Returns:
+                A list of strings to be added to the rest of the module interface.
+        """
+        interface = list()
+        interface.append('{} function {}({})'.format(self.func_type, self.fake_name, ','.join([v.name for v in self.variables])))
+        for v in self.variables:
+            interface += v.write_interface()
+        interface.append('{} = {}({})'.format(self.fake_name, self.name, ','.join([v.name for v in self.variables])))
+        interface.append('end function')
+        return interface
 
 class Variable:
     """
@@ -449,5 +534,21 @@ class Variable:
         other_def = list()
         for d in definitions:
             if not self.type.lower() in d.lower() and 'dimension' not in d.lower():
-                other_def += d
+                other_def.append(d)
         return other_def
+
+    def write_interface(self):
+        """
+            Generates the code for the interface of the variable definition
+
+            Returns:
+                A list of strings to be added to the rest of the module interface.
+        """
+        definition = list()
+        definition += [self.type]
+        if self.dimensions != None:
+            definition += ['dimension({})'.format(self.dimensions)]
+        if self.other_def != None:
+            definition += self.other_def
+        interface = ['{} :: {}'.format(','.join(definition), self.name)]
+        return interface

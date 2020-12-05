@@ -16,6 +16,7 @@
 program FortranExamples
 use test_module_1
 use test_module_2
+use test_module_3
 implicit none
 
 
