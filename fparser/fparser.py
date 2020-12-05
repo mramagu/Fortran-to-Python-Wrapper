@@ -22,9 +22,10 @@ def library_maker(files, **reading_options):
         for i, line in enumerate(file_code):
             file_code[i] = line.replace('\n', '')
         file.close()
-        fortran_files.append(fobjects.Ffile(fil_dir, file_code))
-    lib = fobjects.Flibrary([file_2, file_1])
-    return lib
+        fortran_files.append(fobjects.Ffile(file_dir, file_code))
+    # Lib = fobjects.Flibrary([file_2, file_1])
+    Lib=fobjects.Flibrary(fortran_files)
+    return Lib
 
 if __name__ == '__main__':
     test_module1 = os.path.join(os.path.dirname(os.path.abspath(__file__)),

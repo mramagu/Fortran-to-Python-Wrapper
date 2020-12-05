@@ -411,6 +411,7 @@
     </property>
     <addaction name="actionOpen_Files"/>
     <addaction name="actionOpen_Directory"/>
+    <addaction name="actionOptions"/>
     <addaction name="actionClear"/>
    </widget>
    <addaction name="menuFile"/>
@@ -429,6 +430,11 @@
   <action name="actionClear">
    <property name="text">
     <string>Clear</string>
+   </property>
+  </action>
+  <action name="actionOptions">
+   <property name="text">
+    <string>Options</string>
    </property>
   </action>
  </widget>

@@ -1,12 +1,22 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from Window_fmodules import Ui_MainWindow
 import os
+import sys
+from PyQt5 import QtCore, QtGui, QtWidgets
+from Window_fmodules import Ui_MainWindow as Ui_MainWindow_fmodules
+from Options import Ui_MainWindow as Ui_MainWindow_options
+try:
+    sys.path.insert(1, '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[0:-1])+'/fparser')
+    import fparser
+except:
+    sys.path.insert(1, '/'.join(os.path.dirname(os.path.abspath(__file__)).split('\\')[0:-1])+'/fparser')
+    import fparser
+
 def open_files(self):
     clear(self.ui) #Clean tree and list 
     file_dialog=QtWidgets.QFileDialog()
     file_dialog.setFileMode(QtWidgets.QFileDialog.ExistingFiles) #Open files
     file_dialog.setAcceptMode(QtWidgets.QFileDialog.AcceptOpen) #Open option
-    file_dialog.setNameFilters(["Python (*.py)","Fortran files (*.f90)"]) #Filter
+    fortran_filter=['Fortran files ('+self.filter[i]+')' for i in range(0,len(self.filter))] 
+    file_dialog.setNameFilters(fortran_filter) #Filter
 
     if file_dialog.exec_():
         filename = file_dialog.selectedFiles()
@@ -82,6 +92,8 @@ def select_ffiles(self):
         # if text.endswith('.py'):
         #     print(text)
 
+def select_options(self):
+    self.window_options.show()
 
 def clear(ui):
     ui.treeWidget_ffiles.setHeaderLabel('')
@@ -89,14 +101,18 @@ def clear(ui):
     ui.listWidget_selffiles.clear()
 
 def fortran_parser(self):
+    files=[self.main_dir+'/'+self.files[i] for i in range(0,len(self.files))]
+    lib=fparser.library_maker(files)
+    modules=[mod.name for mod in lib.modules]
+    self.window_fmodule.ui.listWidget_fmod.addItems(modules)
     self.window_fmodule.show()
 
 
-class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow):
+class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow_fmodules):
     def __init__(self,self_fparser):
         #Configuration 
         QtWidgets.QMainWindow.__init__(self) #Inheritance
-        self.ui=Ui_MainWindow() #Initiate GUI window 
+        self.ui=Ui_MainWindow_fmodules() #Initiate GUI window 
         self.ui.setupUi(self)
         #Arrow
         icon = QtGui.QIcon()
@@ -108,8 +124,110 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow):
         self.self_fparser=self_fparser 
         #Signals 
         self.ui.toolButton_arrow.clicked.connect(self.select_fmod)
+        self.ui.buttonBox_accept.accepted.connect(self.accept_selection)
+        self.ui.buttonBox_accept.rejected.connect(self.reject_selection)
 
+    #Methods 
     def select_fmod(self):
-        self.ui.listWidget_selfmod.addItem('mod1')
-        QtWidgets.QTreeWidgetItem(self.self_fparser.ui.treeWidget_fsummary,['mod1'])
+        items=self.ui.listWidget_fmod.selectedItems()
+        for item in items:
+            self.ui.listWidget_selfmod.addItem(item.text())
+            
+    def accept_selection(self):
+        for i in range(0,self.ui.listWidget_selfmod.count()):
+            item=self.ui.listWidget_selfmod.item(i)
+            QtWidgets.QTreeWidgetItem(self.self_fparser.ui.treeWidget_fsummary,[item.text()])
+        self.close()
+    
+    def reject_selection(self):
+        self.ui.listWidget_fmod.clear()
+        self.ui.listWidget_selfmod.clear()
+        self.close()
+
+class Window_options(QtWidgets.QMainWindow, Ui_MainWindow_options):
+    def __init__(self,self_fparser):
+        #Configuration 
+        QtWidgets.QMainWindow.__init__(self) #Inheritance
+        self.ui=Ui_MainWindow_options() #Initiate GUI window 
+        self.ui.setupUi(self)
+        #Properties
+        self.self_fparser=self_fparser 
+        self.terminal=False
+        self.comments=''
+        self.filter=[] 
+        self.parameters()
+        #Signals
+        self.ui.lineEdit_fformat.editingFinished.connect(self.select_filter)
+        self.ui.radioButton_fcommentsBefore.toggled.connect(self.comments_position)
+        self.ui.radioButton_fcommentsAfter.toggled.connect(self.comments_position)
+        self.ui.radioButton_terminalYes.toggled.connect(self.show_terminal)
+        self.ui.radioButton_terminalNo.toggled.connect(self.show_terminal)
+        self.ui.buttonBox_accept.accepted.connect(self.accept_options)
+        self.ui.buttonBox_accept.rejected.connect(self.reject_options)
+
+    #Methods 
+    def parameters(self): 
+        #Fortran files format
+        text=self.ui.lineEdit_fformat.text() 
+        self.filter=text.split(',')
+        for i in range(0,len(self.filter)):
+            self.filter[i]=self.filter[i]
+        self.self_fparser.filter=self.filter
+        #Position of fortran comments 
+        if self.ui.radioButton_fcommentsBefore.isChecked():
+            self.comments='before'
+        else:
+            self.comments='after'
+        self.self_fparser.fcomments=self.comments
+        #Enable terminal
+        if self.ui.radioButton_terminalNo.isChecked():
+            self.terminal=False
+        else:
+            self.terminal=True
+        self.self_fparser.terminal=self.terminal
+
+    def select_filter(self):
+        text=self.ui.lineEdit_fformat.text() 
+        self.filter=text.split(',')
+        for i in range(0,len(self.filter)):
+            self.filter[i]=self.filter[i]
+
+    def comments_position(self):
+        if self.ui.radioButton_fcommentsBefore.isChecked():
+            self.comments='before'
+        else:
+            self.comments='after'
+    
+    def show_terminal(self):
+        if self.ui.radioButton_terminalYes.isChecked():
+            self.terminal=True
+        else:
+            self.terminal=False
+
+    def accept_options(self):
+        self.self_fparser.filter=self.filter
+        self.self_fparser.fcomments=self.comments
+        self.self_fparser.terminal=self.terminal
+        self.close()
+        print(self.self_fparser.filter)
+        print(self.self_fparser.fcomments)
+        print(self.self_fparser.terminal)
+
+    def reject_options(self):
+        self.ui.lineEdit_fformat.setText(','.join(self.self_fparser.filter)) 
+        if self.self_fparser.fcomments=='before':
+            self.ui.radioButton_fcommentsBefore.setChecked(True)
+        else:
+            self.ui.radioButton_fcommentsAfter.setChecked(True)
+        if self.self_fparser.terminal:
+            self.ui.radioButton_terminalYes.setChecked(True)
+        else:
+            self.ui.radioButton_terminalNo.setChecked(True)
+        self.close()
+        print(self.self_fparser.filter)
+        print(self.self_fparser.fcomments)
+        print(self.self_fparser.terminal)
         
+if __name__ == "__main__":
+    print(sys.path)
+    
