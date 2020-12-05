@@ -167,3 +167,26 @@ def find_and(code_line):
         counter += 1 # Adds 1 to the counter
     else: # If it reaches the end of the code without finding command it returns None
         return None
+
+    
+def find_and_lists(code_line):
+    """
+        Function that finds the position of & in all the elements of a list
+
+        Args:
+            code_line (string): line of code       
+
+        Returns:
+            List with & positions in the code
+    """
+    list_ands =[]
+    counter = 0
+    while counter + 1 <= len(code_line):
+     and_finder = find_and(code_line[counter])
+     counter += 1
+     list_ands.append(and_finder)
+     and_position = [] 
+    for val in list_ands: 
+     if val != None : 
+      and_position.append(val) 
+    print (and_position) 
