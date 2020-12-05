@@ -138,3 +138,32 @@ def name_generator(suggested, forbidden_names):
     while new_name.lower() in [x.lower() for x in forbidden_names]:
         new_name += str(random.choice(string.ascii_lowercase))
     return new_name.strip()
+
+
+def find_and(code_line):
+    """
+        Function that finds the position of & command in a fortran line.
+
+        Args:
+            code_line (string): line of code       
+
+        Returns:
+            None if it is not present or its position in the code line string
+    """
+    discard_between = ['\'', '\"']
+    counter = 0
+    while counter + 1 <= len(code_line): # Studies each position in the line
+        if code_line[counter] in discard_between: # If fortran character is being written jumps to end of char
+            jump = code_line[counter+1].find(code_line[counter])
+            if jump == -1:
+                raise Exception('Fortran character did not finish being declared from position {}: \n {}'.format(counter, code_line))
+            counter += jump + 1
+        if '&' == code_line[counter]: # If selection matches it studies the code       
+            return counter
+            break
+        if code_line[counter] == '!': # If writting fortran comment invalidate rest of the line and returns None
+            return None
+            break
+        counter += 1 # Adds 1 to the counter
+    else: # If it reaches the end of the code without finding command it returns None
+        return None
