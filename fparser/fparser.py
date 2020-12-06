@@ -25,6 +25,7 @@ def library_maker(files, comment_style='before'):
         fortran_files.append(fobjects.Ffile(file_dir, file_code, comment_style=comment_style))
     print('Generating Library')
     Lib=fobjects.Flibrary(fortran_files)
+    print('Library Generated Correctly')
     return Lib
 
 def interface_writer(lib, modules):
@@ -52,4 +53,4 @@ if __name__ == '__main__':
     test_module3 = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                       '../FortranExamples/TestModules/TestModule3.f90')
     Lib = library_maker([test_module1, test_module2, test_module3])
-    print(Lib.write_interface())
+    print(interface_writer(Lib, ['test_module_1', 'test_module_12', 'test_module_2', 'test_module_3']))

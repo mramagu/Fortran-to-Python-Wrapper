@@ -139,6 +139,27 @@ def name_generator(suggested, forbidden_names):
         new_name += str(random.choice(string.ascii_lowercase))
     return new_name.strip()
 
+def find_closing_parenthesis(code_line, start):
+    """
+        Finds the position of the closing parenthesis in a line of code given the position of the starting one.
+
+        Args:
+            code_line (string): Initial suggestion with which to generate the new name.
+
+        Returns:
+            Position of closing parenthesis in the code line
+    """
+    counter = start + 1
+    while counter + 1 <= len(code_line):
+        if code_line[counter] == '(':
+            counter = find_closing_parenthesis(code_line, counter)
+        elif code_line[counter] == ')':
+            return counter
+            break
+        counter += 1
+    else:
+        raise Exception('Parenthesis is not closed in line: \n{}'.format(code_line))
+
 
 def find_and(code_line):
     """
