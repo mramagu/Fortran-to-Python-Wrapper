@@ -29,6 +29,32 @@ def open_files(self):
             QtWidgets.QTreeWidgetItem(self.ui.treeWidget_ffiles,[f.split('/')[-1]])
 
 
+# def open_folder(self):
+#     clear(self.ui) #Clean tree and list 
+#     file_dialog=QtWidgets.QFileDialog()
+#     folder=file_dialog.getExistingDirectory() #Open directory 
+#     ct=0
+#     dirs={} 
+#     for dir_name, subdirs, files in os.walk(folder):
+#         if ct==0: #Main directory 
+#             self.main_dir=dir_name
+#             self.ui.treeWidget_ffiles.setHeaderLabel(dir_name)
+#             for d in subdirs:
+#                 dirs[d]=QtWidgets.QTreeWidgetItem(self.ui.treeWidget_ffiles,[d.split('/')[-1]])
+#             for f in files:
+#                 QtWidgets.QTreeWidgetItem(self.ui.treeWidget_ffiles,[f.split('/')[-1]])
+#             ct=1
+#         else: #Subdirectories 
+#             for d in subdirs:
+#                 try:
+#                     dirs[d]=QtWidgets.QTreeWidgetItem(dirs[dir_name.split('/')[-1]],[d.split('/')[-1]])
+#                 except:
+#                     dirs[d]=QtWidgets.QTreeWidgetItem(dirs[dir_name.split('\\')[-1]],[d.split('/')[-1]])
+#             for f in files:
+#                 try:
+#                     QtWidgets.QTreeWidgetItem(dirs[dir_name.split('/')[-1]],[f.split('/')[-1]])
+#                 except:
+#                     QtWidgets.QTreeWidgetItem(dirs[dir_name.split('\\')[-1]],[f.split('/')[-1]])
 def open_folder(self):
     clear(self.ui) #Clean tree and list 
     file_dialog=QtWidgets.QFileDialog()
@@ -36,25 +62,20 @@ def open_folder(self):
     ct=0
     dirs={} 
     for dir_name, subdirs, files in os.walk(folder):
+        new_dir_name='/'.join(dir_name.split('\\'))
         if ct==0: #Main directory 
             self.main_dir=dir_name
             self.ui.treeWidget_ffiles.setHeaderLabel(dir_name)
             for d in subdirs:
-                dirs[d]=QtWidgets.QTreeWidgetItem(self.ui.treeWidget_ffiles,[d.split('/')[-1]])
+                dirs[new_dir_name+'/'+d]=QtWidgets.QTreeWidgetItem(self.ui.treeWidget_ffiles,[d.split('/')[-1]])
             for f in files:
                 QtWidgets.QTreeWidgetItem(self.ui.treeWidget_ffiles,[f.split('/')[-1]])
             ct=1
         else: #Subdirectories 
             for d in subdirs:
-                try:
-                    dirs[d]=QtWidgets.QTreeWidgetItem(dirs[dir_name.split('/')[-1]],[d.split('/')[-1]])
-                except:
-                    dirs[d]=QtWidgets.QTreeWidgetItem(dirs[dir_name.split('\\')[-1]],[d.split('/')[-1]])
+                dirs[new_dir_name+'/'+d]=QtWidgets.QTreeWidgetItem(dirs[new_dir_name],[d.split('/')[-1]])
             for f in files:
-                try:
-                    QtWidgets.QTreeWidgetItem(dirs[dir_name.split('/')[-1]],[f.split('/')[-1]])
-                except:
-                    QtWidgets.QTreeWidgetItem(dirs[dir_name.split('\\')[-1]],[f.split('/')[-1]])
+                QtWidgets.QTreeWidgetItem(dirs[new_dir_name],[f.split('/')[-1]])
 
 def select_ffiles(self):
     #Recursive function to analyse the tree up down
@@ -62,8 +83,11 @@ def select_ffiles(self):
         text=text+'/'+item.text(0)
         children=item.childCount()
         if children==0 and text not in self.files:
-            self.files.append(text)
-            self.ui.listWidget_selffiles.addItem(text)
+            for i in self.filter:
+                if text.endswith(i.split('*')[-1]):
+                    self.files.append(text)
+                    self.ui.listWidget_selffiles.addItem(text)
+                    break
         else:
             for i in range(0,children):
                 search_child(item.child(i),text)
@@ -85,13 +109,14 @@ def select_ffiles(self):
         else:
             text=search_parent(item)
         if children==0 and text not in self.files:
-            self.files.append(text)
-            self.ui.listWidget_selffiles.addItem(text)
+            for i in self.filter:
+                if text.endswith(i.split('*')[-1]):
+                    self.files.append(text)
+                    self.ui.listWidget_selffiles.addItem(text)
+                    break
         else:
             for i in range(0,children):
                 search_child(item.child(i),text)
-        # if text.endswith('.py'):
-        #     print(text)
 
 def select_options(self):
     self.window_options.show()
