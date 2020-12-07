@@ -1,5 +1,6 @@
 import os
 import sys
+import subprocess
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Window_fmodules import Ui_MainWindow as Ui_MainWindow_fmodules
 from Options import Ui_MainWindow as Ui_MainWindow_options
@@ -101,6 +102,8 @@ def clear(ui):
     ui.listWidget_selffiles.clear()
 
 def fortran_parser(self):
+    self.terminal_text.add_line('Running fortran parser...')
+    self.terminal_text.add_line('')
     files=[self.main_dir+'/'+self.files[i] for i in range(0,len(self.files))]
     lib=fparser.library_maker(files)
     modules=[mod.name for mod in lib.modules]
@@ -208,10 +211,19 @@ class Window_options(QtWidgets.QMainWindow, Ui_MainWindow_options):
         self.self_fparser.filter=self.filter
         self.self_fparser.fcomments=self.comments
         self.self_fparser.terminal=self.terminal
+        #Show changes in terminal 
+        self.self_fparser.terminal_text.add_line('Selected options:')
+        self.self_fparser.terminal_text.add_line('Fortran files format : '+', '.join(self.self_fparser.filter),number=2)
+        self.self_fparser.terminal_text.add_line('Position of fortran comments : '+self.self_fparser.fcomments)
+        self.self_fparser.terminal_text.add_line('Show terminal : '+str(self.self_fparser.terminal))
+        self.self_fparser.terminal_text.add_line('')
+        if self.terminal==True:
+            self.self_fparser.ui.dockWidget_terminal.show()
+        else:
+            self.self_fparser.terminal_text.clean()
+            self.self_fparser.ui.dockWidget_terminal.close()
+        #Close options window 
         self.close()
-        print(self.self_fparser.filter)
-        print(self.self_fparser.fcomments)
-        print(self.self_fparser.terminal)
 
     def reject_options(self):
         self.ui.lineEdit_fformat.setText(','.join(self.self_fparser.filter)) 
@@ -224,10 +236,26 @@ class Window_options(QtWidgets.QMainWindow, Ui_MainWindow_options):
         else:
             self.ui.radioButton_terminalNo.setChecked(True)
         self.close()
-        print(self.self_fparser.filter)
-        print(self.self_fparser.fcomments)
-        print(self.self_fparser.terminal)
+
+class Terminal():
+    def __init__(self,self_fparser):
+        self.self_fparser=self_fparser
+        self.text=''
+    def add_text(self,text):
+        previous_text=self.self_fparser.ui.plainTextEdit_terminal.toPlainText()
+        self.self_fparser.ui.plainTextEdit_terminal.setPlainText(previous_text+text)
+    def add_line(self,text,**kwargs):
+        n=' \n'
+        if 'number' in kwargs:
+            for _ in range(1,kwargs['number']):
+                n=n+' \n'
+        previous_text=self.self_fparser.ui.plainTextEdit_terminal.toPlainText()
+        self.self_fparser.ui.plainTextEdit_terminal.setPlainText(previous_text+n+text)
+    def clean(self):
+        self.self_fparser.ui.plainTextEdit_terminal.clear()
         
 if __name__ == "__main__":
     print(sys.path)
+
+
     

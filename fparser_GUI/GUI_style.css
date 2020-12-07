@@ -1,3 +1,7 @@
 QMainWindow{
+background-color:white;
+}
+QPlainTextEdit#plainTextEdit_terminal{
 background-color:black;
+color:white;
 }

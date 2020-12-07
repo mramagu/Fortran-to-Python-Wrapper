@@ -91,3 +91,5 @@ print('click antes:',pulsador.clicked)
 pulsador.click()
 print('click después:',pulsador.clicked) 
 
+
+

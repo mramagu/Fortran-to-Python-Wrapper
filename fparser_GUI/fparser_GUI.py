@@ -27,9 +27,10 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.files=[] 
         self.filter=["Python (*.py)","Fortran files (*.f90)"]
         self.fcomments='before'
-        self.terminal=False
+        self.terminal=True
         self.window_fmodule=ffiles.Window_fmodule(self_fparser=self)
         self.window_options=ffiles.Window_options(self_fparser=self)
+        self.terminal_text=ffiles.Terminal(self_fparser=self)
         # self.makefile=make.Makefile()
 
         #Connect signals

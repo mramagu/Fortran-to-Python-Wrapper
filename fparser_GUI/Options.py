@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
+        MainWindow.resize(800, 754)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -66,10 +66,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.widget)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.radioButton_terminalYes = QtWidgets.QRadioButton(self.widget)
+        self.radioButton_terminalYes.setChecked(True)
         self.radioButton_terminalYes.setObjectName("radioButton_terminalYes")
         self.verticalLayout_4.addWidget(self.radioButton_terminalYes)
         self.radioButton_terminalNo = QtWidgets.QRadioButton(self.widget)
-        self.radioButton_terminalNo.setChecked(True)
+        self.radioButton_terminalNo.setChecked(False)
         self.radioButton_terminalNo.setObjectName("radioButton_terminalNo")
         self.verticalLayout_4.addWidget(self.radioButton_terminalNo)
         self.verticalLayout_5.addWidget(self.widget)
