@@ -34,7 +34,7 @@ class Flibrary:
             Returns:
                 Returns a list of dependencies for the module.
         """
-        dependencies = module.uses
+        dependencies = list(module.uses)
         for use in module.uses:
             counter = 0
             while counter + 1 <= len(self.modules):
@@ -43,11 +43,11 @@ class Flibrary:
                         temp_dependencies = self.find_dependencies(self.modules[counter])
                         for temp in temp_dependencies:
                             if not temp in dependencies:
-                                dependencies += temp
+                                dependencies.append(temp)
                     break
                 counter += 1
             else:
-                raise Exception('Could not find module {} within library'.format(use))
+                raise Exception('Could not find module {} declared in module {} within library'.format(use, module.name))
         return dependencies
 
     def solve_fake_names(self):
@@ -67,11 +67,23 @@ class Flibrary:
                 forbidden_names2 = forbidden_names + other_fake_func_names + f_variables + [m.fake_name]
                 f.change_fake_name(fparsertools.name_generator(f.fake_name, forbidden_names2))
 
+    def write_interface(self):
+        """
+            Generates the code for the library interface 
+
+            Returns:
+                A list of strings with to print on a file.
+        """
+        interface = list()
+        for m in self.modules:
+            interface += m.write_interface()
+        return interface
+
 class Ffile:
     """
         Fortran File Class
     """
-    def __init__(self, filename, file_code):
+    def __init__(self, filename, file_code, comment_style='before'):
         """
             Fortran File Class initiator
 
@@ -81,6 +93,7 @@ class Ffile:
         """
         self.filename = filename
         self.file_code = file_code
+        self.comment_style = comment_style
         self.modules = self.module_finder(file_code)
 
     def module_finder(self, code):
@@ -93,14 +106,14 @@ class Ffile:
         modules_str = fparsertools.section(code, 'module')
         modules = list()
         for m in modules_str:
-            modules.append(Module(m))
+            modules.append(Module(m, self.comment_style))
         return modules
 
 class Module:
     """
         Fortran Module Class
     """
-    def __init__(self, code):
+    def __init__(self, code, comment_style='before'):
         """
             Fortran Module Class initiator
 
@@ -112,7 +125,7 @@ class Module:
         self.fake_name = self.name + '_py'
         self.uses = self.find_uses(code)
         self.contents = self.find_functionals(code)
-        self.find_and_set_descriptions(code, 'before')
+        self.find_and_set_descriptions(code, comment_style)
 
     def change_fake_name(self, new_fake_name):
         """
@@ -213,6 +226,22 @@ class Module:
             if not bool(functionals):
                 break
 
+    def write_interface(self):
+        """
+            Generates the code for the module interface 
+
+            Returns:
+                A list of strings with to print on a file.
+        """
+        interface = list()
+        interface.append('module {}'.format(self.fake_name))
+        interface.append('use {}'.format(self.name))
+        interface.append('implicit none')
+        for c in self.contents:
+            interface += c.write_interface()
+        interface.append('end module')
+        return interface
+
 
 class Ffunctional:
     """
@@ -228,6 +257,8 @@ class Ffunctional:
         self.name = name
         self.fake_name = name + '_py'
         self.variables = self.read_variables(code)
+        self.additional_variables = list()
+        self.solve_assume_shape()
         self.procedures = list()
         self.commentary = list()
 
@@ -239,6 +270,25 @@ class Ffunctional:
                 new_fake_name (str): New fake name
         """
         self.fake_name = new_fake_name
+
+    def set_comments(self, comment):
+        """
+            Method to add a block comment to a Ffunctional.
+
+            Args:
+                comment (list): Comment of functional element
+        """
+        self.commentary = comment
+
+    def add_additional_variables(self, var_name, var_type):
+        """
+            Method to add an additional optional variable.
+
+            Args:
+                var_name (string): Name of the variable.
+                var_type (string): Type of new variable
+        """
+        self.additional_variables.append(Variable(var_name, '{}, optional:: {}'.format(var_type, var_name)))
 
     def read_variables(self, code):
         """
@@ -253,26 +303,33 @@ class Ffunctional:
         variables = list()
         pos_function = fparsertools.find_command(code[0], self.name) # Position of function name in code
         var_def_start = code[0][pos_function + len(self.name):].lower().find('(')
-        var_def_end = code[0][pos_function + len(self.name):].lower().find(')')
-        entries = code[0][pos_function + len(self.name) + var_def_start + 1: pos_function + len(self.name) + var_def_end]
+        var_def_end = fparsertools.find_closing_parenthesis(code[0],pos_function + len(self.name)+var_def_start)
+        entries = code[0][pos_function + len(self.name) + var_def_start + 1: var_def_end]
         for entry in entries.split(','):
             for i, line in enumerate(code[1:]):
-                if bool(fparsertools.find_command(line, entry.strip())):
+                if fparsertools.find_command(line, entry.strip()) != None:
                     variables.append(Variable(entry.strip(), line))
                     break
                 if i == len(code[1:]):
-                    raise Exception('Could not find variable definition {} in Ffunctional {}: \n{}'.format(entry, self.name, code))
+                    raise Exception('Could not find variable definition {} in Ffunctional {}: \n{}'.format(entry, self.name, '\n'.join(code)))
         return variables
 
-    def set_comments(self, comment):
+    def solve_assume_shape(self):
         """
-            Method to add a block comment to a Ffunctional.
-
-            Args:
-                comment (list): Comment of functional element
+            Method to identify variables that have a assume shape definition and altering them to fit f2py.
         """
-        self.commentary = comment
-
+        for v in self.variables: # Iterates thorugh all explicit function variables
+            if v.dimensions != None: # If variable has dimension definition
+                for index, d in enumerate(v.dimensions):
+                    if ':' in d: # If a sub-section has an interval in it proceeds to analyze it
+                        a = (d.strip()).split(':') # Subsection is split at interval and spaces are eliminated
+                        if len(a) != 2: # All subsections should contain just 1 :, if more then raises error
+                            raise Exception('Error solving assume shape of variable {} in {}:\n {}'.format(self.name, v.name, v.dimensions))
+                        elif not bool(a[0]) or not bool(a[1]): # If either side of the interval is empty then the shape will be assumed
+                            d = fparsertools.name_generator('N_' + v.name, # Generates a new optional integer to define its size.
+                                [self.name] + [w.name for w in self.variables + self.additional_variables]) 
+                            v.change_dimension(d, index)
+                            self.add_additional_variables(d, 'integer')
 
 class Subroutine(Ffunctional):
     """
@@ -303,6 +360,22 @@ class Subroutine(Ffunctional):
         variable_def_position = first_line[subr_position + len('subroutine'):].lower().find('(') # Subroutine name stops when variables are defined
         return first_line[subr_position + len('subroutine'): subr_position + len('subroutine') + variable_def_position].strip() # Subroutine name and space deletion
 
+    def write_interface(self):
+        """
+            Generates the code for the interface of the subroutine.
+
+            Returns:
+                A list of strings to be added to the rest of the module interface.
+        """
+        interface = list()
+        interface.append('subroutine {}({})'.format(self.fake_name, ','.join(
+            [v.name for v in self.variables + self.additional_variables])))
+        for v in self.variables + self.additional_variables:
+            interface += v.write_interface()
+        interface.append('call {}({})'.format(self.name, ','.join([v.name for v in self.variables])))
+        interface.append('end subroutine')
+        return interface
+
 class Function(Ffunctional):
     """
         Fortran Function Class
@@ -316,13 +389,14 @@ class Function(Ffunctional):
         """
         super().__init__(code, self.read_name(code[0]))
         self.func_type = self.find_function_type(code[0])
+        self.result = self.find_result(code)
 
     def read_name(self, first_line):
         """
             Determines the name of the fortran function
 
             Args:
-                first_line (list): Code of the function
+                first_line (string): Code of the function
 
             Returns:
                 string: name of the function
@@ -338,16 +412,81 @@ class Function(Ffunctional):
             Finds additional information on the type of function
 
             Args:
-                first_line (list): Code of the function
+                first_line (string): Code of the function
 
             Returns:
                 string with type of the function or none
         """
         func_position = fparsertools.find_command(first_line, 'function') # First instance of function in line
         if bool(first_line[0:func_position].strip()):
-            return first_line[0:func_position]
-        else: 
+            return first_line[0:func_position].strip()
+        else:
             return None
+
+    def find_result(self, code):
+        """
+            Finds the result of the function type and dimensions
+
+            Args:
+                code (list): Code of the function
+
+            Returns:
+                Variable for the result of the function
+        """
+        options = Variable.types() # Fortran variable types
+        if self.func_type == None: # If no func type has been declared it skips the loop to determine if the output has been defined
+            counter = len(options)
+        else:
+            counter = 0
+
+        while counter +1 <= len(options): # Loop to determine if the output type has been defined.
+            if options[counter] in self.func_type: 
+                result = Variable(self.name, '{}::{}'.format(options[counter], self.name))
+                break
+            counter += 1
+        else:
+            pos_result = fparsertools.find_command(code[0], 'result') # Position of result in line
+            if pos_result != None:
+                res_def_start = code[0][pos_result + len('result'):].lower().find('(')
+                res_def_end = fparsertools.find_closing_parenthesis(code[0],pos_result + len('result')+res_def_start)
+                result_name = code[0][pos_result + len('result') + res_def_start + 1:res_def_end].strip()
+            else:
+                result_name = self.name
+            for i, line in enumerate(code[1:]):
+                if fparsertools.find_command(line, result_name) != None:
+                    result = Variable(result_name, line)
+                    break
+                if i == len(code[1:]):
+                    raise Exception('Could not find function definition in Function {}: \n{}'.format(self.name, '\n'.join(code)))
+        return result
+
+    def write_interface(self):
+        """
+            Generates the code for the interface of the function.
+
+            Returns:
+                A list of strings to be added to the rest of the module interface.
+        """
+        interface = list()
+        if self.func_type != None:
+            interface.append('{} function {}({})'.format(self.func_type, self.fake_name, ','.join(
+                [v.name for v in self.variables + self.additional_variables])))
+        else:
+            interface.append('function {}({})'.format(self.fake_name, ','.join(
+                [v.name for v in self.variables + self.additional_variables])))
+
+        for v in self.variables + self.additional_variables:
+            interface += v.write_interface()
+        
+        if self.func_type != None:
+            if not any(var_type in self.func_type for var_type in Variable.types()): # If definition of function is included in func_type it does not write it
+                interface += [('\n'.join(self.result.write_interface())).replace(self.result.name, self.fake_name)] # If not defines the output of the function
+        else:
+            interface += [('\n'.join(self.result.write_interface())).replace(self.result.name, self.fake_name)]
+
+        interface.append('{} = {}({})'.format(self.fake_name, self.name, ','.join([v.name for v in self.variables])))
+        interface.append('end function')
+        return interface
 
 class Variable:
     """
@@ -366,6 +505,40 @@ class Variable:
         self.other_def = self.identify_other_def(code_line)
         self.comment = fparsertools.identify_comment(code_line)
 
+    def types():
+        """
+            Returns a list of accepted variable types
+        """
+        return ['integer', 'real', 'complex', 'logical', 'character']
+
+    def var_splitter(self, code_line):
+        """
+            Function to split variable definitions appropriately
+
+            Args:
+                code_line (string): Variable definition code
+        """
+        if len(code_line.split("::")) == 2:
+            variable_definition = code_line.split("::")[0] # Extracts the definition of the variable before ::
+            written_variable = code_line.split("::")[1] # Extracts the definition of the variable after ::
+        elif len(code_line.split("::")) == 1:
+            var_pos = fparsertools.find_command(code_line, self.name)
+            variable_definition = code_line[0:var_pos]
+            written_variable = code_line[var_pos:]
+        else:
+            raise Exception('Error in variable {} definition in code \n {}'.format(self.name, code_line))
+        return (variable_definition, written_variable)
+
+    def change_dimension(self, new_dim, index):
+        """
+            Fortran Variable class initiator
+
+            Args:
+                new_dim (string): New value for the dimension
+                index (integer): Dimension position index
+        """
+        self.dimensions[index] = new_dim
+
     def identify_vtype(self, code_line):
         """
             Identifies the type of fortran variable.
@@ -377,9 +550,9 @@ class Variable:
             Returns:
                 string that contains either integer, real, complex, logical or character and their variations.
         """
-        variable_definition = code_line.split("::")[0] # Extracts the definition of the variable before ::
+        variable_definition = self.var_splitter(code_line)[0] # Extracts the definition of the variable before ::
         variable_definition = variable_definition.split(',') # Divides definition into elemental blocks
-        options = ['integer', 'real', 'complex', 'logical', 'character']
+        options = Variable.types()
         breaker = False
         for type in options:
             for d in variable_definition: 
@@ -404,16 +577,17 @@ class Variable:
             Returns:
                 string that defines the dimension of the variable
         """
-        dimension = ''
-        variable_definition = code_line.split("::")[0] # Extracts the definition of the variable before ::
+        dimension = []
+        variable_definition = self.var_splitter(code_line)[0]
+        written_variable = self.var_splitter(code_line)[1]
+        
         if 'dimension' in variable_definition.lower(): # If dimension in definition, adds dim_def
             dim_position = variable_definition.lower().find('dimension')
             dim_def_start = variable_definition[dim_position + len('dimension'):].lower().find('(')
-            dim_def_end = variable_definition[dim_position + len('dimension'):].lower().find(')')
-            dimension += variable_definition[dim_position + len('dimension') + dim_def_start + 1:\
-                dim_position + len('dimension') + dim_def_end]
+            dim_def_end = fparsertools.find_closing_parenthesis(variable_definition + written_variable, 
+                            dim_position + len('dimension') + dim_def_start)
+            dimension += variable_definition[dim_position + len('dimension') + dim_def_start + 1: dim_def_end].strip().split(',')
 
-        written_variable = code_line.split("::")[1] # Extracts the definition of the variable after ::
         vposition = fparsertools.find_command(written_variable, self.name)  # Finds variable name in line
         if vposition == None:
             raise Exception('Variable {} not found in expected line: \n{}'.format(self.name, code_line))
@@ -421,18 +595,15 @@ class Variable:
             if bool(written_variable[vposition + len(self.name):].strip()):
                 if written_variable[vposition + len(self.name):].strip()[0] == '(': 
                     dim_def_start = written_variable[vposition + len(self.name):].lower().find('(')
-                    dim_def_end = written_variable[vposition + len(self.name):].lower().find(')')
-                    add_d = written_variable[vposition + len(self.name) + dim_def_start + 1:\
-                            vposition + len(self.name) + dim_def_end]
-                    if bool(dimension):
-                        dimension += ',' + add_d
-                    else:
-                        dimension += add_d
+                    dim_def_end = fparsertools.find_closing_parenthesis(variable_definition + written_variable, 
+                                    len(variable_definition) + vposition + len(self.name) + dim_def_start + dim_def_start) \
+                                       - len(variable_definition)
+                    dimension += written_variable[vposition + len(self.name) + dim_def_start + 1:dim_def_end].strip().split(',')
 
-        if dimension == '': # If no dimensions have been declared returns None
+        if not bool(dimension): # If no dimensions have been declared returns None
             return None
         else: # If not it returns the string of dimensions
-            return dimension.strip()
+            return dimension
 
     def identify_other_def(self, code_line):
         """
@@ -444,10 +615,26 @@ class Variable:
             Returns:
                 list of strings with additional code definitions.
         """
-        variable_definition = code_line.split("::")[0] # Extracts the definition of the variable before ::
+        variable_definition = self.var_splitter(code_line)[0] # Extracts the definition of the variable before ::
         definitions = variable_definition.split(",") # Divides it into smaller sections
         other_def = list()
         for d in definitions:
             if not self.type.lower() in d.lower() and 'dimension' not in d.lower():
-                other_def += d
+                other_def.append(d)
         return other_def
+
+    def write_interface(self):
+        """
+            Generates the code for the interface of the variable definition
+
+            Returns:
+                A list of strings to be added to the rest of the module interface.
+        """
+        definition = list()
+        definition += [self.type]
+        if self.dimensions != None:
+            definition += ['dimension({})'.format(','.join(self.dimensions))]
+        if self.other_def != None:
+            definition += self.other_def
+        interface = ['{} :: {}'.format(','.join(definition), self.name)]
+        return interface

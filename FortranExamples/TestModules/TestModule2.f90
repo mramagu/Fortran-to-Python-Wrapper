@@ -4,7 +4,7 @@ use test_module_1
 implicit none
 
 contains
-! Test Function 3 description
+! Test Function 2 description
 ! Additional lines
 pure function test_function_2(x, y)
     real(8), intent(in):: x, y ! Definition of x and y
