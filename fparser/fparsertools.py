@@ -190,24 +190,43 @@ def find_and(code_line):
         return None
 
     
-def find_and_lists(code_line):
+def remove_and_lists(code_line):
     """
-        Function that finds the position of & in all the elements of a list
+        Function that finds the position of & in all the elements of a list and removes it
 
         Args:
             code_line (string): line of code       
 
         Returns:
-            List with & positions in the code
+            List with lines of code without the & , the lines that where separated by the & are merged
     """
-    list_ands =[]
+    list_ands_element =[]
+    list_ands_position =[]
     counter = 0
+    z=0
     while counter + 1 <= len(code_line):
-     and_finder = find_and(code_line[counter])
+     and_finder = fparsertools.find_and(code_line[counter])
      counter += 1
-     list_ands.append(and_finder)
+     list_ands_position.append(and_finder)
+     if and_finder != None : 
+      list_ands_element.append(counter-1)
      and_position = [] 
-    for val in list_ands: 
-     if val != None : 
-      and_position.append(val) 
-    print (and_position) 
+     for val in list_ands_position: 
+      if val != None : 
+        and_position.append(val) 
+     counter2 = 0
+     clean_code=[]
+     while counter2+1 <= len(code_line):  
+      if counter2 not in list_ands_element:
+       clean_code.append(code_line[counter2])  
+     if counter2 in list_ands_element: 
+      x = 0+z     
+      clean_code.append(code_line[counter2][:and_position[x]] + code_line[counter2+1]) 
+      z=1
+      counter2+=1
+     counter2+=1
+    print(clean_code)
+
+
+
+  
