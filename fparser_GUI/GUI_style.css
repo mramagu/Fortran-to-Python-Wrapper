@@ -1,6 +1,9 @@
 QMainWindow{
 background-color:white;
 }
+Widget#dockWidgetContents{
+background-colorcolor:rgb(0,0,255);
+}
 QPlainTextEdit#plainTextEdit_terminal{
 background-color:black;
 color:white;

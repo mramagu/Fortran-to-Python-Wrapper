@@ -255,7 +255,9 @@ class Terminal():
         self.self_fparser.ui.plainTextEdit_terminal.clear()
         
 if __name__ == "__main__":
-    print(sys.path)
+    # print(sys.path)
+    p=subprocess.run(['python','--version'],stdout=subprocess.PIPE)
+    print(p.stdout.decode('utf-8'))
 
 
     
