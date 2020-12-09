@@ -76,7 +76,7 @@ def interface_writer(lib, modules, **kwargs):
             print('Selected Modules: ' + ' ,'.join(modules))
         writing_modules = [m for m in lib.modules if m.name in modules]
         for m in writing_modules:
-            interface += m.write_interface()
+            interface += m.write_f2py_interface()
             print('\n'.join(interface))
         if terminal_present:
             terminal.add_line('Inerface Generated Correctly', number=2)
@@ -129,6 +129,6 @@ if __name__ == '__main__':
                                       '../FortranExamples/TestModules/TestModule2.f90')
     test_module3 = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                       '../FortranExamples/TestModules/TestModule3.f90')
-    Lib = library_maker([test_module1, test_module2] ) #, test_module3])
+    Lib = library_maker([test_module1, test_module2, test_module3])
     interface_writer(Lib, ['test_module_1', 'test_module_12', 'test_module_2', 'test_module_3'])
     py_interface_writer(Lib, ['test_module_1', 'test_module_12', 'test_module_2', 'test_module_3'], 'nh')

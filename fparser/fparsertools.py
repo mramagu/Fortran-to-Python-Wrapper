@@ -49,7 +49,7 @@ def find_command(code_line, name):
             None if it is not present or its position in the code line string
     """
     before_chars = [',', ')', ':', ' '] # Characters allowed rigth before name
-    after_chars = [',', '(', '=', '!', ' '] # Characters allowed rigth after name
+    after_chars = [',', '(', '=', '!', ' ', ':', '*'] # Characters allowed rigth after name
     discard_between = ['\'', '\"']
     counter = 0
     while counter + len(name) <= len(code_line): # Studies each position in the line

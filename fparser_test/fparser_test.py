@@ -62,7 +62,7 @@ def test_module_reader(file, module_names):
 @pytest.mark.parametrize('file,contents', [
     ('TestModule1.f90', ['test_function_1', 'test_function_12']),
     ('TestModule2.f90', ['test_function_2', 'test_subroutine_1']),
-    ('TestModule3.f90', ['test_function_3'])
+    ('TestModule3.f90', ['test_function_3', 'test_function_4'])
     ])
 def test_contains_reader(file, contents):
     """
