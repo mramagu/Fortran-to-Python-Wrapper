@@ -131,9 +131,12 @@ def fortran_parser(self):
     self.terminal_text.add_line('')
     files=[self.main_dir+'/'+self.files[i] for i in range(0,len(self.files))]
     self.lib=fparser.library_maker(files,comment_style=self.fcomments,terminal=self.terminal_text)
-    modules=[mod.name for mod in self.lib.modules]
-    self.window_fmodule.ui.listWidget_fmod.addItems(modules)
-    self.window_fmodule.show()
+    if self.lib==None:
+        pass
+    else:
+        modules=[mod.name for mod in self.lib.modules]
+        self.window_fmodule.ui.listWidget_fmod.addItems(modules)
+        self.window_fmodule.show()
 
 
 class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow_fmodules):
@@ -164,13 +167,17 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow_fmodules):
     def accept_selection(self):
         #[x.name for x in module.contents] Obtener subrutinas/funciones
         #[(x.name, type(x)) for x in module.contents] Identificar si es subrutina o funcion
-        # modules=self.self_fparser.lib.modules
+        
         module_list=[] 
         for i in range(0,self.ui.listWidget_selfmod.count()):
             item=self.ui.listWidget_selfmod.item(i)
             QtWidgets.QTreeWidgetItem(self.self_fparser.ui.treeWidget_fsummary,[item.text()])
             module_list.append(item.text())
         self.self_fparser.interface=fparser.interface_writer(self.self_fparser.lib,module_list)
+        modules=self.self_fparser.lib.modules
+        for module in modules:
+            print([x.name for x in module.contents])
+            print([(x.name, type(x)) for x in module.contents])
         self.close()
     
     def reject_selection(self):
@@ -272,6 +279,7 @@ class Terminal():
     def __init__(self,self_fparser):
         self.self_fparser=self_fparser
         self.text=''
+        self.highlighter=Highlighter(self.self_fparser.ui.plainTextEdit_terminal.document())
     def add_text(self,text):
         previous_text=self.self_fparser.ui.plainTextEdit_terminal.toPlainText()
         self.self_fparser.ui.plainTextEdit_terminal.setPlainText(previous_text+text)
@@ -284,6 +292,17 @@ class Terminal():
         self.self_fparser.ui.plainTextEdit_terminal.setPlainText(previous_text+n+text)
     def clean(self):
         self.self_fparser.ui.plainTextEdit_terminal.clear()
+    def color(self):
+        pass
+class Highlighter(QtGui.QSyntaxHighlighter):
+    def __init__(self, parent):
+        super(Highlighter, self).__init__(parent)
+        self.errorFormat = QtGui.QTextCharFormat()
+        self.errorFormat.setForeground(QtCore.Qt.red)
+
+    def highlightBlock(self, text):
+        if text.startswith('Error:'):
+            self.setFormat(0, len(text), self.errorFormat)
         
 if __name__ == "__main__":
     # print(sys.path)
