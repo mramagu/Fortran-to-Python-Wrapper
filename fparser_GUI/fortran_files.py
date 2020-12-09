@@ -130,7 +130,7 @@ def fortran_parser(self):
     self.terminal_text.add_line('Running fortran parser...')
     self.terminal_text.add_line('')
     files=[self.main_dir+'/'+self.files[i] for i in range(0,len(self.files))]
-    self.lib=fparser.library_maker(files,comment_style=self.fcomments)
+    self.lib=fparser.library_maker(files,comment_style=self.fcomments,terminal=self.terminal_text)
     modules=[mod.name for mod in self.lib.modules]
     self.window_fmodule.ui.listWidget_fmod.addItems(modules)
     self.window_fmodule.show()
