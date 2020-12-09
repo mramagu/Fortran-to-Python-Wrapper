@@ -242,6 +242,19 @@ class Module:
         interface.append('end module')
         return interface
 
+    def write_py_interface(self, tab):
+        """
+            Generates the code for the module python interface 
+
+            Returns:
+                A list of strings with to print on a file.
+        """
+        interface = list()
+        interface.append('class {}:'.format(self.name))
+        for c in self.contents:
+            interface += fparsertools.tabing_tool(c.write_py_interface())
+        return interface
+
 
 class Ffunctional:
     """
@@ -376,6 +389,21 @@ class Subroutine(Ffunctional):
         interface.append('end subroutine')
         return interface
 
+    def write_py_interface(self):
+        """
+            Generates the code for the python interface of the subroutine.
+
+            Returns:
+                A list of strings to be added to the rest of the module interface.
+        """
+        interface = list()
+        interface.append('def {}({})'.format(self.name, ','.join([v.name for v in self.variables])))
+        interface.append('\"""')
+        interface += self.commentary
+        interface.append('\"""')
+        interface.append('{}({})'.format(self.fake_name, ','.join([v.name for v in self.variables])))
+        return interface
+
 class Function(Ffunctional):
     """
         Fortran Function Class
@@ -486,6 +514,19 @@ class Function(Ffunctional):
 
         interface.append('{} = {}({})'.format(self.fake_name, self.name, ','.join([v.name for v in self.variables])))
         interface.append('end function')
+        return interface
+
+    def write_py_interface(self):
+        """
+            Generates the code for the python interface of the subroutine.
+
+            Returns:
+                A list of strings to be added to the rest of the module interface.
+        """
+        interface = list()
+        interface.append('def {}({})'.format(self.name, ','.join([v.name for v in self.variables])))
+        interface.append('\"""'+'\n'.join(self.commentary)+'\"""')
+        interface.append('return {}({})'.format(self.fake_name, ','.join([v.name for v in self.variables])))
         return interface
 
 class Variable:
