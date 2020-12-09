@@ -29,6 +29,7 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.fcomments='before'
         self.terminal=True
         self.lib=''
+        #Crear interface en nueva carpeta 
         self.interface=''
         self.window_fmodule=ffiles.Window_fmodule(self_fparser=self)
         self.window_options=ffiles.Window_options(self_fparser=self)
@@ -51,7 +52,7 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         elif selected_action.text()=='Options':
             ffiles.select_options(self)
         elif selected_action.text()=='Clear':
-            ffiles.clear(self.ui)
+            ffiles.clear(self)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([]) #Definir aplicación 

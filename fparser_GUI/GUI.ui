@@ -283,36 +283,6 @@
                 <string>Fortran modules</string>
                </property>
               </column>
-              <item>
-               <property name="text">
-                <string>Module 1</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>Subroutines</string>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>Sub1</string>
-                 </property>
-                </item>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Functions</string>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>Fun1</string>
-                 </property>
-                </item>
-               </item>
-              </item>
-              <item>
-               <property name="text">
-                <string>Module2</string>
-               </property>
-              </item>
              </widget>
             </item>
            </layout>
