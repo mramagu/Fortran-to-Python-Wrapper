@@ -164,12 +164,14 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow_fmodules):
     def accept_selection(self):
         #[x.name for x in module.contents] Obtener subrutinas/funciones
         #[(x.name, type(x)) for x in module.contents] Identificar si es subrutina o funcion
+        # modules=self.self_fparser.lib.modules
         module_list=[] 
         for i in range(0,self.ui.listWidget_selfmod.count()):
             item=self.ui.listWidget_selfmod.item(i)
             QtWidgets.QTreeWidgetItem(self.self_fparser.ui.treeWidget_fsummary,[item.text()])
             module_list.append(item.text())
         self.self_fparser.interface=fparser.interface_writer(self.self_fparser.lib,module_list)
+        self.close()
     
     def reject_selection(self):
         self.ui.listWidget_fmod.clear()
