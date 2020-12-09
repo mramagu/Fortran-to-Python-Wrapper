@@ -23,7 +23,42 @@ def section(code, command):
             section_str.append(line)
             sections.append(section_str)
             section_str = list()
+        if present:
+            section_str.append(line)
+    return sections
 
+def section_2(code, command):
+    """
+    Function that sections a code according to a command
+
+    Args:
+        code (list): 
+        command (string): 
+
+    Returns:
+        list: A list with all module objects
+    """
+    sections = list()
+    section_str = list()
+    present = False
+    times = []
+    count_times=0
+    times_end=[]
+    count_times_end=0
+    for i, line in enumerate(code):
+        if find_command(line.lower(), command) != None and find_command(line.lower(), 'end') == None:
+            present = True
+            count_times=count_times+1
+            times.append(count_times)
+        elif find_command(line.lower(), command) != None and find_command(line.lower(), 'end') != None:
+            present = True
+            count_times_end=count_times_end+1
+            times_end.append(count_times_end)         
+            if times == times_end:
+              present = False
+              section_str.append(line)  
+              sections.append(section_str)
+              section_str = list()
         if present:
             section_str.append(line)
     return sections
@@ -225,7 +260,7 @@ def remove_and_lists(code_line):
       z=1
       counter2+=1
      counter2+=1
-    print(clean_code)
+    return clean_code
 
 
 

@@ -27,4 +27,24 @@ x = 3d0
 y = 4d0
 print *, test_function_1(x, y)
 read *, x
+
+! Test Function 2 description
+! Additional lines
+pure function test_function_2(x, y)
+    real(8), intent(in):: x, y ! Definition of x and y
+    real(8):: test_function_2
+contains
+
+  function test_function_3(x,y)
+   test_function_3 = x-y
+  end function
+  
+    test_function_2 = x + y
+contains
+  function test_function_4(x,y)
+   test_function_4 = x*y
+  end function
+  
+end function
+
 end program FortranExamples
