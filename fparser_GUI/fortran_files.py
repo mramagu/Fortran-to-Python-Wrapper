@@ -7,12 +7,16 @@ from Options import Ui_MainWindow as Ui_MainWindow_options
 try:
     sys.path.insert(1, '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[0:-1])+'/fparser')
     import fparser
+    sys.path.insert(1, '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[0:-1])+'/fobjects')
+    import fobjects
 except:
     sys.path.insert(1, '/'.join(os.path.dirname(os.path.abspath(__file__)).split('\\')[0:-1])+'/fparser')
     import fparser
+    sys.path.insert(1, '/'.join(os.path.dirname(os.path.abspath(__file__)).split('\\')[0:-1])+'/fobjects')
+    import fobjects
 
 def open_files(self):
-    clear(self.ui) #Clean tree and list 
+    clear(self) #Clean tree and list 
     file_dialog=QtWidgets.QFileDialog()
     file_dialog.setFileMode(QtWidgets.QFileDialog.ExistingFiles) #Open files
     file_dialog.setAcceptMode(QtWidgets.QFileDialog.AcceptOpen) #Open option
@@ -56,7 +60,7 @@ def open_files(self):
 #                 except:
 #                     QtWidgets.QTreeWidgetItem(dirs[dir_name.split('\\')[-1]],[f.split('/')[-1]])
 def open_folder(self):
-    clear(self.ui) #Clean tree and list 
+    clear(self) #Clean tree and list 
     file_dialog=QtWidgets.QFileDialog()
     folder=file_dialog.getExistingDirectory() #Open directory 
     ct=0
@@ -121,19 +125,29 @@ def select_ffiles(self):
 def select_options(self):
     self.window_options.show()
 
-def clear(ui):
-    ui.treeWidget_ffiles.setHeaderLabel('')
-    ui.treeWidget_ffiles.clear()
-    ui.listWidget_selffiles.clear()
+def clear(self):
+    self.ui.treeWidget_ffiles.setHeaderLabel('')
+    self.ui.treeWidget_ffiles.clear()
+    self.ui.treeWidget_fsummary.clear()
+    self.ui.treeWidget_fparserfiles.clear()
+    self.ui.listWidget_selffiles.clear()
+    self.window_fmodule.ui.listWidget_fmod.clear()
+    self.window_fmodule.ui.listWidget_selfmod.clear()
+    self.terminal_text.clear()
+    self.main_dir=''
+    self.files=[] 
 
 def fortran_parser(self):
     self.terminal_text.add_line('Running fortran parser...')
     self.terminal_text.add_line('')
     files=[self.main_dir+'/'+self.files[i] for i in range(0,len(self.files))]
-    lib=fparser.library_maker(files)
-    modules=[mod.name for mod in lib.modules]
-    self.window_fmodule.ui.listWidget_fmod.addItems(modules)
-    self.window_fmodule.show()
+    self.lib=fparser.library_maker(files,comment_style=self.fcomments,terminal=self.terminal_text)
+    if self.lib==None:
+        pass
+    else:
+        modules=[mod.name for mod in self.lib.modules]
+        self.window_fmodule.ui.listWidget_fmod.addItems(modules)
+        self.window_fmodule.show()
 
 
 class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow_fmodules):
@@ -161,10 +175,27 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow_fmodules):
         for item in items:
             self.ui.listWidget_selfmod.addItem(item.text())
             
-    def accept_selection(self):
+    def accept_selection(self):       
+        module_list=[] 
+        module_tree={} 
+        #Create modules tree 
         for i in range(0,self.ui.listWidget_selfmod.count()):
             item=self.ui.listWidget_selfmod.item(i)
-            QtWidgets.QTreeWidgetItem(self.self_fparser.ui.treeWidget_fsummary,[item.text()])
+            module=QtWidgets.QTreeWidgetItem(self.self_fparser.ui.treeWidget_fsummary,[item.text()])
+            module_tree[item.text()+'_sub']=QtWidgets.QTreeWidgetItem(module,['Subroutines'])
+            module_tree[item.text()+'_fun']=QtWidgets.QTreeWidgetItem(module,['Functions'])
+            module_list.append(item.text())
+        #Create fortran interface 
+        self.self_fparser.interface=fparser.interface_writer(self.self_fparser.lib,module_list)
+        #Search for subroutines and functions in each module 
+        modules=self.self_fparser.lib.modules
+        for module in modules:
+            if module.name in module_list:
+                for x in module.contents:
+                    if isinstance(x, fobjects.Subroutine):
+                        QtWidgets.QTreeWidgetItem(module_tree[module.name+'_sub'],[x.name])
+                    else:
+                        QtWidgets.QTreeWidgetItem(module_tree[module.name+'_fun'],[x.name])           
         self.close()
     
     def reject_selection(self):
@@ -245,7 +276,7 @@ class Window_options(QtWidgets.QMainWindow, Ui_MainWindow_options):
         if self.terminal==True:
             self.self_fparser.ui.dockWidget_terminal.show()
         else:
-            self.self_fparser.terminal_text.clean()
+            self.self_fparser.terminal_text.clear()
             self.self_fparser.ui.dockWidget_terminal.close()
         #Close options window 
         self.close()
@@ -266,6 +297,7 @@ class Terminal():
     def __init__(self,self_fparser):
         self.self_fparser=self_fparser
         self.text=''
+        self.highlighter=Highlighter(self.self_fparser.ui.plainTextEdit_terminal.document())
     def add_text(self,text):
         previous_text=self.self_fparser.ui.plainTextEdit_terminal.toPlainText()
         self.self_fparser.ui.plainTextEdit_terminal.setPlainText(previous_text+text)
@@ -276,8 +308,18 @@ class Terminal():
                 n=n+' \n'
         previous_text=self.self_fparser.ui.plainTextEdit_terminal.toPlainText()
         self.self_fparser.ui.plainTextEdit_terminal.setPlainText(previous_text+n+text)
-    def clean(self):
+    def clear(self):
         self.self_fparser.ui.plainTextEdit_terminal.clear()
+
+class Highlighter(QtGui.QSyntaxHighlighter):
+    def __init__(self, parent):
+        super(Highlighter, self).__init__(parent)
+        self.errorFormat = QtGui.QTextCharFormat()
+        self.errorFormat.setForeground(QtCore.Qt.red)
+
+    def highlightBlock(self, text):
+        if text.startswith('Error:'):
+            self.setFormat(0, len(text), self.errorFormat)
         
 if __name__ == "__main__":
     # print(sys.path)

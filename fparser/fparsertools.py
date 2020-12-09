@@ -224,6 +224,19 @@ def find_and(code_line):
     else: # If it reaches the end of the code without finding command it returns None
         return None
 
+def tabing_tool(code):
+    """
+        Adds a 4 space tab to every string on the list
+
+        Args:
+            code (list): List of strings
+
+        Returns:
+            Tabulated list
+    """
+    for i, line in enumerate(code):
+        code[i] = ' '*4 + line
+    return code
     
 def remove_and_lists(code_line):
     """
