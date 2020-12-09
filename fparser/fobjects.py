@@ -126,6 +126,7 @@ class Module:
         self.uses = self.find_uses(code)
         self.contents = self.find_functionals(code)
         self.find_and_set_descriptions(code, comment_style)
+        self.private_public_solver(code)
 
     def change_fake_name(self, new_fake_name):
         """
@@ -226,6 +227,38 @@ class Module:
             if not bool(functionals):
                 break
 
+    def private_public_solver(self, code):
+        """
+            Solves problems with private/public definitions. Deletes all private functions from the module
+
+            Args:
+                code (list): Code of the module.
+        """
+        private_module = False
+        for line in code:
+            if fparsertools.find_command(line, 'private') !=None:
+                private_module = True
+                break
+
+        if private_module:
+            public_functions = list()
+            for line in code:
+                if fparsertools.find_command(line, 'public') !=None:
+                    if fparsertools.identify_comment(line) != None:
+                        line = line.replace(fparsertools.identify_comment(line), '')
+                    line = line[len('public'):].split(',')
+                    public_functions += [i.strip() for i in line]
+        else:
+            public_functions = [c.name for c in self.contents]
+        
+        functions = self.contents
+        self.contents = list()
+        for func in functions:
+            if func.name in public_functions:
+                self.contents.append(func)
+
+
+
     def write_interface(self):
         """
             Generates the code for the module interface 
@@ -237,14 +270,18 @@ class Module:
         interface.append('module {}'.format(self.fake_name))
         interface.append('use {}'.format(self.name))
         interface.append('implicit none')
+        interface.append('contains')
         for c in self.contents:
             interface += c.write_interface()
         interface.append('end module')
         return interface
 
-    def write_py_interface(self, tab):
+    def write_py_interface(self, lib_name):
         """
             Generates the code for the module python interface 
+
+            Args:
+                lib_name (string): Name of the f2py generated library
 
             Returns:
                 A list of strings with to print on a file.
@@ -252,7 +289,7 @@ class Module:
         interface = list()
         interface.append('class {}:'.format(self.name))
         for c in self.contents:
-            interface += fparsertools.tabing_tool(c.write_py_interface())
+            interface += fparsertools.tabing_tool(c.write_py_interface(lib_name, self.fake_name))
         return interface
 
 
@@ -301,7 +338,7 @@ class Ffunctional:
                 var_name (string): Name of the variable.
                 var_type (string): Type of new variable
         """
-        self.additional_variables.append(Variable(var_name, '{}, optional:: {}'.format(var_type, var_name)))
+        self.additional_variables.append(Variable(var_name, '{}, intent(in), optional :: {}'.format(var_type, var_name)))
 
     def read_variables(self, code):
         """
@@ -389,19 +426,25 @@ class Subroutine(Ffunctional):
         interface.append('end subroutine')
         return interface
 
-    def write_py_interface(self):
+    def write_py_interface(self, lib_name, module_name):
         """
             Generates the code for the python interface of the subroutine.
+
+            Args:
+                lib_name (string): Name of the f2py generated library
+                module_name (string): Name of the f2py generated module with the function
 
             Returns:
                 A list of strings to be added to the rest of the module interface.
         """
         interface = list()
-        interface.append('def {}({})'.format(self.name, ','.join([v.name for v in self.variables])))
         interface.append('\"""')
-        interface += self.commentary
+        interface += fparsertools.tabing_tool(self.commentary)
+        interface += fparsertools.tabing_tool(['{} ({}): {}'.format(v.name, v.type, v.comment) for v in self.variables])
         interface.append('\"""')
-        interface.append('{}({})'.format(self.fake_name, ','.join([v.name for v in self.variables])))
+        interface.append('{}.{}.{}({})'.format(lib_name, module_name, self.fake_name, ','.join([v.name for v in self.variables])))
+        interface = fparsertools.tabing_tool(interface)
+        interface.insert(0, 'def {}({}):'.format(self.name, ','.join([v.name for v in self.variables])))
         return interface
 
 class Function(Ffunctional):
@@ -516,17 +559,25 @@ class Function(Ffunctional):
         interface.append('end function')
         return interface
 
-    def write_py_interface(self):
+    def write_py_interface(self, lib_name, module_name):
         """
             Generates the code for the python interface of the subroutine.
+
+            Args:
+                lib_name (string): Name of the f2py generated library
+                module_name (string): Name of the f2py generated module with the function
 
             Returns:
                 A list of strings to be added to the rest of the module interface.
         """
         interface = list()
-        interface.append('def {}({})'.format(self.name, ','.join([v.name for v in self.variables])))
-        interface.append('\"""'+'\n'.join(self.commentary)+'\"""')
-        interface.append('return {}({})'.format(self.fake_name, ','.join([v.name for v in self.variables])))
+        interface.append('\"""')
+        interface += fparsertools.tabing_tool(self.commentary)
+        interface += fparsertools.tabing_tool(['{} ({}): {}'.format(v.name, v.type, v.comment) for v in self.variables])
+        interface.append('\"""')
+        interface.append('return {}.{}.{}({})'.format(lib_name, module_name, self.fake_name, ','.join([v.name for v in self.variables])))
+        interface = fparsertools.tabing_tool(interface)
+        interface.insert(0, 'def {}({}):'.format(self.name, ','.join([v.name for v in self.variables])))
         return interface
 
 class Variable:
@@ -567,7 +618,7 @@ class Variable:
             variable_definition = code_line[0:var_pos]
             written_variable = code_line[var_pos:]
         else:
-            raise Exception('Error in variable {} definition in code \n {}'.format(self.name, code_line))
+            raise Exception('Error in variable {} definition in code: \n    {}'.format(self.name, code_line))
         return (variable_definition, written_variable)
 
     def change_dimension(self, new_dim, index):

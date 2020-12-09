@@ -1,0 +1,8 @@
+{
+  "fparser_test.py::test_contains_reader[TestModule3_f90-contents2]": true,
+  "fparser_test.py::test_dependecies_ordering[files1-expected_order1]": true,
+  "fparser_test.py::test_fake_naming[files1]": true,
+  "fparser_test.py::test_interface_writer[files1-module_names1]": true,
+  "fparser_test.py::test_library_maker[files1]": true,
+  "fparser_test.py::test_module_reader[TestModule3_f90-module_names2]": true
+}

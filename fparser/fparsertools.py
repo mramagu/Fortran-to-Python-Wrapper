@@ -15,32 +15,6 @@ def section(code, command):
     sections = list()
     section_str = list()
     present = False
-    for i, line in enumerate(code):
-        if find_command(line.lower(), command) != None and find_command(line.lower(), 'end') == None:
-            present = True
-        elif find_command(line.lower(), command) != None and find_command(line.lower(), 'end') != None:
-            present = False
-            section_str.append(line)
-            sections.append(section_str)
-            section_str = list()
-        if present:
-            section_str.append(line)
-    return sections
-
-def section_2(code, command):
-    """
-    Function that sections a code according to a command
-
-    Args:
-        code (list): 
-        command (string): 
-
-    Returns:
-        list: A list with all module objects
-    """
-    sections = list()
-    section_str = list()
-    present = False
     times = []
     count_times=0
     times_end=[]
