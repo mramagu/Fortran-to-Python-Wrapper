@@ -130,8 +130,8 @@ def fortran_parser(self):
     self.terminal_text.add_line('Running fortran parser...')
     self.terminal_text.add_line('')
     files=[self.main_dir+'/'+self.files[i] for i in range(0,len(self.files))]
-    lib=fparser.library_maker(files)
-    modules=[mod.name for mod in lib.modules]
+    self.lib=fparser.library_maker(files,comment_style=self.fcomments)
+    modules=[mod.name for mod in self.lib.modules]
     self.window_fmodule.ui.listWidget_fmod.addItems(modules)
     self.window_fmodule.show()
 
@@ -162,10 +162,14 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow_fmodules):
             self.ui.listWidget_selfmod.addItem(item.text())
             
     def accept_selection(self):
+        #[x.name for x in module.contents] Obtener subrutinas/funciones
+        #[(x.name, type(x)) for x in module.contents] Identificar si es subrutina o funcion
+        module_list=[] 
         for i in range(0,self.ui.listWidget_selfmod.count()):
             item=self.ui.listWidget_selfmod.item(i)
             QtWidgets.QTreeWidgetItem(self.self_fparser.ui.treeWidget_fsummary,[item.text()])
-        self.close()
+            module_list.append(item.text())
+        self.self_fparser.interface=fparser.interface_writer(self.self_fparser.lib,module_list)
     
     def reject_selection(self):
         self.ui.listWidget_fmod.clear()
