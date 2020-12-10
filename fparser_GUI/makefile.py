@@ -46,6 +46,6 @@ def runmake(ui):
 
 if __name__ == "__main__":
 
-    p=subprocess.run(['python','--version'],stdout=subprocess.PIPE)
+    p=subprocess.run(['python','--version'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     print(p.stdout)
 
