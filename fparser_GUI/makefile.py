@@ -32,7 +32,7 @@ def runmake(ui):
     pass
     #subprocess.run(['f2py','Hello_world.f90','-m','','-h','Interface.pyf','--overwrite-signature'])
     #flags=['--fcompiler=' %fcompiler% ,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64' -L%library%]
-    #subprocess.run(['f2py','-c','Interface.pyf','Hello_world.f90',flags,'&&','ECHO','SUCCESS'])
+    #subprocess.run(['f2py','-c','Interface.pyf','Hello_world.f90',flags])
     
 """
     def f(ui,mf):
