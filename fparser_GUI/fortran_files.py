@@ -186,7 +186,7 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow_fmodules):
             module_tree[item.text()+'_fun']=QtWidgets.QTreeWidgetItem(module,['Functions'])
             module_list.append(item.text())
         #Create fortran interface 
-        self.self_fparser.interface=fparser.interface_writer(self.self_fparser.lib,module_list)
+        self.self_fparser.interface=fparser.interface_writer(self.self_fparser.lib,module_list,terminal=self.self_fparser.terminal_text)
         #Search for subroutines and functions in each module 
         modules=self.self_fparser.lib.modules
         for module in modules:
