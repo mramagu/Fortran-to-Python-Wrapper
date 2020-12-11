@@ -355,9 +355,9 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_16">
             <item>
-             <widget class="QLabel" name="label">
+             <widget class="QLabel" name="label_make_precission">
               <property name="text">
-               <string>Do you want to use a conda environment?</string>
+               <string>Choose the precission you want to work with.</string>
               </property>
              </widget>
             </item>
@@ -369,9 +369,9 @@
              <number>20</number>
             </property>
             <item>
-             <widget class="QRadioButton" name="radioButton_makeYes">
+             <widget class="QRadioButton" name="radioButton_makeSP">
               <property name="text">
-               <string>Yes.</string>
+               <string>Simple precission.</string>
               </property>
               <property name="checked">
                <bool>true</bool>
@@ -379,9 +379,9 @@
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="radioButton_makeNo">
+             <widget class="QRadioButton" name="radioButton_makeDP">
               <property name="text">
-               <string>No.</string>
+               <string>Double precission.</string>
               </property>
              </widget>
             </item>
@@ -400,9 +400,9 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_14">
             <item>
-             <widget class="QLabel" name="label_make_env">
+             <widget class="QLabel" name="label_make_lib">
               <property name="text">
-               <string>Write the python environment in which you want to work.</string>
+               <string>Write the name of the fortran library.</string>
               </property>
              </widget>
             </item>
@@ -423,6 +423,9 @@
               </property>
               <property name="text">
                <string/>
+              </property>
+              <property name="readOnly">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -463,12 +466,65 @@
               </item>
               <item>
                <property name="text">
-                <string>gfortran</string>
+                <string>GNU Fortran 95 compiler (gfortran)</string>
                </property>
               </item>
              </widget>
             </item>
            </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <property name="leftMargin">
+           <number>50</number>
+          </property>
+          <property name="rightMargin">
+           <number>50</number>
+          </property>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_12">
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="autoFillBackground">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;NOTE:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;You can execute &amp;quot;f2py -c --help-fcompiler&amp;quot; in your command window to see which fortran compilers are available in your computer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="textFormat">
+               <enum>Qt::AutoText</enum>
+              </property>
+              <property name="scaledContents">
+               <bool>false</bool>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="wordWrap">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_10">
+          <property name="leftMargin">
+           <number>300</number>
+          </property>
+          <property name="rightMargin">
+           <number>300</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="pushButton_searchFC">
+            <property name="text">
+             <string>Search for fortran compilers</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
