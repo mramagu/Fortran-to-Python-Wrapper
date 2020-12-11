@@ -7,25 +7,25 @@ class Makefile():
         self.ui=self_fparser.ui
         self.self_fparser=self_fparser
         self.os=''
-        self.condaEnv=''
-        self.env=''
+        self.precission=''
+        self.lib=''
         self.FC=''
 
     def selectOS(self):
         self.os=self.ui.comboBox_makeOS.currentText()
         print(self.os)
 
-    def select_condaEnv(self):
+    def select_precission(self):
         if self.ui.radioButton_makeSP.isChecked() == True:
-            self.condaEnv=self.ui.radioButton_makeSP.text()
-            print(self.condaEnv)
+            self.precission=self.ui.radioButton_makeSP.text()
+            print(self.precission)
         elif self.ui.radioButton_makeDP.isChecked() == True:
-            self.condaEnv=self.ui.radioButton_makeDP.text()
-            print(self.condaEnv)
+            self.precission=self.ui.radioButton_makeDP.text()
+            print(self.precission)
 
-    def writeEnv(self):
-        self.env=self.ui.lineEdit_makeFlib.text()
-        print(self.env)
+    def writeLib(self):
+        self.lib=self.ui.lineEdit_makeFlib.text()
+        print(self.lib)
 
     def fcompiler(self):
         if self.ui.comboBox_makeFC.currentIndex() == 0:
@@ -41,8 +41,8 @@ class Makefile():
 
     def properties(self):
         self.selectOS()
-        self.select_condaEnv()
-        self.writeEnv()
+        self.select_precission()
+        self.writeLib()
         self.fcompiler()
     
     def runmake(self):
@@ -51,19 +51,9 @@ class Makefile():
         #flags=['--fcompiler='+self.FC ,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64' -L%library%]
         #subprocess.run(['f2py','-c','Interface.pyf','Hello_world.f90',flags])
 
-"""
-    def f(ui,mf):
-        mf.os=ui.combobox.currentText()
-    class Makefile():
-        def __init__(self):
-            self.os=''
-            self.compiler=''
-"""
 
 
 if __name__ == "__main__":
 
     p=subprocess.run(['python','--version'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     print(p.stdout)
-
-
