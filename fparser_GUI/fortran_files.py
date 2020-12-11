@@ -145,6 +145,7 @@ def fortran_parser(self):
     if self.lib==None:
         pass
     else:
+        self.files_order=self.lib.files
         modules=[mod.name for mod in self.lib.modules]
         self.window_fmodule.ui.listWidget_fmod.addItems(modules)
         self.window_fmodule.show()
