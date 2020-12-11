@@ -10,6 +10,7 @@ class Makefile():
         self.precission=''
         self.lib=''
         self.FC=''
+        self.complib=''
         self.f2py='f2py'
         
     def selectOS(self):
@@ -42,6 +43,7 @@ class Makefile():
 
     def searchLib(self):
         pass
+        #self.complib=
 
     def properties(self):
         self.selectOS()
@@ -70,7 +72,7 @@ class Makefile():
 
         #run_comp=[]
 
-        #flags=['--fcompiler='+self.FC ,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64','-L'+]
+        #flags=['--fcompiler='+self.FC,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64','-L'+]
         
         #run_comp.append(self.f2py)
         #run_comp.append('-c')
