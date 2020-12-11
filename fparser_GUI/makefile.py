@@ -124,7 +124,8 @@ class Makefile():
             run_comp.append(flag)
 
         comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'))
+        print(comp.stdout.decode('utf-8'))
+        # self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'))
 
 
 
