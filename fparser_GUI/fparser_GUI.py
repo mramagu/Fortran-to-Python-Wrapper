@@ -29,6 +29,8 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.fcomments='before'
         self.terminal=True
         self.lib=''
+        self.new_folder=''
+        self.folder_path=''
         #Crear interface en nueva carpeta 
         self.interface=''
         self.window_fmodule=ffiles.Window_fmodule(self_fparser=self)
@@ -43,10 +45,11 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.ui.pushButton_fparser.clicked.connect(lambda: ffiles.fortran_parser(self))
         # self.ui.combobox.signal.connect(lambda: make.function(self.ui,self.makefile))
         #self.ui.pushButton_makeOK.clicked.connect(lambda: make.selectOS(self.ui))
-        self.ui.pushButton_searchFC.clicked.connect(self.makefile.searchFC())
-        self.ui.pushButton_makeOK.clicked.connect(self.makefile.properties())
-        #self.ui.pushButton_makeOK.clicked.connect(lambda: make.runmake(self.ui))
-
+        self.ui.pushButton_searchFC.clicked.connect(self.makefile.searchFC)
+        self.ui.toolButton_lib.clicked.connect(self.makefile.searchLib)
+        self.ui.pushButton_makeOK.clicked.connect(self.makefile.properties)
+        self.ui.pushButton_makeOK.clicked.connect(self.makefile.runmake)
+        
     def action(self,selected_action):
         if selected_action.text()=='Open Files':
             ffiles.open_files(self)

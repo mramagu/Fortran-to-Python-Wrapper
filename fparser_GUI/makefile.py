@@ -1,5 +1,13 @@
 import subprocess
+import os
+import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
+try:
+    sys.path.insert(1, '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[0:-1])+'/fparser')
+    import fparser
+except:
+    sys.path.insert(1, '/'.join(os.path.dirname(os.path.abspath(__file__)).split('\\')[0:-1])+'/fparser')
+    import fparser
 
 
 class Makefile():
@@ -7,25 +15,27 @@ class Makefile():
         self.ui=self_fparser.ui
         self.self_fparser=self_fparser
         self.os=''
-        self.condaEnv=''
-        self.env=''
+        self.precission=''
+        self.lib=''
         self.FC=''
-
+        self.complib=''
+        self.f2py='f2py'
+        
     def selectOS(self):
         self.os=self.ui.comboBox_makeOS.currentText()
         print(self.os)
 
-    def select_condaEnv(self):
-        if ui.radioButton_makeYes.isChecked() == True:
-            self.condaEnv=self.ui.radioButton_makeYes.text()
-            print(self.condaEnv)
-        elif ui.radioButton_makeNo.isChecked() == True:
-            self.condaEnv=self.ui.radioButton_makeNo.text()
-            print(self.condaEnv)
+    def select_precission(self):
+        if self.ui.radioButton_makeSP.isChecked() == True:
+            self.precission=self.ui.radioButton_makeSP.text()
+            print(self.precission)
+        elif self.ui.radioButton_makeDP.isChecked() == True:
+            self.precission=self.ui.radioButton_makeDP.text()
+            print(self.precission)
 
-    def writeEnv(self):
-        self.env=self.ui.lineEdit_makeEnv.text()
-        print(self.env)
+    def writeLib(self):
+        self.lib=self.ui.lineEdit_makeFlib.text()
+        print(self.lib)
 
     def fcompiler(self):
         if self.ui.comboBox_makeFC.currentIndex() == 0:
@@ -37,33 +47,66 @@ class Makefile():
 
     def searchFC(self):
         p=subprocess.run(['f2py','-c','--help-fcompiler'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        self.self_fparser.terminal_text.add_line(p.stdout,number=2)
+        self.self_fparser.terminal_text.add_line(p.stdout.decode('utf-8'),number=2)
+
+    def searchLib(self):
+        pass
+        #self.complib=
 
     def properties(self):
         self.selectOS()
-        self.select_condaEnv()
-        self.writeEnv()
+        self.select_precission()
+        self.writeLib()
         self.fcompiler()
     
     def runmake(self):
-        pass
-        #subprocess.run(['f2py','Hello_world.f90','-m','','-h','Interface.pyf','--overwrite-signature'])
-        #flags=['--fcompiler='+self.FC ,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64' -L%library%]
-        #subprocess.run(['f2py','-c','Interface.pyf','Hello_world.f90',flags])
-    
-"""
-    def f(ui,mf):
-        mf.os=ui.combobox.currentText()
-    class Makefile():
-        def __init__(self):
-            self.os=''
-            self.compiler=''
-"""
+        #Generate Interface.pyf 
+        run=[]
+
+        if self.os=='Windows':
+            self.f2py='f2py'
+        else:
+            self.f2py='f2py3'
+        run.append(self.f2py)
+
+        run.append(self.self_fparser.folder_path+'/Interface.f90')
+        run.append('-m')
+        run.append(self.lib+'f')
+        run.append('-h')
+        run.append(self.self_fparser.folder_path+'/Interface.pyf')
+        run.append('--overwrite-signature')
+
+        pyf=subprocess.run(run,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        self.self_fparser.terminal_text.add_line(pyf.stdout.decode('utf-8'))
+
+        #Apply precission
+        if self.precission=='Simple':
+            new_precision=4
+        else:
+            new_precision=8
+
+        f=open(self.self_fparser.folder_path+'/Interface.pyf','r')
+        code=f.readlines()
+        f.close()
+
+        interface_pyf=fparser.increase_precision(code, 'real', new_precision, terminal=self.self_fparser.terminal_text)
+
+        #run_comp=[]
+
+        #flags=['--fcompiler='+self.FC,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64','-L'+]
+        
+        #run_comp.append(self.f2py)
+        #run_comp.append('-c')
+        #run_comp.append('Interface.pyf')
+        #run_comp.append(file)
+        #run_comp.run.append(flags)
+
+        #comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        #self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'))
+
 
 
 if __name__ == "__main__":
 
     p=subprocess.run(['python','--version'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     print(p.stdout)
-
-
