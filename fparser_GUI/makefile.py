@@ -81,12 +81,15 @@ class Makefile():
 
         #Apply precission
         if self.precission=='Simple':
-            new_precission=4
+            new_precision=4
         else:
-            new_precission=8
+            new_precision=8
 
-        
-        #interface_pyf=fparser.increase_precision(code, 'real', new_precission, terminal=self.self_fparser.terminal_text)
+        f=open(self.self_fparser.folder_path+'/Interface.pyf','r')
+        code=f.readlines()
+        f.close()
+
+        interface_pyf=fparser.increase_precision(code, 'real', new_precision, terminal=self.self_fparser.terminal_text)
 
         #run_comp=[]
 
