@@ -214,9 +214,11 @@ class Window_options(QtWidgets.QMainWindow, Ui_MainWindow_options):
         self.terminal=False
         self.comments=''
         self.filter=[] 
+        self.new_folder=''
         self.parameters()
         #Signals
         self.ui.lineEdit_fformat.editingFinished.connect(self.select_filter)
+        # self.ui.lineEdit_newFolder.editingFinished.connect
         self.ui.radioButton_fcommentsBefore.toggled.connect(self.comments_position)
         self.ui.radioButton_fcommentsAfter.toggled.connect(self.comments_position)
         self.ui.radioButton_terminalYes.toggled.connect(self.show_terminal)
@@ -244,6 +246,9 @@ class Window_options(QtWidgets.QMainWindow, Ui_MainWindow_options):
         else:
             self.terminal=True
         self.self_fparser.terminal=self.terminal
+        #New folder
+        self.new_folder=self.ui.lineEdit_newFolder.text() 
+        self.self_fparser.new_folder=self.new_folder
 
     def select_filter(self):
         text=self.ui.lineEdit_fformat.text() 
@@ -263,15 +268,20 @@ class Window_options(QtWidgets.QMainWindow, Ui_MainWindow_options):
         else:
             self.terminal=False
 
+    def folder_name(self):
+        self.new_folder=self.ui.lineEdit_newFolder.text()
+
     def accept_options(self):
         self.self_fparser.filter=self.filter
         self.self_fparser.fcomments=self.comments
         self.self_fparser.terminal=self.terminal
+        self.self_fparser.new_folder=self.new_folder
         #Show changes in terminal 
         self.self_fparser.terminal_text.add_line('Selected options:')
         self.self_fparser.terminal_text.add_line('Fortran files format : '+', '.join(self.self_fparser.filter),number=2)
         self.self_fparser.terminal_text.add_line('Position of fortran comments : '+self.self_fparser.fcomments)
         self.self_fparser.terminal_text.add_line('Show terminal : '+str(self.self_fparser.terminal))
+        self.self_fparser.terminal_text.add_line('Name of the new folder : '+self.self_fparser.new_folder)
         self.self_fparser.terminal_text.add_line('')
         if self.terminal==True:
             self.self_fparser.ui.dockWidget_terminal.show()
@@ -291,6 +301,7 @@ class Window_options(QtWidgets.QMainWindow, Ui_MainWindow_options):
             self.ui.radioButton_terminalYes.setChecked(True)
         else:
             self.ui.radioButton_terminalNo.setChecked(True)
+        self.ui.lineEdit_newFolder=self.self_fparser.new_folder
         self.close()
 
 class Terminal():
