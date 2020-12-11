@@ -449,13 +449,22 @@ class Subroutine(Ffunctional):
             else:
                 procedures.append(v)
 
+        aux_func = list()
         if bool(procedures):
             interface.append('interface')
             for v in procedures:
+                if v.result.dimensions != None:
+                    aux_func.append(v)
                 interface += v.write_interface()
             interface.append('end interface')
 
         interface.append('call {}({})'.format(self.name, ','.join([v.name for v in self.variables])))
+
+        if bool(aux_func):
+            interface.append('contains')
+            for v in aux_func:
+                interface += v.write_f2py_auxiliary_function()
+
         interface.append('end subroutine')
         return interface
 
@@ -564,18 +573,75 @@ class Function(Ffunctional):
                     raise Exception('Could not find function definition in Function {}: \n{}'.format(self.name, '\n'.join(code)))
         return result
 
-    def write_interface(self):
+    def write_f2py_auxiliary_function(self):
         """
-            Method to write the subroutine as part of a fortran interface.
+            Method to write an auxiliary function for f2py.
 
             Returns:
                  A list of strings to be added to the rest of the function interface.
         """
-        interface = self.write_f2py_interface()
-        for i, line in enumerate(interface):
-            if fparsertools.find_command(line, self.fake_name):
-                interface[i] = interface[i].replace(self.fake_name, self.name)
-        interface.pop(-2)
+        interface = list()
+        if self.result.dimensions != None:
+            integers = []
+            loop = []
+            for i in self.result.dimensions:
+                loop_int = fparsertools.name_generator('i', integers + [v.name for v in self.variables])
+                dims = i.split(':')
+                if len(dims) == 1:
+                    start_loop = 1
+                    end_loop = dims[0]
+                elif len(dims) == 2:
+                    start_loop = dims[0]
+                    end_loop = dims[1]
+                else:
+                    raise Exception('Program Does not admit more than 1 interval for dimension definition: \n' + i)
+                loop.append('do {}={},{}'.format(loop_int, start_loop, end_loop))
+                integers.append(loop_int)
+            loop.append('{}({}) = {}({})'.format(self.fake_name, ','.join(integers), self.name, ','.join( integers + [v.name for v in self.variables])))
+            for i in integers:
+                loop.append('end do')
+            interface = self.write_interface(add_variables=False)
+            interface = interface[:len(interface)-2] + ['integer::' + ','.join(integers)] + loop + [interface[-1]]
+            return interface
+        else:
+            return interface
+
+    def write_interface(self, add_variables=True):
+        """
+            Method to write the function as part of a fortran interface.
+
+            Args:
+                add_variables (bool): Optional argument on wether to write auxiliary input or not.
+
+            Returns:
+                 A list of strings to be added to the rest of the function interface.
+        """
+        if add_variables:
+            variables = self.variables + self.additional_variables
+        else:
+            variables = self.variables
+
+        interface = list()
+        if self.func_type != None:
+            interface.append('{} function {}({})'.format(self.func_type, self.name, ','.join(
+                [v.name for v in variables])))
+        else:
+            interface.append('function {}({})'.format(self.name, ','.join(
+                [v.name for v in variables])))
+
+        for v in variables:
+            if isinstance(v, Variable):
+                interface += v.write_f2py_interface()
+            else:
+                raise Exception('Interface within interface is not supported for {}'.format(self.name))
+
+        if self.func_type != None:
+            if not any(var_type in self.func_type for var_type in Variable.types()): # If definition of function is included in func_type it does not write it
+                interface += [('\n'.join(self.result.write_f2py_interface()))] # If not defines the output of the function
+        else:
+            interface += [('\n'.join(self.result.write_f2py_interface()))]
+
+        interface.append('end function')       
         return interface
 
     def write_f2py_interface(self):
