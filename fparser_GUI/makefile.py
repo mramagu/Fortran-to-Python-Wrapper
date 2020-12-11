@@ -67,6 +67,10 @@ class Makefile():
         self.searchLib()
     
     def runmake(self):
+        self.selectOS()
+        self.select_precission()
+        self.writeLib()
+        self.fcompiler()
         #Generate Interface.pyf 
         run=[]
 

@@ -49,8 +49,8 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.ui.comboBox_makeFC.activated.connect(self.makefile.fcompiler)
         self.ui.pushButton_searchFC.clicked.connect(self.makefile.searchFC)
         self.ui.toolButton_lib.clicked.connect(self.makefile.searchLib)
-        self.ui.pushButton_makeOK.clicked.connect(self.makefile.properties)
-        # self.ui.pushButton_makeOK.clicked.connect(self.makefile.runmake)
+        #self.ui.pushButton_makeOK.clicked.connect(self.makefile.properties)
+        self.ui.pushButton_makeOK.clicked.connect(self.makefile.runmake)
         
     def action(self,selected_action):
         if selected_action.text()=='Open Files':
