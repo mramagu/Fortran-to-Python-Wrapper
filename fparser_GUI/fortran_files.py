@@ -185,8 +185,20 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow_fmodules):
             module_tree[item.text()+'_sub']=QtWidgets.QTreeWidgetItem(module,['Subroutines'])
             module_tree[item.text()+'_fun']=QtWidgets.QTreeWidgetItem(module,['Functions'])
             module_list.append(item.text())
+        #Crete folder
+        self.self_fparser.folder_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),self.self_fparser.new_folder) 
+        try:
+            os.mkdir(self.self_fparser.folder_path)
+            self.self_fparser.terminal_text.add_line('Success: Folder Created',number=2)
+        except OSError as error: 
+            self.self_fparser.terminal_text.add_line('Error: ',number=2)
+            self.self_fparser.terminal_text.add_text(str(error))
         #Create fortran interface 
         self.self_fparser.interface=fparser.interface_writer(self.self_fparser.lib,module_list,terminal=self.self_fparser.terminal_text)
+        f=open(self.self_fparser.folder_path+'/Interface.f90','w+')
+        f.write(self.self_fparser.interface)
+        f.close()
+        self.self_fparser.terminal_text.add_line('Success: Interface.f90 Generated',number=2)
         #Search for subroutines and functions in each module 
         modules=self.self_fparser.lib.modules
         for module in modules:
@@ -301,7 +313,7 @@ class Window_options(QtWidgets.QMainWindow, Ui_MainWindow_options):
             self.ui.radioButton_terminalYes.setChecked(True)
         else:
             self.ui.radioButton_terminalNo.setChecked(True)
-        self.ui.lineEdit_newFolder=self.self_fparser.new_folder
+        self.ui.lineEdit_newFolder.setText(self.self_fparser.new_folder)
         self.close()
 
 class Terminal():

@@ -30,6 +30,7 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.terminal=True
         self.lib=''
         self.new_folder=''
+        self.folder_path=''
         #Crear interface en nueva carpeta 
         self.interface=''
         self.window_fmodule=ffiles.Window_fmodule(self_fparser=self)
