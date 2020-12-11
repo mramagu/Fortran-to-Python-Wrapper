@@ -167,3 +167,27 @@ def test_interface_writer(files, module_names):
     assert len(interface_file.modules) == len(module_names), 'Number of Modules made in interface does not match number of modules expected.'
     for m in interface_file.modules:
         assert m.name in [x.fake_name for x in lib.modules], 'Modules made in interface {} is not within original library'.format(m.name)
+
+@pytest.mark.parametrize('file_code,var_type,new_precision,output', [
+    (['function test(x,y,z)', 'real,dimension(2)::x', 'real(8),dimension(2)::y', 'real*16 ,dimension(2)::x'],
+    'real', 8,
+    ['function test(x,y,z)', 'real(8),dimension(2)::x', 'real(8),dimension(2)::y', 'real*16 ,dimension(2)::x']),
+    (['function test(x,y,z)', 'real,dimension(2)::x', 'real(8),dimension(2)::y', 'real*16,dimension(2)::x'],
+    'real', 16,
+    ['function test(x,y,z)', 'real(16),dimension(2)::x', 'real(16),dimension(2)::y', 'real*16,dimension(2)::x']),
+    (['function test(x,y,z)', 'real,dimension(2)::x', 'real(8),dimension(2)::y', 'real*16::x'],
+    'real', 32,
+    ['function test(x,y,z)', 'real(32),dimension(2)::x', 'real(32),dimension(2)::y', 'real(32)::x'])
+    ])
+def test_increase_precision(file_code, var_type, new_precision, output):
+    """
+    Tests to determine if fparser is increasing the precision of variable types as commanded.
+
+    Args:
+        file_code (list): List of strings containing the code.
+        var_type (string): Type of variable to change the precision.  
+        new_precision (int): New Variable precision
+        output(list): expected output of the function
+    """
+    for i, j in zip(fparser.increase_precision(file_code, var_type, new_precision), output):
+        assert i == j, 'Increase precision function isn\'t working as expected'

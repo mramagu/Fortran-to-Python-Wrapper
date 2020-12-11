@@ -316,10 +316,14 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         super(Highlighter, self).__init__(parent)
         self.errorFormat = QtGui.QTextCharFormat()
         self.errorFormat.setForeground(QtCore.Qt.red)
+        self.successFormat = QtGui.QTextCharFormat()
+        self.successFormat.setForeground(QtCore.Qt.green)
 
     def highlightBlock(self, text):
         if text.startswith('Error:'):
             self.setFormat(0, len(text), self.errorFormat)
+        if text.startswith('Success:'):
+            self.setFormat(0, len(text), self.successFormat)
         
 if __name__ == "__main__":
     # print(sys.path)
