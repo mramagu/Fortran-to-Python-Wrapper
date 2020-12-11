@@ -89,17 +89,25 @@ class Makefile():
         code=f.readlines()
         f.close()
 
+        f=open(self.self_fparser.folder_path+'/Interface.pyf','w+')
         interface_pyf=fparser.increase_precision(code, 'real', new_precision, terminal=self.self_fparser.terminal_text)
+        f.writelines(interface_pyf)
+        f.close()
 
-        #run_comp=[]
+        run_comp=[]
 
-        #flags=['--fcompiler='+self.FC,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64','-L'+]
+        if self.FC=='intelvem':
+            flags=['--fcompiler='+self.FC,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64','-L'+]
+        else:
+            flags=['--fcompiler='+self.FC,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=-fdefault-real-8']
+
+        run_comp.append(self.f2py)
+        run_comp.append('-c')
+        run_comp.append(self.self_fparser.folder_path+'/Interface.pyf')
         
-        #run_comp.append(self.f2py)
-        #run_comp.append('-c')
-        #run_comp.append('Interface.pyf')
-        #run_comp.append(file)
-        #run_comp.run.append(flags)
+        for file in self.self_fparser.files:
+            run_comp.append()
+        #run_comp.append(flags)
 
         #comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         #self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'))
