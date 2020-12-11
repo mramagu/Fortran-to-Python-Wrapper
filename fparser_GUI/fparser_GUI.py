@@ -46,7 +46,7 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         #self.ui.pushButton_makeOK.clicked.connect(lambda: make.selectOS(self.ui))
         self.ui.pushButton_searchFC.clicked.connect(self.makefile.searchFC)
         self.ui.pushButton_makeOK.clicked.connect(self.makefile.properties)
-        #self.ui.pushButton_makeOK.clicked.connect(lambda: make.runmake(self.ui))
+        self.ui.pushButton_makeOK.clicked.connect(self.makefile.runmake)
 
     def action(self,selected_action):
         if selected_action.text()=='Open Files':

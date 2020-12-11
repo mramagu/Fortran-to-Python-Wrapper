@@ -10,7 +10,8 @@ class Makefile():
         self.precission=''
         self.lib=''
         self.FC=''
-
+        self.f2py='f2py'
+        
     def selectOS(self):
         self.os=self.ui.comboBox_makeOS.currentText()
         print(self.os)
@@ -46,9 +47,25 @@ class Makefile():
         self.fcompiler()
     
     def runmake(self):
-        pass
-        #subprocess.run(['f2py','Hello_world.f90','-m','','-h','Interface.pyf','--overwrite-signature'])
-        #flags=['--fcompiler='+self.FC ,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64' -L%library%]
+        run=[]
+
+        if self.os=='Windows':
+            self.f2py='f2py'
+        else:
+            self.f2py='f2py3'
+        run.append(self.f2py)
+
+        for file in self.self_fparser.files:
+            run.append(file)
+
+        run.append('-m')
+        run.append(self.lib)
+        run.append('-h')
+        run.append('Interface.pyf')
+        run.append('--overwrite-signature')
+
+        subprocess.run(run,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        #flags=['--fcompiler='+self.FC ,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64','-L'+self.lib]
         #subprocess.run(['f2py','-c','Interface.pyf','Hello_world.f90',flags])
 
 
