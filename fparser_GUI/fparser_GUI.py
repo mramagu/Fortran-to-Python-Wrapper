@@ -34,7 +34,7 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.window_fmodule=ffiles.Window_fmodule(self_fparser=self)
         self.window_options=ffiles.Window_options(self_fparser=self)
         self.terminal_text=ffiles.Terminal(self_fparser=self)
-        # self.makefile=make.Makefile()
+        self.makefile=make.Makefile(self_fparser=self)
 
         #Connect signals
         #Use .connect(lambda: function(args)) to send extra arguments through the function 
@@ -43,7 +43,8 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.ui.pushButton_fparser.clicked.connect(lambda: ffiles.fortran_parser(self))
         # self.ui.combobox.signal.connect(lambda: make.function(self.ui,self.makefile))
         #self.ui.pushButton_makeOK.clicked.connect(lambda: make.selectOS(self.ui))
-        self.ui.pushButton_makeOK.clicked.connect(lambda: make.properties(self.ui))
+        self.ui.pushButton_searchFC.clicked.connect(self.makefile.searchFC())
+        self.ui.pushButton_makeOK.clicked.connect(self.makefile.properties())
         #self.ui.pushButton_makeOK.clicked.connect(lambda: make.runmake(self.ui))
 
     def action(self,selected_action):
