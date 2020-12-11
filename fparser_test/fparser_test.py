@@ -147,7 +147,8 @@ def test_library_maker(files):
 
 @pytest.mark.parametrize('files,module_names', [
     (['TestModule1.f90', 'TestModule2.f90'], ['test_module_1', 'test_module_2']),
-    (['TestModule1.f90', 'TestModule2.f90', 'TestModule3.f90'], ['test_module_1', 'test_module_2', 'test_module_3'])
+    (['TestModule1.f90', 'TestModule2.f90', 'TestModule3.f90'], ['test_module_1', 'test_module_2', 'test_module_3']),
+    (['TestModule1.f90', 'TestModule2.f90', 'TestModule3.f90', 'TestModule4.f90'], ['test_module_4'])
     ])
 def test_interface_writer(files, module_names):
     """
@@ -177,7 +178,10 @@ def test_interface_writer(files, module_names):
     ['function test(x,y,z)', 'real(16),dimension(2)::x', 'real(16),dimension(2)::y', 'real*16,dimension(2)::x']),
     (['function test(x,y,z)', 'real,dimension(2)::x', 'real(8),dimension(2)::y', 'real*16::x'],
     'real', 32,
-    ['function test(x,y,z)', 'real(32),dimension(2)::x', 'real(32),dimension(2)::y', 'real(32)::x'])
+    ['function test(x,y,z)', 'real(32),dimension(2)::x', 'real(32),dimension(2)::y', 'real*32::x']),
+    (['function test(x,y,z)', 'real(kind=8),dimension(2)::x', 'real(kind=32),dimension(2)::y'],
+    'real', 32,
+    ['function test(x,y,z)', 'real(kind=32),dimension(2)::x', 'real(kind=32),dimension(2)::y'])
     ])
 def test_increase_precision(file_code, var_type, new_precision, output):
     """

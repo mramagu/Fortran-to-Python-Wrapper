@@ -83,7 +83,7 @@ def interface_writer(lib, modules, **kwargs):
         writing_modules = [m for m in lib.modules if m.name in modules]
         for m in writing_modules:
             interface += m.write_f2py_interface()
-            print('\n'.join(interface))
+        print('\n'.join(interface))
         if terminal_present:
             terminal.add_line('Success: Inerface Generated', number=2)
         else:
@@ -158,25 +158,37 @@ def increase_precision(code, var_type, new_precision, **kwargs):
         for i, line in enumerate(code):
             position = fparsertools.find_command(line, var_type)
             if position != None:
-                if line[position + len(var_type)] == '(':
-                    closing_parenthesis = fparsertools.find_closing_parenthesis(line, position + len(var_type))
-                    old_precision = int(line[position + len(var_type)+1:closing_parenthesis])
-                    final_position = closing_parenthesis + 1
-                elif line[position + len(var_type)] == '*':
-                    next_item = (line.find(' ', position + len(var_type) + 1), line.find(',', position + len(var_type) + 1),
-                        line.find(':', position + len(var_type) + 1))
+                position += len(var_type)
+                if line[position] == '(' and line[position + 1].lower() != 'k':
+                    position += 1
+                    closing_parenthesis = fparsertools.find_closing_parenthesis(line, position)
+                    old_precision = int(line[position:closing_parenthesis])
+                    final_position = closing_parenthesis
+                elif line[position] == '(' and line[position + 1].lower() == 'k':
+                    position += len('(kind=')
+                    closing_parenthesis = fparsertools.find_closing_parenthesis(line, position)
+                    old_precision = int(line[position: closing_parenthesis])
+                    final_position = closing_parenthesis
+                elif line[position] == '*':
+                    position += 1
+                    next_item = (line.find(' ', position), line.find(',', position),
+                        line.find(':', position))
                     min = len(line)
                     for j in next_item:
                         if j < min and j != -1:
                             min = j
-                    old_precision = int(line[position + len(var_type) + 1: min])
-                    final_position = min
+                    old_precision = int(line[position: min])
+                    final_position = min - 1
                 else:
                     old_precision = 0
-                    final_position = position + len(var_type)
-
+                    position += 1
+                    final_position = position
+                    if old_precision < new_precision:
+                        code[i] = line[:position-1] + '()' + line[position-1:]
+                    
                 if old_precision < new_precision:
-                    code[i] = line[:position] + '{}({})'.format(var_type, new_precision) + line[final_position:]
+                    code[i] = code[i][:position] + '{}'.format(new_precision) + code[i][final_position + len(str(old_precision)) - 1:]
+
         if terminal_present:
             terminal.add_line('Success: Increased Precision')
         else:
