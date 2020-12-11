@@ -151,7 +151,7 @@ def increase_precision(code, var_type, new_precision, **kwargs):
         terminal_present = True
         terminal = kwargs['terminal']
         terminal.add_line('')
-        terminal.add_line('Increasing precision of {} variable to {}...'.format(var_type, new_precision))
+        terminal.add_line('Increasing precision of {} variables to {}...'.format(var_type, new_precision))
     else:
         print('Increasing precision of {} variable to {}...'.format(var_type, new_precision))
     try:
@@ -197,6 +197,8 @@ if __name__ == '__main__':
                                       '../FortranExamples/TestModules/TestModule2.f90')
     test_module3 = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                       '../FortranExamples/TestModules/TestModule3.f90')
-    Lib = library_maker([test_module1, test_module2, test_module3])
-    interface_writer(Lib, ['test_module_1', 'test_module_12', 'test_module_2', 'test_module_3'])
+    test_module4 = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                      '../FortranExamples/TestModules/TestModule4.f90')
+    Lib = library_maker([test_module1, test_module2, test_module3, test_module4])
+    interface_writer(Lib, ['test_module_1', 'test_module_12', 'test_module_2', 'test_module_3', 'test_module_4'])
     py_interface_writer(Lib, ['test_module_1', 'test_module_12', 'test_module_2', 'test_module_3'], 'nh')

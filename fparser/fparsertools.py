@@ -1,13 +1,14 @@
 import random
 import string
 
-def section(code, command):
+def section(code, command, not_read = []):
     """
     Function that sections a code according to a command
 
     Args:
-        code (list): 
-        command (string): 
+        code (list): Code from which to section the code.
+        command (string): Command with which to section.
+        not_read (list): List of commands the function should not read.
 
     Returns:
         list: A list with all module objects
@@ -15,16 +16,17 @@ def section(code, command):
     sections = list()
     section_str = list()
     present = False
+    avoid = False
     times = []
     count_times=0
     times_end=[]
     count_times_end=0
     for i, line in enumerate(code):
-        if find_command(line.lower(), command) != None and find_command(line.lower(), 'end') == None:
+        if find_command(line.lower(), command) != None and find_command(line.lower(), 'end') == None and not avoid:
             present = True
             count_times=count_times+1
             times.append(count_times)
-        elif find_command(line.lower(), command) != None and find_command(line.lower(), 'end') != None:
+        elif find_command(line.lower(), command) != None and find_command(line.lower(), 'end') != None and not avoid:
             present = True
             count_times_end=count_times_end+1
             times_end.append(count_times_end)         
@@ -33,6 +35,18 @@ def section(code, command):
               section_str.append(line)  
               sections.append(section_str)
               section_str = list()
+        elif not present and any(find_command(line.lower(), avoid_command) != None for avoid_command in not_read) and \
+            find_command(line.lower(), 'end') == None:
+            avoid = True
+            count_times=count_times+1
+            times.append(count_times)
+        elif not present and any(find_command(line.lower(), avoid_command) != None for avoid_command in not_read) and \
+            find_command(line.lower(), 'end') != None:
+            avoid = True
+            count_times_end=count_times_end+1
+            times_end.append(count_times_end)         
+            if times == times_end:
+              avoid = False
         if present:
             section_str.append(line)
     return sections
