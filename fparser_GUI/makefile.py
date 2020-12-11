@@ -16,10 +16,10 @@ class Makefile():
         print(self.os)
 
     def select_condaEnv(self):
-        if ui.radioButton_makeYes.isChecked() == True:
+        if self.ui.radioButton_makeYes.isChecked() == True:
             self.condaEnv=self.ui.radioButton_makeYes.text()
             print(self.condaEnv)
-        elif ui.radioButton_makeNo.isChecked() == True:
+        elif self.ui.radioButton_makeNo.isChecked() == True:
             self.condaEnv=self.ui.radioButton_makeNo.text()
             print(self.condaEnv)
 
@@ -37,7 +37,7 @@ class Makefile():
 
     def searchFC(self):
         p=subprocess.run(['f2py','-c','--help-fcompiler'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        self.self_fparser.terminal_text.add_line(p.stdout,number=2)
+        self.self_fparser.terminal_text.add_line(p.stdout.decode('utf-8'),number=2)
 
     def properties(self):
         self.selectOS()

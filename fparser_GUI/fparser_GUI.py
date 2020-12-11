@@ -43,8 +43,8 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.ui.pushButton_fparser.clicked.connect(lambda: ffiles.fortran_parser(self))
         # self.ui.combobox.signal.connect(lambda: make.function(self.ui,self.makefile))
         #self.ui.pushButton_makeOK.clicked.connect(lambda: make.selectOS(self.ui))
-        self.ui.pushButton_searchFC.clicked.connect(self.makefile.searchFC())
-        self.ui.pushButton_makeOK.clicked.connect(self.makefile.properties())
+        self.ui.pushButton_searchFC.clicked.connect(self.makefile.searchFC)
+        self.ui.pushButton_makeOK.clicked.connect(self.makefile.properties)
         #self.ui.pushButton_makeOK.clicked.connect(lambda: make.runmake(self.ui))
 
     def action(self,selected_action):
