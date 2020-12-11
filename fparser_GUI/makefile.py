@@ -1,5 +1,13 @@
 import subprocess
+import os
+import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
+try:
+    sys.path.insert(1, '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[0:-1])+'/fparser')
+    import fparser
+except:
+    sys.path.insert(1, '/'.join(os.path.dirname(os.path.abspath(__file__)).split('\\')[0:-1])+'/fparser')
+    import fparser
 
 
 class Makefile():
@@ -52,6 +60,7 @@ class Makefile():
         self.fcompiler()
     
     def runmake(self):
+        #Generate Interface.pyf 
         run=[]
 
         if self.os=='Windows':
@@ -60,15 +69,26 @@ class Makefile():
             self.f2py='f2py3'
         run.append(self.f2py)
 
-        run.append(self.self_fparser.folder_path+'/Interface.f90')
+        for file in self.self_fparser.files:
+            run.append(file)
+
         run.append('-m')
         run.append(self.lib+'f')
         run.append('-h')
-        run.append(self.self_fparser.folder_path+'/Interface.pyf')
+        run.append('Interface.pyf')
         run.append('--overwrite-signature')
 
         pyf=subprocess.run(run,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         self.self_fparser.terminal_text.add_line(pyf.stdout.decode('utf-8'))
+
+        #Apply precission
+        if self.precission=='Simple':
+            new_precission=4
+        else:
+            new_precission=8
+
+        
+        interface_pyf=fparser.increase_precision(code, 'real', new_precission, terminal=self.self_fparser.terminal_text)
 
         #run_comp=[]
 
@@ -77,7 +97,7 @@ class Makefile():
         #run_comp.append(self.f2py)
         #run_comp.append('-c')
         #run_comp.append('Interface.pyf')
-        #run_comp.append(self.self_fparser.folder_path+'/Interface.f90')
+        #run_comp.append(file)
         #run_comp.run.append(flags)
 
         #comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
