@@ -42,7 +42,9 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.ui.toolButton_arrow.clicked.connect(lambda: ffiles.select_ffiles(self))
         self.ui.pushButton_fparser.clicked.connect(lambda: ffiles.fortran_parser(self))
         # self.ui.combobox.signal.connect(lambda: make.function(self.ui,self.makefile))
-        self.ui.pushButton_make1.clicked.connect(lambda: make.selectOS(self.ui))
+        #self.ui.pushButton_makeOK.clicked.connect(lambda: make.selectOS(self.ui))
+        self.ui.pushButton_makeOK.clicked.connect(lambda: make.properties(self.ui))
+        #self.ui.pushButton_makeOK.clicked.connect(lambda: make.runmake(self.ui))
 
     def action(self,selected_action):
         if selected_action.text()=='Open Files':
