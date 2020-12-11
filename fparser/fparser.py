@@ -75,19 +75,19 @@ def interface_writer(lib, modules, **kwargs):
     interface = list()
     try:
         if terminal_present:
-            terminal.add_line('Generating Inerface...', number=2)
+            terminal.add_line('Generating Interface...', number=2)
             terminal.add_line('Selected Modules: ' + ' ,'.join(modules))
         else:
-            print('Generating Inerface...')
+            print('Generating Interface...')
             print('Selected Modules: ' + ' ,'.join(modules))
         writing_modules = [m for m in lib.modules if m.name in modules]
         for m in writing_modules:
             interface += m.write_f2py_interface()
         print('\n'.join(interface))
         if terminal_present:
-            terminal.add_line('Success: Inerface Generated', number=2)
+            terminal.add_line('Success: Interface Generated', number=2)
         else:
-            print('Success: Inerface Generated')
+            print('Success: Interface Generated')
         return '\n'.join(interface)
     except Exception as e:
         if terminal_present:

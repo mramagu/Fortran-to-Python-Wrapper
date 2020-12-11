@@ -15,8 +15,11 @@ class Flibrary:
         self.modules = list()
         for f in files:
             self.modules += f.modules
+
         self.solve_fake_names()
         self.module_reordering()
+
+        self.files = self.filing()
 
     def module_reordering(self):
         """
@@ -67,6 +70,16 @@ class Flibrary:
                 forbidden_names2 = forbidden_names + other_fake_func_names + f_variables + [m.fake_name]
                 f.change_fake_name(fparsertools.name_generator(f.fake_name, forbidden_names2))
 
+    def filing(self):
+        """
+            Returns the files associated with each module in order (no repetitions)
+        """
+        files = list()
+        for m in self.modules:
+            if not m.filename in files:
+                files.append(m.filename)
+        return files
+
     def write_f2py_interface(self):
         """
             Generates the code for the library interface 
@@ -106,14 +119,14 @@ class Ffile:
         modules_str = fparsertools.section(code, 'module', ['program'])
         modules = list()
         for m in modules_str:
-            modules.append(Module(m, self.comment_style))
+            modules.append(Module(self.filename, m, self.comment_style))
         return modules
 
 class Module:
     """
         Fortran Module Class
     """
-    def __init__(self, code, comment_style='before'):
+    def __init__(self, filename, code, comment_style='before'):
         """
             Fortran Module Class initiator
 
@@ -121,6 +134,7 @@ class Module:
                 filename (str): Name of the file 
                 module_code (list): List of str of the fortran code
         """
+        self.filename = filename
         self.name = self.module_name(code)
         self.fake_name = self.name + '_py'
         self.uses = self.find_uses(code)
