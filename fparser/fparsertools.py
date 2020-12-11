@@ -183,7 +183,6 @@ def find_closing_parenthesis(code_line, start):
     else:
         raise Exception('Parenthesis is not closed in line: \n{}'.format(code_line))
 
-
 def find_and(code_line):
     """
         Function that finds the position of & command in a fortran line.
@@ -262,7 +261,3 @@ def remove_and_lists(code_line):
       counter2+=1
      counter2+=1
     return clean_code
-
-
-
-  
