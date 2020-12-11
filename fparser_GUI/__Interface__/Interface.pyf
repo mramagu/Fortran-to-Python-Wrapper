@@ -1,0 +1,26 @@
+!    -*- f90 -*-
+! Note: the context of this file is case sensitive.
+
+python module testf ! in 
+    interface  ! in :testf
+        module test_module_1_py ! in :testf:C:\Users\pablo\Documentos_1\MUSE\PRIMER_CURSO\AMPLIACION_DE_MATEMATICAS_I\VS_P2\fparser\fparser\fparser_GUI\__Interface__/Interface.f90
+            use test_module_1
+            function test_function_1_py(x,y) ! in :testf:C:\Users\pablo\Documentos_1\MUSE\PRIMER_CURSO\AMPLIACION_DE_MATEMATICAS_I\VS_P2\fparser\fparser\fparser_GUI\__Interface__/Interface.f90:test_module_1_py
+                real(kind=8) :: x
+                real(kind=8) :: y
+                real :: test_function_1_py
+            end function test_function_1_py
+        end module test_module_1_py
+        module test_module_12_py ! in :testf:C:\Users\pablo\Documentos_1\MUSE\PRIMER_CURSO\AMPLIACION_DE_MATEMATICAS_I\VS_P2\fparser\fparser\fparser_GUI\__Interface__/Interface.f90
+            use test_module_12
+            function test_function_12_py(x,y) ! in :testf:C:\Users\pablo\Documentos_1\MUSE\PRIMER_CURSO\AMPLIACION_DE_MATEMATICAS_I\VS_P2\fparser\fparser\fparser_GUI\__Interface__/Interface.f90:test_module_12_py
+                real(kind=8) :: x
+                real(kind=8) :: y
+                real :: test_function_12_py
+            end function test_function_12_py
+        end module test_module_12_py
+    end interface 
+end python module testf
+
+! This file was auto-generated with f2py (version:2).
+! See http://cens.ioc.ee/projects/f2py2e/
