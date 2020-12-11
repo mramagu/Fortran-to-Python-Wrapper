@@ -69,13 +69,11 @@ class Makefile():
             self.f2py='f2py3'
         run.append(self.f2py)
 
-        for file in self.self_fparser.files:
-            run.append(file)
-
+        run.append(self.self_fparser.folder_path+'/Interface.f90')
         run.append('-m')
         run.append(self.lib+'f')
         run.append('-h')
-        run.append('Interface.pyf')
+        run.append(self.self_fparser.folder_path+'/Interface.pyf')
         run.append('--overwrite-signature')
 
         pyf=subprocess.run(run,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -88,7 +86,7 @@ class Makefile():
             new_precission=8
 
         
-        interface_pyf=fparser.increase_precision(code, 'real', new_precission, terminal=self.self_fparser.terminal_text)
+        #interface_pyf=fparser.increase_precision(code, 'real', new_precission, terminal=self.self_fparser.terminal_text)
 
         #run_comp=[]
 
