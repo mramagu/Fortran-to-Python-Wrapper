@@ -40,6 +40,9 @@ class Makefile():
         p=subprocess.run(['f2py','-c','--help-fcompiler'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         self.self_fparser.terminal_text.add_line(p.stdout.decode('utf-8'),number=2)
 
+    def searchLib(self):
+        pass
+
     def properties(self):
         self.selectOS()
         self.select_precission()
@@ -66,8 +69,19 @@ class Makefile():
 
         pyf=subprocess.run(run,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         self.self_fparser.terminal_text.add_line(pyf.stdout.decode('utf-8'))
-        #flags=['--fcompiler='+self.FC ,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64','-L'+self.lib]
-        #subprocess.run(['f2py','-c','Interface.pyf','Hello_world.f90',flags])
+
+        #run_comp=[]
+
+        #flags=['--fcompiler='+self.FC ,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64','-L'+]
+        
+        #run_comp.append(self.f2py)
+        #run_comp.append('-c')
+        #run_comp.append('Interface.pyf')
+        #run_comp.append(file)
+        #run_comp.run.append(flags)
+
+        #comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        #self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'))
 
 
 
