@@ -103,7 +103,7 @@ class Ffile:
         Returns:
             list: A list with all module objects
         """
-        modules_str = fparsertools.section(code, 'module')
+        modules_str = fparsertools.section(code, 'module', ['program'])
         modules = list()
         for m in modules_str:
             modules.append(Module(m, self.comment_style))
@@ -176,11 +176,11 @@ class Module:
             Returns:
                 list of functionals of the module
         """
-        functions_str = fparsertools.section(code, 'function') # Sections all functions in the code
+        functions_str = fparsertools.section(code, 'function', ['subroutine', 'type']) # Sections all functions in the code
         functions = [Function(f) for f in functions_str] # Processes all functions in the module
         del functions_str
 
-        subroutines_str = fparsertools.section(code, 'subroutine') # Sections all subroutines in the code
+        subroutines_str = fparsertools.section(code, 'subroutine', ['function', 'type']) # Sections all subroutines in the code
         subroutines = [Subroutine(s) for s in subroutines_str] # Processes all subroutines in the module
         del subroutines_str
 
@@ -441,8 +441,20 @@ class Subroutine(Ffunctional):
         interface = list()
         interface.append('subroutine {}({})'.format(self.fake_name, ','.join(
             [v.name for v in self.variables + self.additional_variables])))
+
+        procedures = list()
         for v in self.variables + self.additional_variables:
-            interface += v.write_f2py_interface()
+            if isinstance(v, Variable):
+                interface += v.write_f2py_interface()
+            else:
+                procedures.append(v)
+
+        if bool(procedures):
+            interface.append('interface')
+            for v in procedures:
+                interface += v.write_interface()
+            interface.append('end interface')
+
         interface.append('call {}({})'.format(self.name, ','.join([v.name for v in self.variables])))
         interface.append('end subroutine')
         return interface

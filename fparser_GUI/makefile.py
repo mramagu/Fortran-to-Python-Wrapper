@@ -16,15 +16,15 @@ class Makefile():
         print(self.os)
 
     def select_condaEnv(self):
-        if self.ui.radioButton_makeYes.isChecked() == True:
-            self.condaEnv=self.ui.radioButton_makeYes.text()
+        if self.ui.radioButton_makeSP.isChecked() == True:
+            self.condaEnv=self.ui.radioButton_makeSP.text()
             print(self.condaEnv)
-        elif self.ui.radioButton_makeNo.isChecked() == True:
-            self.condaEnv=self.ui.radioButton_makeNo.text()
+        elif self.ui.radioButton_makeDP.isChecked() == True:
+            self.condaEnv=self.ui.radioButton_makeDP.text()
             print(self.condaEnv)
 
     def writeEnv(self):
-        self.env=self.ui.lineEdit_makeEnv.text()
+        self.env=self.ui.lineEdit_makeFlib.text()
         print(self.env)
 
     def fcompiler(self):
@@ -50,7 +50,7 @@ class Makefile():
         #subprocess.run(['f2py','Hello_world.f90','-m','','-h','Interface.pyf','--overwrite-signature'])
         #flags=['--fcompiler='+self.FC ,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64' -L%library%]
         #subprocess.run(['f2py','-c','Interface.pyf','Hello_world.f90',flags])
-    
+
 """
     def f(ui,mf):
         mf.os=ui.combobox.currentText()
