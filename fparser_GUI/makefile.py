@@ -59,12 +59,13 @@ class Makefile():
             run.append(file)
 
         run.append('-m')
-        run.append(self.lib)
+        run.append(self.lib+'f')
         run.append('-h')
         run.append('Interface.pyf')
         run.append('--overwrite-signature')
 
-        subprocess.run(run,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        pyf=subprocess.run(run,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        self.self_fparser.terminal_text.add_line(pyf.stdout.decode('utf-8'))
         #flags=['--fcompiler='+self.FC ,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64','-L'+self.lib]
         #subprocess.run(['f2py','-c','Interface.pyf','Hello_world.f90',flags])
 
