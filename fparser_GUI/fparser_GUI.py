@@ -25,6 +25,7 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         #Properties 
         self.main_dir=''
         self.files=[] 
+        self.files_order=[] 
         self.filter=["Python (*.py)","Fortran files (*.f90)"]
         self.fcomments='before'
         self.terminal=True
@@ -45,9 +46,10 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.ui.pushButton_fparser.clicked.connect(lambda: ffiles.fortran_parser(self))
         # self.ui.combobox.signal.connect(lambda: make.function(self.ui,self.makefile))
         #self.ui.pushButton_makeOK.clicked.connect(lambda: make.selectOS(self.ui))
+        self.ui.comboBox_makeFC.activated.connect(self.makefile.fcompiler)
         self.ui.pushButton_searchFC.clicked.connect(self.makefile.searchFC)
         self.ui.toolButton_lib.clicked.connect(self.makefile.searchLib)
-        self.ui.pushButton_makeOK.clicked.connect(self.makefile.properties)
+        #self.ui.pushButton_makeOK.clicked.connect(self.makefile.properties)
         self.ui.pushButton_makeOK.clicked.connect(self.makefile.runmake)
         
     def action(self,selected_action):

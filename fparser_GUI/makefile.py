@@ -40,9 +40,13 @@ class Makefile():
     def fcompiler(self):
         if self.ui.comboBox_makeFC.currentIndex() == 0:
             self.FC='intelvem'
+            self.ui.lineEdit_lib.setReadOnly(False)
+            self.ui.lineEdit_lib.setStyleSheet('background-color:rgb(255,255,255)')
             print(self.FC)
         elif self.ui.comboBox_makeFC.currentIndex() == 1:
             self.FC='gfortran'
+            self.ui.lineEdit_lib.setReadOnly(True)
+            self.ui.lineEdit_lib.setStyleSheet('background-color:rgb(150,150,150)')
             print(self.FC)
 
     def searchFC(self):
@@ -50,16 +54,23 @@ class Makefile():
         self.self_fparser.terminal_text.add_line(p.stdout.decode('utf-8'),number=2)
 
     def searchLib(self):
-        pass
-        #self.complib=
+        file_dialog=QtWidgets.QFileDialog()
+        folder=file_dialog.getExistingDirectory()
+        self.ui.lineEdit_lib.setText(folder)
+        self.complib=folder
 
     def properties(self):
         self.selectOS()
         self.select_precission()
         self.writeLib()
         self.fcompiler()
+        self.searchLib()
     
     def runmake(self):
+        self.selectOS()
+        self.select_precission()
+        self.writeLib()
+        self.fcompiler()
         #Generate Interface.pyf 
         run=[]
 
@@ -97,7 +108,7 @@ class Makefile():
         run_comp=[]
 
         if self.FC=='intelvem':
-            flags=['--fcompiler='+self.FC,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64','-L'+]
+            flags=['--fcompiler='+self.FC,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64','-L'+self.complib]
         else:
             flags=['--fcompiler='+self.FC,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=-fdefault-real-8']
 
@@ -105,12 +116,16 @@ class Makefile():
         run_comp.append('-c')
         run_comp.append(self.self_fparser.folder_path+'/Interface.pyf')
         
-        for file in self.self_fparser.files:
-            run_comp.append()
-        #run_comp.append(flags)
+        for f in self.self_fparser.files_order:
+            run_comp.append(f)
+        run_comp.append(self.self_fparser.folder_path+'/Interface.f90')
 
-        #comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        #self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'))
+        for flag in flags:
+            run_comp.append(flag)
+
+        comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        print(comp.stdout.decode('utf-8'))
+        # self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'))
 
 
 
