@@ -262,7 +262,8 @@ class Module:
                 if fparsertools.find_command(line, 'public') !=None:
                     if fparsertools.identify_comment(line) != None:
                         line = line.replace(fparsertools.identify_comment(line), '')
-                    line = line[len('public'):].split(',')
+                    line = line.replace('::', '')
+                    line = line[len('public') + 1:].split(',')
                     public_functions += [i.strip() for i in line]
         else:
             public_functions = [c.name for c in self.contents]
@@ -515,7 +516,6 @@ class Subroutine(Ffunctional):
 
         for v in self.additional_variables:
             interface += v.write_f2py_interface()
-            inputs.append(v.name)
 
         aux_func = list()
         if bool(procedures):
@@ -796,7 +796,6 @@ class Function(Ffunctional):
 
         for v in self.additional_variables:
             interface += v.write_f2py_interface()
-            inputs.append(v.name)
         
         if self.func_type != None:
             if not any(var_type in self.func_type for var_type in Variable.types()): # If definition of function is included in func_type it does not write it

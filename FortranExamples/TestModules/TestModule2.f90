@@ -4,7 +4,7 @@ use test_module_1
 implicit none
 
 private
-public test_function_2, test_subroutine_1
+public :: test_function_2, test_subroutine_1
 
 contains
 ! Test Function 2 description
@@ -18,7 +18,10 @@ end function
 ! Test Subroutine 1 description
 ! Additional lines
 
-subroutine test_subroutine_1(x, y, z, comp, char, True)
+subroutine test_subroutine_1(x, &
+    y, &
+    z, &
+    comp, char, True)
     real, dimension(10), intent(in) :: x ! X variable description
     real, dimension(10), intent(inout) ::z(2)
     integer, dimension(10) :: y 

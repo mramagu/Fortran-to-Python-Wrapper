@@ -38,7 +38,7 @@ def library_maker(files, comment_style='before', **kwargs):
             for i, line in enumerate(file_code):
                 file_code[i] = line.replace('\n', '')
             file.close()
-            fortran_files.append(fobjects.Ffile(file_dir, file_code, comment_style=comment_style))
+            fortran_files.append(fobjects.Ffile(file_dir, fparsertools.multiple_and_remover(file_code), comment_style=comment_style))
 
         Lib=fobjects.Flibrary(fortran_files)
         if terminal_present:

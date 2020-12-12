@@ -279,7 +279,7 @@ def multiple_and_remover(code):
     if n==0: # Recursive call
      return clean_code
     if n!=0:
-      clean_code=(rem(clean_code))
+      clean_code=(multiple_and_remover(clean_code))
         
     return clean_code 
     
