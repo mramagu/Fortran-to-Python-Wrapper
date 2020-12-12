@@ -518,11 +518,51 @@ class Subroutine(Ffunctional):
                 A list of strings to be added to the rest of the module interface.
         """
         interface = list()
+
         interface.append('\"""')
         interface += fparsertools.tabing_tool(self.commentary)
-        interface += fparsertools.tabing_tool(['{} ({}): {}'.format(v.name, v.type, v.comment) for v in self.variables])
+        for v in self.variables:
+            if isinstance(v, Variable):
+                interface += fparsertools.tabing_tool(['{} ({}): {}'.format(v.name, v.type, v.comment)])
+            elif isinstance(v, Function):
+                interface += fparsertools.tabing_tool(['{} (Function): {}'.format(v.name, v.result.comment)])
+            elif isinstance(v, Subroutine):
+                interface += fparsertools.tabing_tool(['{} (Function)'.format(v.name)])
         interface.append('\"""')
-        interface.append('{}.{}.{}({})'.format(lib_name, module_name, self.fake_name, ','.join([v.name for v in self.variables])))
+
+        inputs = list()
+        for v in self.variables:
+            if isinstance(v, Variable):
+                inputs.append(v.name)
+            elif isinstance(v, Function):
+                if v.result.dimensions != 0:
+                    inputs.append(v.fake_name)
+                    global_var = fparsertools.name_generator('global_' + v.name, [w.name for w in self.variables] + [self.name + self.fake_name + v.fake_name])
+                    interface.append('{} = numpy.zeros(({}))'.format(global_var, ','.join(
+                        [fparsertools.dim_translator(d) for d in v.result.dimensions])))
+                    integers = list()
+                    for i in v.result.dimensions:
+                        new_integer = fparsertools.name_generator('i', integers +
+                            [w.name for w in self.variables] + [self.name + self.fake_name + v.fake_name])
+                        integers.append(new_integer)
+                    interface.append('def {}({}):'.format(v.fake_name, ','.join(integers + [w.name for w in v.variables])))
+                    interface.append('    global ' + global_var)
+                    for i, d in enumerate(v.result.dimensions):
+                        if len(d.split(':')) == 1:
+                            start = '1'
+                        elif len(d.split(':')) == 2:
+                            start = fparsertools.dim_translator((d.split(':'))[0])
+                        interface.append('    '*(i + 1) + 'if {} == {}:'.format(integers[i], start))
+                    interface.append('    '*(i + 2) + '{} = {}({})'.format(global_var, v.name, ','.join([w.name for w in v.variables])))
+                    interface.append('    ' + 'return {}[{}]'.format(global_var, ','.join(integers)))
+                else:
+                    inputs.append(v.name)
+            elif isinstance(v, Subroutine):
+                inputs.append(v.name)
+            else:
+                raise Exception('Py interface writing only supports Subroutines, Variables and Functions')
+
+        interface.append('{}.{}.{}({})'.format(lib_name, module_name, self.fake_name, ','.join(inputs)))
         interface = fparsertools.tabing_tool(interface)
         interface.insert(0, 'def {}({}):'.format(self.name, ','.join([v.name for v in self.variables])))
         return interface
@@ -764,11 +804,51 @@ class Function(Ffunctional):
                 A list of strings to be added to the rest of the module interface.
         """
         interface = list()
+
         interface.append('\"""')
         interface += fparsertools.tabing_tool(self.commentary)
-        interface += fparsertools.tabing_tool(['{} ({}): {}'.format(v.name, v.type, v.comment) for v in self.variables])
+        for v in self.variables:
+            if isinstance(v, Variable):
+                interface += fparsertools.tabing_tool(['{} ({}): {}'.format(v.name, v.type, v.comment)])
+            elif isinstance(v, Function):
+                interface += fparsertools.tabing_tool(['{} (Function): {}'.format(v.name, v.result.comment)])
+            elif isinstance(v, Subroutine):
+                interface += fparsertools.tabing_tool(['{} (Function)'.format(v.name)])
         interface.append('\"""')
-        interface.append('return {}.{}.{}({})'.format(lib_name, module_name, self.fake_name, ','.join([v.name for v in self.variables])))
+
+        inputs = list()
+        for v in self.variables:
+            if isinstance(v, Variable):
+                inputs.append(v.name)
+            elif isinstance(v, Function):
+                if v.result.dimensions != 0:
+                    inputs.append(v.fake_name)
+                    global_var = fparsertools.name_generator('global_' + v.name, [w.name for w in self.variables] + [self.name + self.fake_name + v.fake_name])
+                    interface.append('{} = numpy.zeros(({}))'.format(global_var, ','.join(
+                        [fparsertools.dim_translator(d) for d in v.result.dimensions])))
+                    integers = list()
+                    for i in v.result.dimensions:
+                        new_integer = fparsertools.name_generator('i', integers +
+                            [w.name for w in self.variables] + [self.name + self.fake_name + v.fake_name])
+                        integers.append(new_integer)
+                    interface.append('def {}({}):'.format(v.fake_name, ','.join(integers + [w.name for w in v.variables])))
+                    interface.append('    global ' + global_var)
+                    for i, d in enumerate(v.result.dimensions):
+                        if len(d.split(':')) == 1:
+                            start = '1'
+                        elif len(d.split(':')) == 2:
+                            start = fparsertools.dim_translator((d.split(':'))[0])
+                        interface.append('    '*(i + 1) + 'if {} == {}:'.format(integers[i], start))
+                    interface.append('    '*(i + 2) + '{} = {}({})'.format(global_var, v.name, ','.join([w.name for w in v.variables])))
+                    interface.append('    ' + 'return {}[{}]'.format(global_var, ','.join(integers)))
+                else:
+                    inputs.append(v.name)
+            elif isinstance(v, Subroutine):
+                inputs.append(v.name)
+            else:
+                raise Exception('Py interface writing only supports Subroutines, Variables and Functions')
+
+        interface.append('return {}.{}.{}({})'.format(lib_name, module_name, self.fake_name, ','.join(inputs)))
         interface = fparsertools.tabing_tool(interface)
         interface.insert(0, 'def {}({}):'.format(self.name, ','.join([v.name for v in self.variables])))
         return interface

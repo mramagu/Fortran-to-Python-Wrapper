@@ -118,6 +118,7 @@ def py_interface_writer(lib, modules, lib_name, **kwargs):
         terminal.add_line('')
     try:
         interface = list()
+        interface.append('import numpy')
         interface.append('import {}'.format(lib_name))
         writing_modules = [m for m in lib.modules if m.name in modules]
         for m in writing_modules:
@@ -212,5 +213,5 @@ if __name__ == '__main__':
     test_module4 = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                       '../FortranExamples/TestModules/TestModule4.f90')
     Lib = library_maker([test_module1, test_module2, test_module3, test_module4])
+    py_interface_writer(Lib, ['test_module_1', 'test_module_12', 'test_module_2', 'test_module_3', 'test_module_4'], 'nh')
     interface_writer(Lib, ['test_module_1', 'test_module_12', 'test_module_2', 'test_module_3', 'test_module_4'])
-    py_interface_writer(Lib, ['test_module_1', 'test_module_12', 'test_module_2', 'test_module_3'], 'nh')

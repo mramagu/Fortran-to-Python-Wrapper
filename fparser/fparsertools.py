@@ -261,3 +261,23 @@ def remove_and_lists(code_line):
       counter2+=1
      counter2+=1
     return clean_code
+
+def dim_translator(dim):
+    """
+        Function to translate simple commands common in fortran dimension definitions into python code.
+
+        Args:
+            dim (string): Dimension segment
+
+        Returns:
+            Translated line
+    """
+    dims = dim.split(':')
+    if len(dims) == 1:
+        size = dims[0]
+    elif len(dims) == 2:
+        size = dims[1] +  ' - ' + dims[0] + ' + 1'
+    else:
+        raise Exception('Range in dimention definition must have either two limits or one')
+    return size.replace('size(', 'len(')
+
