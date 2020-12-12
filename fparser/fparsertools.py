@@ -258,8 +258,8 @@ def multiple_and_remover(code):
       if counter2 not in list_ands_element: # if the component of the list doesn't have & it is appended
        clean_code.append(code[counter2])  
         
-      if counter2 in list_ands_element:      # if the component of the list have & 
-          index=list_ands_element.index(counter2)   # search the index in where the & appears inn the vector
+      if counter2 in list_ands_element:      # if the component of the list has & 
+          index=list_ands_element.index(counter2)   # search the index in where the & appears in the vector
           if index+1 < len(list_ands_element):  
               x = 0+z
               if abs(list_ands_element[index]-list_ands_element[index+1])!=1: # Checks if there are not two consecutive & on the list
@@ -267,7 +267,7 @@ def multiple_and_remover(code):
                z+=1
                counter2+=1 # Jumps the next component because it was added to the previous one
               if abs(list_ands_element[index]-list_ands_element[index+1])==1:# Checks if there are two consecutive & on the list
-               clean_code.append(code[counter2][:and_position[x]] + code[counter2+1]) # If two consecutive & appear it makes same 
+               clean_code.append(code[counter2][:and_position[x]] + code[counter2+1]) # If two consecutive & appear it makes the same as the previous case
                z+=2   # Jumps two lines in the and position vector because one & is included in the previous line
                counter2+=1 # Jumps the next component because it was added to the previous one
           elif index+1 == len(list_ands_element): # This option is defined for the last component in order to avoid problems with indexing 
