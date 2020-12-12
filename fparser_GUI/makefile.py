@@ -93,8 +93,12 @@ class Makefile():
         run.append(self.self_fparser.folder_path+'/Interface.pyf')
         run.append('--overwrite-signature')
 
-        pyf=subprocess.run(run,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        self.self_fparser.terminal_text.add_line(pyf.stdout.decode('utf-8'))
+        try:
+            pyf=subprocess.run(run,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            self.self_fparser.terminal_text.add_line(pyf.stdout.decode('utf-8'),number=2)
+            self.self_fparser.terminal_text.add_line('Success: Interface.pyf Generated',number=2)
+        except:
+            self.self_fparser.terminal_text.add_line(pyf.stderr.decode('utf-8'),number=2)
 
         #Apply precission
         if self.precission=='Simple precission.':
@@ -133,10 +137,10 @@ class Makefile():
         for flag in flags:
             run_comp.append(flag)
 
-        # subprocess.run(['cd',self.self_fparser.folder_path+'/'],shell=True)
-        comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        subprocess.run(run_comp)
+        # comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         # print(comp.stdout.decode('utf-8'))
-        self.self_fparser.terminal_text.add_line(comp.stderr.decode('utf-8'))
+        # self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'),number=2)
 
 
 
