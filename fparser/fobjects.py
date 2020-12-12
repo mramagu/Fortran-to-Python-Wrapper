@@ -1,4 +1,5 @@
 import fparsertools
+import copy
 
 class Flibrary:
     """
@@ -374,28 +375,29 @@ class Ffunctional:
         var_def_start = code[0][pos_function + len(self.name):].lower().find('(')
         var_def_end = fparsertools.find_closing_parenthesis(code[0],pos_function + len(self.name)+var_def_start)
         entries = code[0][pos_function + len(self.name) + var_def_start + 1: var_def_end]
-        for entry in entries.split(','):
-            for i, line in enumerate(code[1:]):
-                if fparsertools.find_command(line, entry.strip()) != None:
-                    if fparsertools.find_command(line, 'function') != None:
-                        f = Function(code[i+1:])
-                        f.change_fake_name(fparsertools.name_generator('aux_' + f.name, 
-                            [v.name for v in variables] + [self.name]))
-                        variables.append(f)
-                        del f
-                    elif fparsertools.find_command(line, 'subroutine') != None:
-                        s = Subroutine(code[i+1:])
-                        s.change_fake_name(fparsertools.name_generator('aux_' + s.name, 
-                            [v.name for v in variables] + [self.name]))
-                        variables.append(s)
-                        del s
-                    elif any(fparsertools.find_command(line, possible_type) != None for possible_type in Variable.types()):
-                        variables.append(Variable(entry.strip(), line))
-                    else:
-                        raise Exception('Could not find defnition for variable {} in {}. First instance: \n {}'.format(entry, self.name, line))
-                    break
-                if i == len(code[1:]):
-                    raise Exception('Could not find variable definition {} in Ffunctional {}: \n{}'.format(entry, self.name, '\n'.join(code)))
+        if bool(entries.strip()):
+            for entry in entries.split(','):
+                for i, line in enumerate(code[1:]):
+                    if fparsertools.find_command(line, entry.strip()) != None:
+                        if fparsertools.find_command(line, 'function') != None:
+                            f = Function(code[i+1:])
+                            f.change_fake_name(fparsertools.name_generator('aux_' + f.name, 
+                                [v.name for v in variables] + [self.name]))
+                            variables.append(f)
+                            del f
+                        elif fparsertools.find_command(line, 'subroutine') != None:
+                            s = Subroutine(code[i+1:])
+                            s.change_fake_name(fparsertools.name_generator('aux_' + s.name, 
+                                [v.name for v in variables] + [self.name]))
+                            variables.append(s)
+                            del s
+                        elif any(fparsertools.find_command(line, possible_type) != None for possible_type in Variable.types()):
+                            variables.append(Variable(entry.strip(), line))
+                        else:
+                            raise Exception('Could not find defnition for variable {} in {}. First instance: \n {}'.format(entry, self.name, line))
+                        break
+                    if i == len(code[1:]):
+                        raise Exception('Could not find variable definition {} in Ffunctional {}: \n{}'.format(entry, self.name, '\n'.join(code)))
         return variables
 
     def solve_assume_shape(self):
@@ -487,14 +489,15 @@ class Subroutine(Ffunctional):
         if bool(procedures):
             interface.append('interface')
             for i, v in enumerate(procedures):
-                if v.result.dimensions != None:
-                    aux_func += v.write_f2py_auxiliary_function()
-                    inputs.append(v.fake_name)
+                c = copy.deepcopy(v)
+                if c.result.dimensions != None:
+                    aux_func += c.write_f2py_auxiliary_function()
+                    inputs.append(c.fake_name)
                 else:
-                    inputs.append(v.name)
-                v.solve_assume_shape()
-                v.solve_loops()
-                interface += v.write_interface()
+                    inputs.append(c.name)
+                c.solve_assume_shape()
+                c.solve_loops()
+                interface += c.write_interface()
             interface.append('end interface')
 
         interface.append('call {}({})'.format(self.name, ','.join(inputs)))
@@ -537,9 +540,9 @@ class Subroutine(Ffunctional):
             elif isinstance(v, Function):
                 if v.result.dimensions != 0:
                     inputs.append(v.fake_name)
-                    global_var = fparsertools.name_generator('global_' + v.name, [w.name for w in self.variables] + [self.name + self.fake_name + v.fake_name])
-                    interface.append('{} = numpy.zeros(({}))'.format(global_var, ','.join(
-                        [fparsertools.dim_translator(d) for d in v.result.dimensions])))
+                    global_var = fparsertools.name_generator('global_' + v.name +'_var', [w.name for w in self.variables] + [self.name + self.fake_name + v.fake_name])
+                    # interface.append('{} = numpy.zeros(({}))'.format(global_var, ','.join(
+                        # [fparsertools.dim_translator(d) for d in v.result.dimensions])))
                     integers = list()
                     for i in v.result.dimensions:
                         new_integer = fparsertools.name_generator('i', integers +
@@ -823,9 +826,9 @@ class Function(Ffunctional):
             elif isinstance(v, Function):
                 if v.result.dimensions != 0:
                     inputs.append(v.fake_name)
-                    global_var = fparsertools.name_generator('global_' + v.name, [w.name for w in self.variables] + [self.name + self.fake_name + v.fake_name])
-                    interface.append('{} = numpy.zeros(({}))'.format(global_var, ','.join(
-                        [fparsertools.dim_translator(d) for d in v.result.dimensions])))
+                    global_var = fparsertools.name_generator('global_' + v.name + '_var', [w.name for w in self.variables] + [self.name + self.fake_name + v.fake_name])
+                    # interface.append('{} = numpy.zeros(({}))'.format(global_var, ','.join(
+                    #    [fparsertools.dim_translator(d) for d in v.result.dimensions])))
                     integers = list()
                     for i in v.result.dimensions:
                         new_integer = fparsertools.name_generator('i', integers +

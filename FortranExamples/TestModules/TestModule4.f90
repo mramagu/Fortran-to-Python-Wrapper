@@ -18,4 +18,8 @@ subroutine test_subroutine_4(x, y, Solution, interface_function)
     end interface
     Solution = interface_function(x, y)
 end subroutine
+
+integer function test_empty() result(N)
+    N = 5
+end function
 end module

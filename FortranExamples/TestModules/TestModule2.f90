@@ -23,7 +23,7 @@ subroutine test_subroutine_1(x, y, z, comp, char, True)
     real, dimension(10), intent(inout) ::z(2)
     integer, dimension(10) :: y 
     complex :: comp
-    character(len=10) :: char
+    character(len=10) :: char, char2 = "test"
     logical:: True, False
     print*, x, y, z, comp, char, True
     z = 1.

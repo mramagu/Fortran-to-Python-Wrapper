@@ -75,19 +75,18 @@ def interface_writer(lib, modules, **kwargs):
     interface = list()
     try:
         if terminal_present:
-            terminal.add_line('Generating Interface...', number=2)
+            terminal.add_line('Generating f2py Interface...', number=2)
             terminal.add_line('Selected Modules: ' + ' ,'.join(modules))
         else:
-            print('Generating Interface...')
+            print('Generating f2py Interface...')
             print('Selected Modules: ' + ' ,'.join(modules))
         writing_modules = [m for m in lib.modules if m.name in modules]
         for m in writing_modules:
             interface += m.write_f2py_interface()
-        print('\n'.join(interface))
         if terminal_present:
-            terminal.add_line('Success: Interface Generated', number=2)
+            terminal.add_line('Success: f2py Interface Generated', number=2)
         else:
-            print('Success: Interface Generated')
+            print('Success: f2py Interface Generated')
         return '\n'.join(interface)
     except Exception as e:
         if terminal_present:
@@ -116,14 +115,23 @@ def py_interface_writer(lib, modules, lib_name, **kwargs):
         terminal_present = True
         terminal = kwargs['terminal']
         terminal.add_line('')
+        terminal.add_line('Generating Python Interface...', number=2)
+        terminal.add_line('Selected Modules: ' + ' ,'.join(modules))
+    else:
+        print('Generating Python Interface...')
+        print('Selected Modules: ' + ' ,'.join(modules))
+
     try:
         interface = list()
-        interface.append('import numpy')
+        # interface.append('import numpy')
         interface.append('import {}'.format(lib_name))
         writing_modules = [m for m in lib.modules if m.name in modules]
         for m in writing_modules:
             interface += m.write_py_interface(lib_name)
-            print('\n'.join(interface))
+        if terminal_present:
+            terminal.add_line('Success: Python Interface Generated', number=2)
+        else:
+            print('Success: Python Interface Generated')
         return '\n'.join(interface)
     except Exception as e:
         if terminal_present:
@@ -213,5 +221,5 @@ if __name__ == '__main__':
     test_module4 = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                       '../FortranExamples/TestModules/TestModule4.f90')
     Lib = library_maker([test_module1, test_module2, test_module3, test_module4])
-    py_interface_writer(Lib, ['test_module_1', 'test_module_12', 'test_module_2', 'test_module_3', 'test_module_4'], 'nh')
-    interface_writer(Lib, ['test_module_1', 'test_module_12', 'test_module_2', 'test_module_3', 'test_module_4'])
+    print(interface_writer(Lib, ['test_module_1', 'test_module_12', 'test_module_2', 'test_module_3', 'test_module_4']))
+    print(py_interface_writer(Lib, ['test_module_1', 'test_module_12', 'test_module_2', 'test_module_3', 'test_module_4'], 'nh'))

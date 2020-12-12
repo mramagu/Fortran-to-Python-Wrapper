@@ -68,7 +68,7 @@ def find_command(code_line, name):
     counter = 0
     while counter + len(name) <= len(code_line): # Studies each position in the line
         if code_line[counter] in discard_between: # If fortran character is being written jumps to end of char
-            jump = code_line[counter+1].find(code_line[counter])
+            jump = code_line[counter+1:].find(code_line[counter])
             if jump == -1:
                 raise Exception('Fortran character did not finish being declared from position {}: \n {}'.format(counter, code_line))
             counter += jump + 1
@@ -114,14 +114,13 @@ def identify_comment(code_line):
     counter = 0
     while counter + 1 <= len(code_line): # Studies each position in the line
         if code_line[counter] in discard_between: # If fortran character is being written jumps to end of char
-            jump = code_line[counter+1].find(code_line[counter])
+            jump = code_line[counter+1:].find(code_line[counter])
             if jump == -1:
                 raise Exception('Fortran character did not finish being declared from position {}: \n {}'.format(counter, code_line))
             counter += jump + 1
         if code_line[counter] == '!': # If it finds comment declaration it stores it 
             return code_line[counter:]
             break
-
         counter += 1 # Advances counter
     else: # If it reaches the end of the code without finding comment it returns none
         return None
@@ -197,7 +196,7 @@ def find_and(code_line):
     counter = 0
     while counter + 1 <= len(code_line): # Studies each position in the line
         if code_line[counter] in discard_between: # If fortran character is being written jumps to end of char
-            jump = code_line[counter+1].find(code_line[counter])
+            jump = code_line[counter+1:].find(code_line[counter])
             if jump == -1:
                 raise Exception('Fortran character did not finish being declared from position {}: \n {}'.format(counter, code_line))
             counter += jump + 1
@@ -279,5 +278,8 @@ def dim_translator(dim):
         size = dims[1] +  ' - ' + dims[0] + ' + 1'
     else:
         raise Exception('Range in dimention definition must have either two limits or one')
-    return size.replace('size(', 'len(')
+
+    size = size.replace('size(', 'len(')
+
+    return size
 
