@@ -423,6 +423,38 @@ class Ffunctional:
             else:
                 raise Exception('Cannot solve the shape of {} in function {}'.format(v.name, self.name))
 
+    def write_call_sizes(self):
+        """
+            Produces fortran code to find the sizes of the variables in the Functional.
+
+            Returns:
+                 A list of strings to be to the auxiliary function that calls the interface function.
+        """
+        sizes = list()
+        for v in self.variables: # Iterates thorugh all explicit function variables
+            if isinstance(v, Variable): # If instance is a variable it solves its shape
+                if v.dimensions != None: # If variable has dimension definition
+                    min_dims = list()
+                    for d in v.dimensions:
+                        if ':' in d: # If a sub-section has an interval in it proceeds to analyze it
+                             a = (d.strip()).split(':') # Subsection is split at interval and spaces are eliminated
+                             if not bool(a[0]): # If either side of the interval is empty then the shape will be assumed
+                                 min_dims.append(1)
+                             else:
+                                 min_dims.append(a[0])
+                        else:
+                            min_dims.append(1)
+
+                    for index, d in enumerate(v.dimensions):
+                        dim_info = '(' + ','.join(min_dims[:index] + [':'] + min_dims[index + 1:]) + ')'
+                        if ':' in d: # If a sub-section has an interval in it proceeds to analyze it
+                            a = (d.strip()).split(':') # Subsection is split at interval and spaces are eliminated
+                            if len(a) != 2: # All subsections should contain just 1 :, if more then raises error
+                                raise Exception('Error solving assume shape of variable {} in {}:\n {}'.format(self.name, v.name, v.dimensions))
+                            elif not bool(a[0]) or not bool(a[1]): # If either side of the interval is empty then the shape will be assumed
+                                sizes.append('size({}{})'.format(v.name, dim_info))
+        return sizes
+
 class Subroutine(Ffunctional):
     """
         Fortran Subrutine Class
@@ -690,7 +722,7 @@ class Function(Ffunctional):
                     raise Exception('Program Does not admit more than 1 interval for dimension definition: \n' + i)
                 loop.append('do {}={},{}'.format(loop_int, start_loop, end_loop))
                 integers.append(loop_int)
-            loop.append('{}({}) = {}({})'.format(self.fake_name, ','.join(integers), self.name, ','.join( integers + [v.name for v in self.variables])))
+            loop.append('{}({}) = {}({})'.format(self.fake_name, ','.join(integers), self.name, ','.join( integers + [v.name for v in self.variables] + self.write_call_sizes())))
             for i in integers:
                 loop.append('end do')
             interface = self.write_interface(add_variables=False)
@@ -956,6 +988,7 @@ class Variable:
                             dim_position + len('dimension') + dim_def_start)
             dimension += variable_definition[dim_position + len('dimension') + dim_def_start + 1: dim_def_end].strip().split(',')
 
+        # Additional dimensions in line rewrite previous declarations
         vposition = fparsertools.find_command(written_variable, self.name)  # Finds variable name in line
         if vposition == None:
             raise Exception('Variable {} not found in expected line: \n{}'.format(self.name, code_line))
@@ -966,7 +999,7 @@ class Variable:
                     dim_def_end = fparsertools.find_closing_parenthesis(variable_definition + written_variable, 
                                     len(variable_definition) + vposition + len(self.name) + dim_def_start + dim_def_start) \
                                        - len(variable_definition)
-                    dimension += written_variable[vposition + len(self.name) + dim_def_start + 1:dim_def_end].strip().split(',')
+                    dimension = written_variable[vposition + len(self.name) + dim_def_start + 1:dim_def_end].strip().split(',')
 
         if not bool(dimension): # If no dimensions have been declared returns None
             return None
