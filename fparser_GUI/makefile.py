@@ -71,6 +71,12 @@ class Makefile():
         self.select_precission()
         self.writeLib()
         self.fcompiler()
+        #Create python interface
+        self.self_fparser.py_interface=fparser.py_interface_writer(self.self_fparser.lib,self.self_fparser.module_list,self.lib+'f',terminal=self.self_fparser.terminal_text)
+        f=open(self.self_fparser.folder_path+'/'+self.lib+'.py','w+')
+        f.write(self.self_fparser.py_interface)
+        f.close() 
+
         #Generate Interface.pyf 
         run=[]
 
@@ -91,7 +97,7 @@ class Makefile():
         self.self_fparser.terminal_text.add_line(pyf.stdout.decode('utf-8'))
 
         #Apply precission
-        if self.precission=='Simple':
+        if self.precission=='Simple precission.':
             new_precision=4
         else:
             new_precision=8
@@ -112,6 +118,10 @@ class Makefile():
         else:
             flags=['--fcompiler='+self.FC,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=-fdefault-real-8']
 
+        # if self.precission=='Simple precission.':
+        #     flags.pop(4)
+        # print(flags)
+
         run_comp.append(self.f2py)
         run_comp.append('-c')
         run_comp.append(self.self_fparser.folder_path+'/Interface.pyf')
@@ -123,10 +133,10 @@ class Makefile():
         for flag in flags:
             run_comp.append(flag)
 
-        subprocess.run(run_comp)
-        # comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        # subprocess.run(['cd',self.self_fparser.folder_path+'/'],shell=True)
+        comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         # print(comp.stdout.decode('utf-8'))
-        # self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'))
+        self.self_fparser.terminal_text.add_line(comp.stderr.decode('utf-8'))
 
 
 

@@ -358,7 +358,7 @@ class Ffunctional:
                 var_name (string): Name of the variable.
                 var_type (string): Type of new variable
         """
-        self.additional_variables.append(Variable(var_name, '{}, intent(in), optional :: {}'.format(var_type, var_name)))
+        self.additional_variables.append(Variable(var_name, '{}, intent(in):: {}'.format(var_type, var_name)))
 
     def read_variables(self, code):
         """
