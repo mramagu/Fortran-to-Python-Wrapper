@@ -1,6 +1,7 @@
 !    -*- f90 -*-
 ! Note: the context of this file is case sensitive.
 
+<<<<<<< HEAD
 python module numerical_hubf ! in 
     interface  ! in :numerical_hubf
         module fourier_interpolation_py ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90
@@ -44,30 +45,53 @@ python module numerical_hubf ! in
         module lagrange_interpolation_py ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90
             use lagrange_interpolation
             function lagrange_polynomials_py(x,xp,n_x) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:lagrange_interpolation_py
+=======
+python module Cauchy_problemf ! in 
+    interface  ! in :Cauchy_problemf
+        module lagrange_interpolation_py ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90
+            use lagrange_interpolation
+            function lagrange_polynomials_py(x,xp,n_x) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:lagrange_interpolation_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 real(8) dimension(n_x),intent(in) :: x
                 real(8) intent(in) :: xp
                 integer, optional,intent(in),check(len(x)>=n_x),depend(x) :: n_x=len(x)
                 real(8) dimension(size(x)-1+2,size(x)-1+1) :: lagrange_polynomials_py
             end function lagrange_polynomials_py
+<<<<<<< HEAD
             function stencilv_py(order,n) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:lagrange_interpolation_py
+=======
+            function stencilv_py(order,n) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:lagrange_interpolation_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 integer intent(in) :: order
                 integer intent(in) :: n
                 integer dimension(n + 1) :: stencilv_py
             end function stencilv_py
+<<<<<<< HEAD
             function lagrange_error_polynomial_py(x,xp,n_x) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:lagrange_interpolation_py
+=======
+            function lagrange_error_polynomial_py(x,xp,n_x) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:lagrange_interpolation_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 real(8) dimension(n_x),intent(in) :: x
                 real(8) intent(in) :: xp
                 integer, optional,intent(in),check(len(x)>=n_x),depend(x) :: n_x=len(x)
                 real(8) dimension(size(x)+1) :: lagrange_error_polynomial_py
             end function lagrange_error_polynomial_py
+<<<<<<< HEAD
             function lebesgue_functions_py(x,xp,n_x,n_xp) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:lagrange_interpolation_py
+=======
+            function lebesgue_functions_py(x,xp,n_x,n_xp) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:lagrange_interpolation_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 real(8) dimension(n_x),intent(in) :: x
                 real(8) dimension(n_xp),intent(in) :: xp
                 integer, optional,intent(in),check(len(x)>=n_x),depend(x) :: n_x=len(x)
                 integer, optional,intent(in),check(len(xp)>=n_xp),depend(xp) :: n_xp=len(xp)
                 real(8) dimension(size(x)-1+2,size(xp)-1+1) :: lebesgue_functions_py
             end function lebesgue_functions_py
+<<<<<<< HEAD
             function pi_error_polynomial_py(x,xp,n_x,n_xp) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:lagrange_interpolation_py
+=======
+            function pi_error_polynomial_py(x,xp,n_x,n_xp) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:lagrange_interpolation_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 real(8) dimension(n_x),intent(in) :: x
                 real(8) dimension(n_xp),intent(in) :: xp
                 integer, optional,intent(in),check(len(x)>=n_x),depend(x) :: n_x=len(x)
@@ -75,6 +99,7 @@ python module numerical_hubf ! in
                 real(8) dimension(size(x)-1+1,size(xp)-1+1) :: pi_error_polynomial_py
             end function pi_error_polynomial_py
         end module lagrange_interpolation_py
+<<<<<<< HEAD
         module linear_systems_py ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90
             use linear_systems
             function solve_lu_py(a,b,n_a,n_ae,n_b) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:linear_systems_py
@@ -109,23 +134,69 @@ python module numerical_hubf ! in
                 real(8) dimension(size(b)) :: solve_lu_band_py
             end function solve_lu_band_py
             function tensor_product_py(u,v,n_u,n_v) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:linear_systems_py
+=======
+        module linear_systems_py ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90
+            use linear_systems
+            function solve_lu_py(a,b,n_a,n_aq,n_b) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:linear_systems_py
+                real(8) dimension(n_a,n_aq),intent(in) :: a
+                real(8) dimension(n_b),intent(in) :: b
+                integer, optional,intent(in),check(shape(a,0)==n_a),depend(a) :: n_a=shape(a,0)
+                integer, optional,intent(in),check(shape(a,1)==n_aq),depend(a) :: n_aq=shape(a,1)
+                integer, optional,intent(in),check(len(b)>=n_b),depend(b) :: n_b=len(b)
+                real(8) dimension(size(b)) :: solve_lu_py
+            end function solve_lu_py
+            function gauss_py(a,b,n_a,n_ai,n_b) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:linear_systems_py
+                real(8) dimension(n_a,n_ai),intent(inout) :: a
+                real(8) dimension(n_b),intent(inout) :: b
+                integer, optional,intent(in),check(shape(a,0)==n_a),depend(a) :: n_a=shape(a,0)
+                integer, optional,intent(in),check(shape(a,1)==n_ai),depend(a) :: n_ai=shape(a,1)
+                integer, optional,intent(in),check(len(b)>=n_b),depend(b) :: n_b=len(b)
+                real(8) dimension(size(b)) :: gauss_py
+            end function gauss_py
+            function condition_number_py(a,n_a,n_ao) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:linear_systems_py
+                real(8) dimension(n_a,n_ao),intent(in) :: a
+                integer, optional,intent(in),check(shape(a,0)==n_a),depend(a) :: n_a=shape(a,0)
+                integer, optional,intent(in),check(shape(a,1)==n_ao),depend(a) :: n_ao=shape(a,1)
+                real(8) :: condition_number_py
+            end function condition_number_py
+            function solve_lu_band_py(a,b,rj,n_a,n_ab,n_b) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:linear_systems_py
+                real(8) dimension(n_a,n_ab),intent(in) :: a
+                real(8) dimension(n_b),intent(in) :: b
+                integer intent(in) :: rj
+                integer, optional,intent(in),check(shape(a,0)==n_a),depend(a) :: n_a=shape(a,0)
+                integer, optional,intent(in),check(shape(a,1)==n_ab),depend(a) :: n_ab=shape(a,1)
+                integer, optional,intent(in),check(len(b)>=n_b),depend(b) :: n_b=len(b)
+                real(8) dimension(size(b)) :: solve_lu_band_py
+            end function solve_lu_band_py
+            function tensor_product_py(u,v,n_u,n_v) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:linear_systems_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 real(8) dimension(n_u),intent(in) :: u
                 real(8) dimension(n_v),intent(in) :: v
                 integer, optional,intent(in),check(len(u)>=n_u),depend(u) :: n_u=len(u)
                 integer, optional,intent(in),check(len(v)>=n_v),depend(v) :: n_v=len(v)
                 real(8) dimension(size(u),size(v)) :: tensor_product_py
             end function tensor_product_py
+<<<<<<< HEAD
             subroutine lu_factorization_py(a,n_a,n_aj) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:linear_systems_py
                 real(8) dimension(n_a,n_aj),intent(inout) :: a
                 integer, optional,intent(in),check(shape(a,0)==n_a),depend(a) :: n_a=shape(a,0)
                 integer, optional,intent(in),check(shape(a,1)==n_aj),depend(a) :: n_aj=shape(a,1)
             end subroutine lu_factorization_py
             subroutine swap_py(a,b,n_a,n_b) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:linear_systems_py
+=======
+            subroutine lu_factorization_py(a,n_a,n_as) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:linear_systems_py
+                real(8) dimension(n_a,n_as),intent(inout) :: a
+                integer, optional,intent(in),check(shape(a,0)==n_a),depend(a) :: n_a=shape(a,0)
+                integer, optional,intent(in),check(shape(a,1)==n_as),depend(a) :: n_as=shape(a,1)
+            end subroutine lu_factorization_py
+            subroutine swap_py(a,b,n_a,n_b) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:linear_systems_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 real(8) dimension(n_a),intent(inout) :: a
                 real(8) dimension(n_b),intent(inout) :: b
                 integer, optional,intent(in),check(len(a)>=n_a),depend(a) :: n_a=len(a)
                 integer, optional,intent(in),check(len(b)>=n_b),depend(b) :: n_b=len(b)
             end subroutine swap_py
+<<<<<<< HEAD
             subroutine power_method_py(a,lambda,u,n_a,n_ag,n_u) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:linear_systems_py
                 real(8) dimension(n_a,n_ag),intent(in) :: a
                 real(8) intent(out) :: lambda
@@ -197,6 +268,97 @@ python module numerical_hubf ! in
                 integer :: get_erk_effort_py
             end function get_erk_effort_py
             function step_size_py(du,tolerance,q,h,n_du) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:embedded_rks_py
+=======
+            subroutine power_method_py(a,lambda,u,n_a,n_ay,n_u) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:linear_systems_py
+                real(8) dimension(n_a,n_ay),intent(in) :: a
+                real(8) intent(out) :: lambda
+                real(8) dimension(n_u),intent(out),depend(n_u) :: u
+                integer, optional,intent(in),check(shape(a,0)==n_a),depend(a) :: n_a=shape(a,0)
+                integer, optional,intent(in),check(shape(a,1)==n_ay),depend(a) :: n_ay=shape(a,1)
+                integer intent(in) :: n_u
+            end subroutine power_method_py
+            subroutine inverse_power_method_py(a,lambda,u,n_a,n_aw,n_u) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:linear_systems_py
+                real(8) dimension(n_a,n_aw),intent(inout) :: a
+                real(8) intent(out) :: lambda
+                real(8) dimension(n_u),intent(out),depend(n_u) :: u
+                integer, optional,intent(in),check(shape(a,0)==n_a),depend(a) :: n_a=shape(a,0)
+                integer, optional,intent(in),check(shape(a,1)==n_aw),depend(a) :: n_aw=shape(a,1)
+                integer intent(in) :: n_u
+            end subroutine inverse_power_method_py
+            subroutine eigenvalues_pm_py(a,lambda,u,n_a,n_ax,n_lambda,n_u,n_ud) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:linear_systems_py
+                real(8) dimension(n_a,n_ax),intent(inout) :: a
+                real(8) dimension(n_lambda),intent(out),depend(n_lambda) :: lambda
+                real(8) dimension(n_u,n_ud),intent(out),depend(n_u,n_ud) :: u
+                integer, optional,intent(in),check(shape(a,0)==n_a),depend(a) :: n_a=shape(a,0)
+                integer, optional,intent(in),check(shape(a,1)==n_ax),depend(a) :: n_ax=shape(a,1)
+                integer intent(in) :: n_lambda
+                integer intent(in) :: n_u
+                integer intent(in) :: n_ud
+            end subroutine eigenvalues_pm_py
+            subroutine svd_py(a,sigma,u,v,n_a,n_as,n_sigma,n_u,n_ux,n_v,n_vr) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:linear_systems_py
+                real(8) dimension(n_a,n_as),intent(in) :: a
+                real(8) dimension(n_sigma),intent(out),depend(n_sigma) :: sigma
+                real(8) dimension(n_u,n_ux),intent(out),depend(n_u,n_ux) :: u
+                real(8) dimension(n_v,n_vr),intent(out),depend(n_v,n_vr) :: v
+                integer, optional,intent(in),check(shape(a,0)==n_a),depend(a) :: n_a=shape(a,0)
+                integer, optional,intent(in),check(shape(a,1)==n_as),depend(a) :: n_as=shape(a,1)
+                integer intent(in) :: n_sigma
+                integer intent(in) :: n_u
+                integer intent(in) :: n_ux
+                integer intent(in) :: n_v
+                integer intent(in) :: n_vr
+            end subroutine svd_py
+            subroutine lu_band_factorization_py(a,rj,n_a,n_aw) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:linear_systems_py
+                real(8) dimension(n_a,n_aw),intent(inout) :: a
+                integer intent(in) :: rj
+                integer, optional,intent(in),check(shape(a,0)==n_a),depend(a) :: n_a=shape(a,0)
+                integer, optional,intent(in),check(shape(a,1)==n_aw),depend(a) :: n_aw=shape(a,1)
+            end subroutine lu_band_factorization_py
+        end module linear_systems_py
+        module ode_interface_py ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90
+            use ode_interface
+        end module ode_interface_py
+        module jacobian_module_py ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90
+            use jacobian_module
+            function jacobian_py(functionrn_rn,xp,n_xp) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:jacobian_module_py
+                external functionrn_rn
+                real(8) dimension(n_xp),intent(in) :: xp
+                integer, optional,intent(in),check(len(xp)>=n_xp),depend(xp) :: n_xp=len(xp)
+                real(8) dimension(size(xp),size(xp)) :: jacobian_py
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:jacobian_module_py:jacobian_py
+                    function functionrn_rn(i,x,n_x) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:jacobian_module_py:jacobian_py:unknown_interface
+                        integer :: i
+                        real(8) dimension(n_x),intent(in) :: x
+                        integer, optional,intent(in),check(len(x)>=n_x),depend(x) :: n_x=len(x)
+                        real(8) :: functionrn_rn
+                    end function functionrn_rn
+                end interface 
+            end function jacobian_py
+            function jacobianc_py(functionrn_rne,xp,n_xp) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:jacobian_module_py
+                external functionrn_rne
+                real(8) dimension(n_xp),intent(in) :: xp
+                integer, optional,intent(in),check(len(xp)>=n_xp),depend(xp) :: n_xp=len(xp)
+                real(8) dimension(size(xp),size(xp)) :: jacobianc_py
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:jacobian_module_py:jacobianc_py
+                    function functionrn_rne(i,x,n_x) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:jacobian_module_py:jacobianc_py:unknown_interface
+                        integer :: i
+                        real(8), target,dimension(n_x) :: x
+                        integer, optional,intent(in),check(len(x)>=n_x),depend(x) :: n_x=len(x)
+                        real(8) :: functionrn_rne
+                    end function functionrn_rne
+                end interface 
+            end function jacobianc_py
+        end module jacobian_module_py
+        module temporal_scheme_interface_py ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90
+            use temporal_scheme_interface
+        end module temporal_scheme_interface_py
+        module embedded_rks_py ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90
+            use embedded_rks
+            function get_erk_effort_py() ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:embedded_rks_py
+                integer :: get_erk_effort_py
+            end function get_erk_effort_py
+            function step_size_py(du,tolerance,q,h,n_du) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:embedded_rks_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 real(8) dimension(n_du),intent(in) :: du
                 real(8) intent(in) :: tolerance
                 integer intent(in) :: q
@@ -204,6 +366,7 @@ python module numerical_hubf ! in
                 integer, optional,intent(in),check(len(du)>=n_du),depend(du) :: n_du=len(du)
                 real(8) :: step_size_py
             end function step_size_py
+<<<<<<< HEAD
             subroutine set_erk_name_py(name) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:embedded_rks_py
                 character*(*) intent(in) :: name
             end subroutine set_erk_name_py
@@ -211,6 +374,15 @@ python module numerical_hubf ! in
                 real(8) intent(in) :: eps
             end subroutine set_erk_tolerance_py
             subroutine erk_scheme_py(f,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:embedded_rks_py
+=======
+            subroutine set_erk_name_py(name) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:embedded_rks_py
+                character*(*) intent(in) :: name
+            end subroutine set_erk_name_py
+            subroutine set_erk_tolerance_py(eps) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:embedded_rks_py
+                real(8) intent(in) :: eps
+            end subroutine set_erk_tolerance_py
+            subroutine erk_scheme_py(f,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:embedded_rks_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 real(8) :: f
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -220,7 +392,11 @@ python module numerical_hubf ! in
                 integer, optional,intent(in),check(len(u1)>=n_u1),depend(u1) :: n_u1=len(u1)
                 integer intent(in) :: n_u2
             end subroutine erk_scheme_py
+<<<<<<< HEAD
             subroutine rk_scheme_py(name,tag,f,t1,t2,u1,u2,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:embedded_rks_py
+=======
+            subroutine rk_scheme_py(name,tag,f,t1,t2,u1,u2,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:embedded_rks_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 character*(*) intent(in) :: name
                 character*(*) intent(in) :: tag
                 real(8) :: f
@@ -231,11 +407,16 @@ python module numerical_hubf ! in
                 integer, optional,intent(in),check(len(u1)>=n_u1),depend(u1) :: n_u1=len(u1)
                 integer intent(in) :: n_u2
             end subroutine rk_scheme_py
+<<<<<<< HEAD
             subroutine butcher_array_py(name,ne) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:embedded_rks_py
+=======
+            subroutine butcher_array_py(name,ne) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:embedded_rks_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 character*(*) intent(in) :: name
                 integer intent(out) :: ne
             end subroutine butcher_array_py
         end module embedded_rks_py
+<<<<<<< HEAD
         module wrappers_py ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90
             use wrappers
             function get_werk_effort_py() ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:wrappers_py
@@ -260,6 +441,32 @@ python module numerical_hubf ! in
                 real(8) intent(in) :: eps
             end subroutine set_wabm_tolerance_py
             subroutine werk_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:wrappers_py
+=======
+        module wrappers_py ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90
+            use wrappers
+            function get_werk_effort_py() ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:wrappers_py
+                integer :: get_werk_effort_py
+            end function get_werk_effort_py
+            function get_wgbs_effort_py() ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:wrappers_py
+                integer :: get_wgbs_effort_py
+            end function get_wgbs_effort_py
+            function get_wabm_effort_py() ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:wrappers_py
+                integer :: get_wabm_effort_py
+            end function get_wabm_effort_py
+            subroutine set_werk_name_py(name) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:wrappers_py
+                character*(*) intent(in) :: name
+            end subroutine set_werk_name_py
+            subroutine set_werk_tolerance_py(eps) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:wrappers_py
+                real(8) intent(in) :: eps
+            end subroutine set_werk_tolerance_py
+            subroutine set_wgbs_tolerance_py(eps) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:wrappers_py
+                real(8) intent(in) :: eps
+            end subroutine set_wgbs_tolerance_py
+            subroutine set_wabm_tolerance_py(eps) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:wrappers_py
+                real(8) intent(in) :: eps
+            end subroutine set_wabm_tolerance_py
+            subroutine werk_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:wrappers_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 external odes
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -268,8 +475,13 @@ python module numerical_hubf ! in
                 integer intent(out) :: ierr
                 integer, optional,intent(in),check(len(u1)>=n_u1),depend(u1) :: n_u1=len(u1)
                 integer intent(in) :: n_u2
+<<<<<<< HEAD
                 interface  ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:wrappers_py:werk_py
                     function odes(i,u,t,n_u) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:wrappers_py:werk_py:unknown_interface
+=======
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:wrappers_py:werk_py
+                    function odes(i,u,t,n_u) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:wrappers_py:werk_py:unknown_interface
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                         integer :: i
                         real(8) dimension(n_u) :: u
                         real(8) :: t
@@ -278,7 +490,11 @@ python module numerical_hubf ! in
                     end function odes
                 end interface 
             end subroutine werk_py
+<<<<<<< HEAD
             subroutine wodex_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:wrappers_py
+=======
+            subroutine wodex_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:wrappers_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 external odes
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -287,8 +503,13 @@ python module numerical_hubf ! in
                 integer intent(out) :: ierr
                 integer, optional,intent(in),check(len(u1)>=n_u1),depend(u1) :: n_u1=len(u1)
                 integer intent(in) :: n_u2
+<<<<<<< HEAD
                 interface  ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:wrappers_py:wodex_py
                     function odes(i,u,t,n_u) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:wrappers_py:wodex_py:unknown_interface
+=======
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:wrappers_py:wodex_py
+                    function odes(i,u,t,n_u) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:wrappers_py:wodex_py:unknown_interface
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                         integer :: i
                         real(8) dimension(n_u) :: u
                         real(8) :: t
@@ -297,7 +518,11 @@ python module numerical_hubf ! in
                     end function odes
                 end interface 
             end subroutine wodex_py
+<<<<<<< HEAD
             subroutine wode113_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:wrappers_py
+=======
+            subroutine wode113_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:wrappers_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 external odes
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -306,8 +531,13 @@ python module numerical_hubf ! in
                 integer intent(out) :: ierr
                 integer, optional,intent(in),check(len(u1)>=n_u1),depend(u1) :: n_u1=len(u1)
                 integer intent(in) :: n_u2
+<<<<<<< HEAD
                 interface  ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:wrappers_py:wode113_py
                     function odes(i,u,t,n_u) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:wrappers_py:wode113_py:unknown_interface
+=======
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:wrappers_py:wode113_py
+                    function odes(i,u,t,n_u) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:wrappers_py:wode113_py:unknown_interface
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                         integer :: i
                         real(8) dimension(n_u) :: u
                         real(8) :: t
@@ -317,6 +547,7 @@ python module numerical_hubf ! in
                 end interface 
             end subroutine wode113_py
         end module wrappers_py
+<<<<<<< HEAD
         module gragg_burlisch_stoer_py ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90
             use gragg_burlisch_stoer
             function get_gbs_effort_py() ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:gragg_burlisch_stoer_py
@@ -326,6 +557,17 @@ python module numerical_hubf ! in
                 real(8) intent(in) :: eps
             end subroutine set_gbs_tolerance_py
             subroutine modified_midpoint_scheme_py(f,t0,t,u0,un,n,n_u0,n_un) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:gragg_burlisch_stoer_py
+=======
+        module gragg_burlisch_stoer_py ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90
+            use gragg_burlisch_stoer
+            function get_gbs_effort_py() ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:gragg_burlisch_stoer_py
+                integer :: get_gbs_effort_py
+            end function get_gbs_effort_py
+            subroutine set_gbs_tolerance_py(eps) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:gragg_burlisch_stoer_py
+                real(8) intent(in) :: eps
+            end subroutine set_gbs_tolerance_py
+            subroutine modified_midpoint_scheme_py(f,t0,t,u0,un,n,n_u0,n_un) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:gragg_burlisch_stoer_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 real(8) :: f
                 real(8) intent(in) :: t0
                 real(8) intent(in) :: t
@@ -335,13 +577,21 @@ python module numerical_hubf ! in
                 integer, optional,intent(in),check(len(u0)>=n_u0),depend(u0) :: n_u0=len(u0)
                 integer intent(in) :: n_un
             end subroutine modified_midpoint_scheme_py
+<<<<<<< HEAD
             subroutine gbs_richardson_coefficients_py(n,b,n_n,n_b) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:gragg_burlisch_stoer_py
+=======
+            subroutine gbs_richardson_coefficients_py(n,b,n_n,n_b) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:gragg_burlisch_stoer_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 integer dimension(n_n),intent(in) :: n
                 real(8) dimension(n_b),intent(out),depend(n_b) :: b
                 integer, optional,intent(in),check(len(n)>=n_n),depend(n) :: n_n=len(n)
                 integer intent(in) :: n_b
             end subroutine gbs_richardson_coefficients_py
+<<<<<<< HEAD
             subroutine gbs_scheme_py(f,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:gragg_burlisch_stoer_py
+=======
+            subroutine gbs_scheme_py(f,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:gragg_burlisch_stoer_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 real(8) :: f
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -352,6 +602,7 @@ python module numerical_hubf ! in
                 integer intent(in) :: n_u2
             end subroutine gbs_scheme_py
         end module gragg_burlisch_stoer_py
+<<<<<<< HEAD
         module non_linear_systems_py ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90
             use non_linear_systems
             subroutine newton_py(functionrn_rn,x0,n_x0) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:non_linear_systems_py
@@ -360,6 +611,16 @@ python module numerical_hubf ! in
                 integer, optional,intent(in),check(len(x0)>=n_x0),depend(x0) :: n_x0=len(x0)
                 interface  ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:non_linear_systems_py:newton_py
                     function functionrn_rn(i,x,n_x) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:non_linear_systems_py:newton_py:unknown_interface
+=======
+        module non_linear_systems_py ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90
+            use non_linear_systems
+            subroutine newton_py(functionrn_rn,x0,n_x0) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:non_linear_systems_py
+                external functionrn_rn
+                real(8) dimension(n_x0),intent(inout) :: x0
+                integer, optional,intent(in),check(len(x0)>=n_x0),depend(x0) :: n_x0=len(x0)
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:non_linear_systems_py:newton_py
+                    function functionrn_rn(i,x,n_x) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:non_linear_systems_py:newton_py:unknown_interface
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                         integer :: i
                         real(8) dimension(n_x),intent(in) :: x
                         integer, optional,intent(in),check(len(x)>=n_x),depend(x) :: n_x=len(x)
@@ -367,12 +628,21 @@ python module numerical_hubf ! in
                     end function functionrn_rn
                 end interface 
             end subroutine newton_py
+<<<<<<< HEAD
             subroutine newtonc_py(functionrn_rne,x0,n_x0) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:non_linear_systems_py
                 external functionrn_rne
                 real(8) dimension(n_x0),intent(inout) :: x0
                 integer, optional,intent(in),check(len(x0)>=n_x0),depend(x0) :: n_x0=len(x0)
                 interface  ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:non_linear_systems_py:newtonc_py
                     function functionrn_rne(i,x,n_x) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:non_linear_systems_py:newtonc_py:unknown_interface
+=======
+            subroutine newtonc_py(functionrn_rne,x0,n_x0) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:non_linear_systems_py
+                external functionrn_rne
+                real(8) dimension(n_x0),intent(inout) :: x0
+                integer, optional,intent(in),check(len(x0)>=n_x0),depend(x0) :: n_x0=len(x0)
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:non_linear_systems_py:newtonc_py
+                    function functionrn_rne(i,x,n_x) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:non_linear_systems_py:newtonc_py:unknown_interface
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                         integer :: i
                         real(8), target,dimension(n_x) :: x
                         integer, optional,intent(in),check(len(x)>=n_x),depend(x) :: n_x=len(x)
@@ -381,6 +651,7 @@ python module numerical_hubf ! in
                 end interface 
             end subroutine newtonc_py
         end module non_linear_systems_py
+<<<<<<< HEAD
         module adams_bashforth_moulton_py ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90
             use adams_bashforth_moulton
             function get_abm_effort_py() ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:adams_bashforth_moulton_py
@@ -394,6 +665,21 @@ python module numerical_hubf ! in
                 real(8) intent(in) :: eps
             end subroutine set_abm_tolerance_py
             subroutine pc_abm_py(f,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:adams_bashforth_moulton_py
+=======
+        module adams_bashforth_moulton_py ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90
+            use adams_bashforth_moulton
+            function get_abm_effort_py() ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:adams_bashforth_moulton_py
+                integer :: get_abm_effort_py
+            end function get_abm_effort_py
+            function factorial_py(n) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:adams_bashforth_moulton_py
+                integer intent(in) :: n
+                integer :: factorial_py
+            end function factorial_py
+            subroutine set_abm_tolerance_py(eps) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:adams_bashforth_moulton_py
+                real(8) intent(in) :: eps
+            end subroutine set_abm_tolerance_py
+            subroutine pc_abm_py(f,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:adams_bashforth_moulton_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 real(8) :: f
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -403,7 +689,11 @@ python module numerical_hubf ! in
                 integer, optional,intent(in),check(len(u1)>=n_u1),depend(u1) :: n_u1=len(u1)
                 integer intent(in) :: n_u2
             end subroutine pc_abm_py
+<<<<<<< HEAD
             subroutine predictor_ab_py(f,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:adams_bashforth_moulton_py
+=======
+            subroutine predictor_ab_py(f,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:adams_bashforth_moulton_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 real(8) :: f
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -413,7 +703,11 @@ python module numerical_hubf ! in
                 integer, optional,intent(in),check(len(u1)>=n_u1),depend(u1) :: n_u1=len(u1)
                 integer intent(in) :: n_u2
             end subroutine predictor_ab_py
+<<<<<<< HEAD
             subroutine corrector_am_py(f,t1,t2,u1,up,u2,ierr,n_u1,n_up,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:adams_bashforth_moulton_py
+=======
+            subroutine corrector_am_py(f,t1,t2,u1,up,u2,ierr,n_u1,n_up,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:adams_bashforth_moulton_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 real(8) :: f
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -425,14 +719,22 @@ python module numerical_hubf ! in
                 integer, optional,intent(in),check(len(up)>=n_up),depend(up) :: n_up=len(up)
                 integer intent(in) :: n_u2
             end subroutine corrector_am_py
+<<<<<<< HEAD
             subroutine set_abm_ic_py(f,u0,t0,h,n_u0) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:adams_bashforth_moulton_py
+=======
+            subroutine set_abm_ic_py(f,u0,t0,h,n_u0) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:adams_bashforth_moulton_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 real(8) :: f
                 real(8) dimension(n_u0),intent(in) :: u0
                 real(8) intent(in) :: t0
                 real(8) intent(in) :: h
                 integer, optional,intent(in),check(len(u0)>=n_u0),depend(u0) :: n_u0=len(u0)
             end subroutine set_abm_ic_py
+<<<<<<< HEAD
             subroutine initial_conditions_py(f,u0,t0,h,n_u0) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:adams_bashforth_moulton_py
+=======
+            subroutine initial_conditions_py(f,u0,t0,h,n_u0) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:adams_bashforth_moulton_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 real(8) :: f
                 real(8) dimension(n_u0),intent(in) :: u0
                 real(8) intent(in) :: t0
@@ -440,6 +742,7 @@ python module numerical_hubf ! in
                 integer, optional,intent(in),check(len(u0)>=n_u0),depend(u0) :: n_u0=len(u0)
             end subroutine initial_conditions_py
         end module adams_bashforth_moulton_py
+<<<<<<< HEAD
         module interpolation_py ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90
             use interpolation
             function integral_py(x,y,degree,n_x,n_y) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:interpolation_py
@@ -467,6 +770,14 @@ python module numerical_hubf ! in
                 integer :: get_effort_py
             end function get_effort_py
             subroutine euler_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py
+=======
+        module temporal_schemes_py ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90
+            use temporal_schemes
+            function get_effort_py() ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py
+                integer :: get_effort_py
+            end function get_effort_py
+            subroutine euler_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 external odes
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -475,8 +786,13 @@ python module numerical_hubf ! in
                 integer intent(out) :: ierr
                 integer, optional,intent(in),check(len(u1)>=n_u1),depend(u1) :: n_u1=len(u1)
                 integer intent(in) :: n_u2
+<<<<<<< HEAD
                 interface  ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:euler_py
                     function odes(i,u,t,n_u) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:euler_py:unknown_interface
+=======
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:euler_py
+                    function odes(i,u,t,n_u) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:euler_py:unknown_interface
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                         integer :: i
                         real(8) dimension(n_u) :: u
                         real(8) :: t
@@ -485,7 +801,11 @@ python module numerical_hubf ! in
                     end function odes
                 end interface 
             end subroutine euler_py
+<<<<<<< HEAD
             subroutine inverse_euler_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py
+=======
+            subroutine inverse_euler_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 external odes
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -494,8 +814,13 @@ python module numerical_hubf ! in
                 integer intent(out) :: ierr
                 integer, optional,intent(in),check(len(u1)>=n_u1),depend(u1) :: n_u1=len(u1)
                 integer intent(in) :: n_u2
+<<<<<<< HEAD
                 interface  ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:inverse_euler_py
                     function odes(i,u,t,n_u) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:inverse_euler_py:unknown_interface
+=======
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:inverse_euler_py
+                    function odes(i,u,t,n_u) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:inverse_euler_py:unknown_interface
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                         integer :: i
                         real(8) dimension(n_u) :: u
                         real(8) :: t
@@ -504,7 +829,11 @@ python module numerical_hubf ! in
                     end function odes
                 end interface 
             end subroutine inverse_euler_py
+<<<<<<< HEAD
             subroutine crank_nicolson_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py
+=======
+            subroutine crank_nicolson_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 external odes
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -513,8 +842,13 @@ python module numerical_hubf ! in
                 integer intent(out) :: ierr
                 integer, optional,intent(in),check(len(u1)>=n_u1),depend(u1) :: n_u1=len(u1)
                 integer intent(in) :: n_u2
+<<<<<<< HEAD
                 interface  ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:crank_nicolson_py
                     function odes(i,u,t,n_u) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:crank_nicolson_py:unknown_interface
+=======
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:crank_nicolson_py
+                    function odes(i,u,t,n_u) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:crank_nicolson_py:unknown_interface
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                         integer :: i
                         real(8) dimension(n_u) :: u
                         real(8) :: t
@@ -523,7 +857,11 @@ python module numerical_hubf ! in
                     end function odes
                 end interface 
             end subroutine crank_nicolson_py
+<<<<<<< HEAD
             subroutine runge_kutta2_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py
+=======
+            subroutine runge_kutta2_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 external odes
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -532,8 +870,13 @@ python module numerical_hubf ! in
                 integer intent(out) :: ierr
                 integer, optional,intent(in),check(len(u1)>=n_u1),depend(u1) :: n_u1=len(u1)
                 integer intent(in) :: n_u2
+<<<<<<< HEAD
                 interface  ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:runge_kutta2_py
                     function odes(i,u,t,n_u) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:runge_kutta2_py:unknown_interface
+=======
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:runge_kutta2_py
+                    function odes(i,u,t,n_u) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:runge_kutta2_py:unknown_interface
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                         integer :: i
                         real(8) dimension(n_u) :: u
                         real(8) :: t
@@ -542,7 +885,11 @@ python module numerical_hubf ! in
                     end function odes
                 end interface 
             end subroutine runge_kutta2_py
+<<<<<<< HEAD
             subroutine runge_kutta4_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py
+=======
+            subroutine runge_kutta4_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 external odes
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -551,8 +898,13 @@ python module numerical_hubf ! in
                 integer intent(out) :: ierr
                 integer, optional,intent(in),check(len(u1)>=n_u1),depend(u1) :: n_u1=len(u1)
                 integer intent(in) :: n_u2
+<<<<<<< HEAD
                 interface  ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:runge_kutta4_py
                     function odes(i,u,t,n_u) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:runge_kutta4_py:unknown_interface
+=======
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:runge_kutta4_py
+                    function odes(i,u,t,n_u) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:runge_kutta4_py:unknown_interface
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                         integer :: i
                         real(8) dimension(n_u) :: u
                         real(8) :: t
@@ -561,7 +913,11 @@ python module numerical_hubf ! in
                     end function odes
                 end interface 
             end subroutine runge_kutta4_py
+<<<<<<< HEAD
             subroutine leap_frog_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py
+=======
+            subroutine leap_frog_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 external odes
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -570,8 +926,13 @@ python module numerical_hubf ! in
                 integer intent(out) :: ierr
                 integer, optional,intent(in),check(len(u1)>=n_u1),depend(u1) :: n_u1=len(u1)
                 integer intent(in) :: n_u2
+<<<<<<< HEAD
                 interface  ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:leap_frog_py
                     function odes(i,u,t,n_u) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:leap_frog_py:unknown_interface
+=======
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:leap_frog_py
+                    function odes(i,u,t,n_u) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:leap_frog_py:unknown_interface
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                         integer :: i
                         real(8) dimension(n_u) :: u
                         real(8) :: t
@@ -580,7 +941,11 @@ python module numerical_hubf ! in
                     end function odes
                 end interface 
             end subroutine leap_frog_py
+<<<<<<< HEAD
             subroutine adams_bashforth2_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py
+=======
+            subroutine adams_bashforth2_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 external odes
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -589,8 +954,13 @@ python module numerical_hubf ! in
                 integer intent(out) :: ierr
                 integer, optional,intent(in),check(len(u1)>=n_u1),depend(u1) :: n_u1=len(u1)
                 integer intent(in) :: n_u2
+<<<<<<< HEAD
                 interface  ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:adams_bashforth2_py
                     function odes(i,u,t,n_u) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:adams_bashforth2_py:unknown_interface
+=======
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:adams_bashforth2_py
+                    function odes(i,u,t,n_u) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:adams_bashforth2_py:unknown_interface
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                         integer :: i
                         real(8) dimension(n_u) :: u
                         real(8) :: t
@@ -599,7 +969,11 @@ python module numerical_hubf ! in
                     end function odes
                 end interface 
             end subroutine adams_bashforth2_py
+<<<<<<< HEAD
             subroutine adams_bashforth3_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py
+=======
+            subroutine adams_bashforth3_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 external odes
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -608,8 +982,13 @@ python module numerical_hubf ! in
                 integer intent(out) :: ierr
                 integer, optional,intent(in),check(len(u1)>=n_u1),depend(u1) :: n_u1=len(u1)
                 integer intent(in) :: n_u2
+<<<<<<< HEAD
                 interface  ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:adams_bashforth3_py
                     function odes(i,u,t,n_u) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:adams_bashforth3_py:unknown_interface
+=======
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:adams_bashforth3_py
+                    function odes(i,u,t,n_u) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:adams_bashforth3_py:unknown_interface
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                         integer :: i
                         real(8) dimension(n_u) :: u
                         real(8) :: t
@@ -618,7 +997,11 @@ python module numerical_hubf ! in
                     end function odes
                 end interface 
             end subroutine adams_bashforth3_py
+<<<<<<< HEAD
             subroutine predictor_corrector1_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py
+=======
+            subroutine predictor_corrector1_py(odes,t1,t2,u1,u2,ierr,n_u1,n_u2) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 external odes
                 real(8) intent(in) :: t1
                 real(8) intent(in) :: t2
@@ -627,8 +1010,13 @@ python module numerical_hubf ! in
                 integer intent(out) :: ierr
                 integer, optional,intent(in),check(len(u1)>=n_u1),depend(u1) :: n_u1=len(u1)
                 integer intent(in) :: n_u2
+<<<<<<< HEAD
                 interface  ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:predictor_corrector1_py
                     function odes(i,u,t,n_u) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py:predictor_corrector1_py:unknown_interface
+=======
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:predictor_corrector1_py
+                    function odes(i,u,t,n_u) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py:predictor_corrector1_py:unknown_interface
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                         integer :: i
                         real(8) dimension(n_u) :: u
                         real(8) :: t
@@ -637,14 +1025,22 @@ python module numerical_hubf ! in
                     end function odes
                 end interface 
             end subroutine predictor_corrector1_py
+<<<<<<< HEAD
             subroutine set_tolerance_py(tolerance) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py
                 real(8) intent(in) :: tolerance
             end subroutine set_tolerance_py
             subroutine set_solver_py(family_name,scheme_name) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:temporal_schemes_py
+=======
+            subroutine set_tolerance_py(tolerance) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py
+                real(8) intent(in) :: tolerance
+            end subroutine set_tolerance_py
+            subroutine set_solver_py(family_name,scheme_name) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:temporal_schemes_py
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                 character*(*) intent(in) :: family_name
                 character*(*), optional,intent(in) :: scheme_name
             end subroutine set_solver_py
         end module temporal_schemes_py
+<<<<<<< HEAD
         module cauchy_problem_py ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90
             use cauchy_problem
             subroutine cauchy_problems_py(time_domain,odes,solution,scheme,n_time_domain,n_solution,n_solutionb) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:cauchy_problem_py
@@ -657,6 +1053,20 @@ python module numerical_hubf ! in
                 integer intent(in) :: n_solutionb
                 interface  ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:cauchy_problem_py:cauchy_problems_py
                     function odes(i,u,t,n_u) ! in :numerical_hubf:C:\Users\Lenovo\Documents\Sistemas_espaciales\1\Ampliacion_de_Matematicas_1\P2\fparser\fparser_GUI\__Interface__/Interface.f90:cauchy_problem_py:cauchy_problems_py:unknown_interface
+=======
+        module cauchy_problem_py ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90
+            use cauchy_problem
+            subroutine cauchy_problems_py(time_domain,odes,solution,scheme,n_time_domain,n_solution,n_solutionu) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:cauchy_problem_py
+                real(8) dimension(n_time_domain),intent(in) :: time_domain
+                external odes
+                real(8) dimension(n_solution,n_solutionu),intent(out),depend(n_solution,n_solutionu) :: solution
+                real(8) :: scheme
+                integer, optional,intent(in),check(len(time_domain)>=n_time_domain),depend(time_domain) :: n_time_domain=len(time_domain)
+                integer intent(in) :: n_solution
+                integer intent(in) :: n_solutionu
+                interface  ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:cauchy_problem_py:cauchy_problems_py
+                    function odes(i,u,t,n_u) ! in :Cauchy_problemf:/home/david/Documentos/Matemáticas_MUSE/fparser/fparser_GUI/__Interface__/Interface.f90:cauchy_problem_py:cauchy_problems_py:unknown_interface
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
                         integer :: i
                         real(8) dimension(n_u) :: u
                         real(8) :: t
@@ -667,7 +1077,11 @@ python module numerical_hubf ! in
             end subroutine cauchy_problems_py
         end module cauchy_problem_py
     end interface 
+<<<<<<< HEAD
 end python module numerical_hubf
+=======
+end python module Cauchy_problemf
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 
 ! This file was auto-generated with f2py (version:2).
 ! See http://cens.ioc.ee/projects/f2py2e/

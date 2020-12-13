@@ -26,6 +26,7 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.main_dir=''
         self.files=[] 
         self.files_order=[] 
+        self.files_f=[] 
         self.filter=["Python (*.py)","Fortran files (*.f90)"]
         self.fcomments='before'
         self.terminal=True

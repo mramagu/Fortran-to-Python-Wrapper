@@ -129,11 +129,15 @@ class Makefile():
         run_comp.append(self.f2py)
         run_comp.append('-c')
         run_comp.append(self.self_fparser.folder_path+'/Interface.pyf')
-        
+
+        #*.f Files 
+        for f in self.self_fparser.files_f:
+            run_comp.append(f)
+        #*.f90 Files 
         for f in self.self_fparser.files_order:
             run_comp.append(f)
         run_comp.append(self.self_fparser.folder_path+'/Interface.f90')
-
+        #Flags 
         for flag in flags:
             run_comp.append(flag)
 
@@ -146,7 +150,7 @@ class Makefile():
             lib_dir=pwd.stdout.decode('utf-8')
             end='.so'
         else:
-            chdir=subprocess.run(['chdir'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            chdir=subprocess.run(['chdir'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
             lib_dir=chdir.stdout.decode('utf-8')
             end='.dll'
 

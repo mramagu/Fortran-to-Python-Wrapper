@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 module Fourier_interpolation_py
 use Fourier_interpolation
 implicit none
@@ -59,6 +60,8 @@ end do
 end function
 end function
 end module
+=======
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 module Lagrange_interpolation_py
 use Lagrange_interpolation
 implicit none
@@ -104,24 +107,41 @@ module Linear_systems_py
 use Linear_systems
 implicit none
 contains
+<<<<<<< HEAD
 function Solve_LU_py(A,b,N_A,N_Ax,N_b)
 real,dimension(N_A,N_Ax), intent(in)  :: A
 real,dimension(N_b), intent(in)  :: b
 integer, intent(in) :: N_A
 integer, intent(in) :: N_Ax
+=======
+function Solve_LU_py(A,b,N_A,N_Aq,N_b)
+real,dimension(N_A,N_Aq), intent(in)  :: A
+real,dimension(N_b), intent(in)  :: b
+integer, intent(in) :: N_A
+integer, intent(in) :: N_Aq
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 integer, intent(in) :: N_b
 real,dimension(size(b)) :: Solve_LU_py
 Solve_LU_py = Solve_LU(A,b)
 end function
+<<<<<<< HEAD
 function Gauss_py(A,b,N_A,N_Aw,N_b)
 real,dimension(N_A,N_Aw), intent(inout)  :: A
 real,dimension(N_b), intent(inout)  :: b
 integer, intent(in) :: N_A
 integer, intent(in) :: N_Aw
+=======
+function Gauss_py(A,b,N_A,N_Ai,N_b)
+real,dimension(N_A,N_Ai), intent(inout)  :: A
+real,dimension(N_b), intent(inout)  :: b
+integer, intent(in) :: N_A
+integer, intent(in) :: N_Ai
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 integer, intent(in) :: N_b
 real,dimension(size(b)) :: Gauss_py
 Gauss_py = Gauss(A,b)
 end function
+<<<<<<< HEAD
 real function Condition_number_py(A,N_A,N_Aq)
 real,dimension(N_A,N_Aq), intent(in)  :: A
 integer, intent(in) :: N_A
@@ -134,6 +154,20 @@ real,dimension(N_b), intent(in)  :: b
 integer, intent (in)  :: rj
 integer, intent(in) :: N_A
 integer, intent(in) :: N_Aw
+=======
+real function Condition_number_py(A,N_A,N_Ao)
+real,dimension(N_A,N_Ao), intent(in)  :: A
+integer, intent(in) :: N_A
+integer, intent(in) :: N_Ao
+Condition_number_py = Condition_number(A)
+end function
+function Solve_LU_band_py(A,b,rj,N_A,N_Ab,N_b)
+real,dimension(N_A,N_Ab), intent(in)  :: A
+real,dimension(N_b), intent(in)  :: b
+integer, intent (in)  :: rj
+integer, intent(in) :: N_A
+integer, intent(in) :: N_Ab
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 integer, intent(in) :: N_b
 real,dimension(size(b)) :: Solve_LU_band_py
 Solve_LU_band_py = Solve_LU_band(A,b,rj)
@@ -146,10 +180,17 @@ integer, intent(in) :: N_v
 real,dimension(size(u), size(v)) :: Tensor_product_py
 Tensor_product_py = Tensor_product(u,v)
 end function
+<<<<<<< HEAD
 subroutine LU_factorization_py(A,N_A,N_Am)
 real,dimension(N_A,N_Am), intent(inout)  :: A
 integer, intent(in) :: N_A
 integer, intent(in) :: N_Am
+=======
+subroutine LU_factorization_py(A,N_A,N_As)
+real,dimension(N_A,N_As), intent(inout)  :: A
+integer, intent(in) :: N_A
+integer, intent(in) :: N_As
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 call LU_factorization(A)
 end subroutine
 subroutine Swap_py(A,B,N_A,N_B)
@@ -159,6 +200,7 @@ integer, intent(in) :: N_A
 integer, intent(in) :: N_B
 call Swap(A,B)
 end subroutine
+<<<<<<< HEAD
 subroutine Power_method_py(A,lambda,U,N_A,N_Ak,N_U)
 real,dimension(N_A,N_Ak), intent(in)  :: A
 real, intent(out)  :: lambda
@@ -226,6 +268,119 @@ integer, intent(in) :: N_C
 integer, intent(in) :: N_C1
 call Chebyshev_Derivative(C,C1)
 end subroutine
+=======
+subroutine Power_method_py(A,lambda,U,N_A,N_Ay,N_U)
+real,dimension(N_A,N_Ay), intent(in)  :: A
+real, intent(out)  :: lambda
+real,dimension(N_U), intent(out)  :: U
+integer, intent(in) :: N_A
+integer, intent(in) :: N_Ay
+integer, intent(in) :: N_U
+call Power_method(A,lambda,U)
+end subroutine
+subroutine Inverse_power_method_py(A,lambda,U,N_A,N_Aw,N_U)
+real,dimension(N_A,N_Aw), intent(inout)  :: A
+real, intent(out)  :: lambda
+real,dimension(N_U), intent(out)  :: U
+integer, intent(in) :: N_A
+integer, intent(in) :: N_Aw
+integer, intent(in) :: N_U
+call Inverse_power_method(A,lambda,U)
+end subroutine
+subroutine Eigenvalues_PM_py(A,lambda,U,N_A,N_Ax,N_lambda,N_U,N_Ud)
+real,dimension(N_A,N_Ax), intent(inout)  :: A
+real,dimension(N_lambda), intent(out)  :: lambda
+real,dimension(N_U,N_Ud), intent(out)  :: U
+integer, intent(in) :: N_A
+integer, intent(in) :: N_Ax
+integer, intent(in) :: N_lambda
+integer, intent(in) :: N_U
+integer, intent(in) :: N_Ud
+call Eigenvalues_PM(A,lambda,U)
+end subroutine
+subroutine SVD_py(A,sigma,U,V,N_A,N_As,N_sigma,N_U,N_Ux,N_V,N_Vr)
+real,dimension(N_A,N_As), intent(in)  :: A
+real,dimension(N_sigma), intent(out)  :: sigma
+real,dimension(N_U,N_Ux), intent(out)  :: U
+real,dimension(N_V,N_Vr), intent(out)  :: V
+integer, intent(in) :: N_A
+integer, intent(in) :: N_As
+integer, intent(in) :: N_sigma
+integer, intent(in) :: N_U
+integer, intent(in) :: N_Ux
+integer, intent(in) :: N_V
+integer, intent(in) :: N_Vr
+call SVD(A,sigma,U,V)
+end subroutine
+subroutine LU_band_factorization_py(A,rj,N_A,N_Aw)
+real,dimension(N_A,N_Aw), intent(inout)  :: A
+integer, intent (in)  :: rj
+integer, intent(in) :: N_A
+integer, intent(in) :: N_Aw
+call LU_band_factorization(A,rj)
+end subroutine
+end module
+module ODE_Interface_py
+use ODE_Interface
+implicit none
+contains
+end module
+module Jacobian_module_py
+use Jacobian_module
+implicit none
+contains
+function Jacobian_py(FunctionRN_RN,xp,N_xp)
+real,dimension(N_xp), intent(in)  :: xp
+integer, intent(in) :: N_xp
+real,dimension(size(xp), size(xp)) :: Jacobian_py
+interface
+function FunctionRN_RN(i,x,N_x)
+integer :: i
+real,dimension(N_x), intent(in)  :: x
+integer, intent(in) :: N_x
+real :: FunctionRN_RN
+end function
+end interface
+Jacobian_py = Jacobian(FunctionRN_RN_py,xp)
+contains
+function FunctionRN_RN_py(x)
+real,dimension(:), intent(in)  :: x
+real,dimension(size(x)) :: FunctionRN_RN_py
+integer::i
+do i=1,size(x)
+FunctionRN_RN_py(i) = FunctionRN_RN(i,x,size(x(:)))
+end do
+end function
+end function
+function Jacobianc_py(FunctionRN_RNE,xp,N_xp)
+real,dimension(N_xp), intent(in)  :: xp
+integer, intent(in) :: N_xp
+real,dimension(size(xp), size(xp)) :: Jacobianc_py
+interface
+function FunctionRN_RNE(i,x,N_x)
+integer :: i
+real,dimension(N_x), target  :: x
+integer, intent(in) :: N_x
+real :: FunctionRN_RNE
+end function
+end interface
+Jacobianc_py = Jacobianc(FunctionRN_RNE_py,xp)
+contains
+function FunctionRN_RNE_py(x)
+real,dimension(:), target  :: x
+real,dimension(size(x)) :: FunctionRN_RNE_py
+integer::i
+do i=1,size(x)
+FunctionRN_RNE_py(i) = FunctionRN_RNE(i,x,size(x(:)))
+end do
+end function
+end function
+end module
+module Temporal_scheme_interface_py
+use Temporal_scheme_interface
+implicit none
+contains
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 end module
 module Embedded_RKs_py
 use Embedded_RKs
@@ -250,7 +405,12 @@ subroutine set_eRK_tolerance_py(eps)
 real, intent(in)  :: eps
 call set_eRK_tolerance(eps)
 end subroutine
+<<<<<<< HEAD
 subroutine ERK_scheme_py(ODES,t1,t2,U1,U2,ierr,N_U1,N_U2)
+=======
+subroutine ERK_scheme_py(F,t1,t2,U1,U2,ierr,N_U1,N_U2)
+procedure (ODES) :: F
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 real, intent(in)  :: t1
 real, intent(in)  :: t2
 real,dimension(N_U1), intent(in)  :: U1
@@ -258,6 +418,7 @@ real,dimension(N_U2), intent(out)  :: U2
 integer, intent(out)  :: ierr
 integer, intent(in) :: N_U1
 integer, intent(in) :: N_U2
+<<<<<<< HEAD
 interface
 function ODES(i,U,t,N_U)
 integer :: i
@@ -282,12 +443,21 @@ end subroutine
 subroutine RK_scheme_py(name,tag,ODES,t1,t2,U1,U2,N_U1,N_U2)
 character(len=*), intent(in)  :: name
 character(len=*), intent(in)  :: tag
+=======
+call ERK_scheme(F,t1,t2,U1,U2,ierr)
+end subroutine
+subroutine RK_scheme_py(name,tag,F,t1,t2,U1,U2,N_U1,N_U2)
+character(len=*), intent(in)  :: name
+character(len=*), intent(in)  :: tag
+procedure (ODES) :: F
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 real, intent(in)  :: t1
 real, intent(in)  :: t2
 real,dimension(N_U1), intent(in)  :: U1
 real,dimension(N_U2), intent(out)  :: U2
 integer, intent(in) :: N_U1
 integer, intent(in) :: N_U2
+<<<<<<< HEAD
 interface
 function ODES(i,U,t,N_U)
 integer :: i
@@ -308,6 +478,9 @@ do i=1,size(U)
 ODES_py(i) = ODES(i,U,t,size(U(:)))
 end do
 end function
+=======
+call RK_scheme(name,tag,F,t1,t2,U1,U2)
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 end subroutine
 subroutine Butcher_array_py(name,Ne)
 character(len=*), intent(in)  :: name
@@ -443,7 +616,12 @@ subroutine set_GBS_tolerance_py(eps)
 real, intent(in)  :: eps
 call set_GBS_tolerance(eps)
 end subroutine
+<<<<<<< HEAD
 subroutine Modified_midpoint_scheme_py(ODES,t0,t,U0,Un,n,N_U0,N_Un)
+=======
+subroutine Modified_midpoint_scheme_py(F,t0,t,U0,Un,n,N_U0,N_Un)
+procedure (ODES) :: F
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 real, intent(in)  :: t0
 real, intent(in)  :: t
 real,dimension(N_U0), intent(in)  :: U0
@@ -451,6 +629,7 @@ real,dimension(N_Un), intent(out)  :: Un
 integer, intent(in)  :: n
 integer, intent(in) :: N_U0
 integer, intent(in) :: N_Un
+<<<<<<< HEAD
 interface
 function ODES(i,U,t,N_U)
 integer :: i
@@ -471,6 +650,9 @@ do i=1,size(U)
 ODES_py(i) = ODES(i,U,t,size(U(:)))
 end do
 end function
+=======
+call Modified_midpoint_scheme(F,t0,t,U0,Un,n)
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 end subroutine
 subroutine GBS_Richardson_coefficients_py(n,b,N_n,N_b)
 integer,dimension(N_n), intent(in)  :: n
@@ -479,7 +661,12 @@ integer, intent(in) :: N_n
 integer, intent(in) :: N_b
 call GBS_Richardson_coefficients(n,b)
 end subroutine
+<<<<<<< HEAD
 subroutine GBS_Scheme_py(ODES,t1,t2,U1,U2,ierr,N_U1,N_U2)
+=======
+subroutine GBS_Scheme_py(F,t1,t2,U1,U2,ierr,N_U1,N_U2)
+procedure (ODES) :: F
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 real, intent(in)  :: t1
 real, intent(in)  :: t2
 real,dimension(N_U1), intent(in)  :: U1
@@ -487,6 +674,7 @@ real,dimension(N_U2), intent(out)  :: U2
 integer, intent(out)  :: ierr
 integer, intent(in) :: N_U1
 integer, intent(in) :: N_U2
+<<<<<<< HEAD
 interface
 function ODES(i,U,t,N_U)
 integer :: i
@@ -507,6 +695,9 @@ do i=1,size(U)
 ODES_py(i) = ODES(i,U,t,size(U(:)))
 end do
 end function
+=======
+call GBS_Scheme(F,t1,t2,U1,U2,ierr)
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 end subroutine
 end module
 module Non_Linear_Systems_py
@@ -573,7 +764,12 @@ subroutine set_ABM_tolerance_py(eps)
 real, intent(in)  :: eps
 call set_ABM_tolerance(eps)
 end subroutine
+<<<<<<< HEAD
 subroutine PC_ABM_py(ODES,t1,t2,U1,U2,ierr,N_U1,N_U2)
+=======
+subroutine PC_ABM_py(F,t1,t2,U1,U2,ierr,N_U1,N_U2)
+procedure (ODES) :: F
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 real, intent(in)      :: t1
 real, intent(in)      :: t2
 real,dimension(N_U1), intent(in)      :: U1
@@ -581,6 +777,7 @@ real,dimension(N_U2), intent(out)     :: U2
 integer, intent(out)  :: ierr
 integer, intent(in) :: N_U1
 integer, intent(in) :: N_U2
+<<<<<<< HEAD
 interface
 function ODES(i,U,t,N_U)
 integer :: i
@@ -603,6 +800,12 @@ end do
 end function
 end subroutine
 subroutine Predictor_AB_py(ODES,t1,t2,U1,U2,ierr,N_U1,N_U2)
+=======
+call PC_ABM(F,t1,t2,U1,U2,ierr)
+end subroutine
+subroutine Predictor_AB_py(F,t1,t2,U1,U2,ierr,N_U1,N_U2)
+procedure (ODES) :: F
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 real, intent(in)      :: t1
 real, intent(in)      :: t2
 real,dimension(N_U1), intent(in)      :: U1
@@ -610,6 +813,7 @@ real,dimension(N_U2), intent(out)     :: U2
 integer, intent(out)  :: ierr
 integer, intent(in) :: N_U1
 integer, intent(in) :: N_U2
+<<<<<<< HEAD
 interface
 function ODES(i,U,t,N_U)
 integer :: i
@@ -632,6 +836,12 @@ end do
 end function
 end subroutine
 subroutine Corrector_AM_py(ODES,t1,t2,U1,Up,U2,ierr,N_U1,N_Up,N_U2)
+=======
+call Predictor_AB(F,t1,t2,U1,U2,ierr)
+end subroutine
+subroutine Corrector_AM_py(F,t1,t2,U1,Up,U2,ierr,N_U1,N_Up,N_U2)
+procedure (ODES) :: F
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 real, intent(in)  :: t1
 real, intent(in)  :: t2
 real,dimension(N_U1), intent(in)  :: U1
@@ -641,6 +851,7 @@ integer, intent(out)  :: ierr
 integer, intent(in) :: N_U1
 integer, intent(in) :: N_Up
 integer, intent(in) :: N_U2
+<<<<<<< HEAD
 interface
 function ODES(i,U,t,N_U)
 integer :: i
@@ -663,10 +874,17 @@ end do
 end function
 end subroutine
 subroutine set_ABM_IC_py(ODES,U0,t0,h,N_U0)
+=======
+call Corrector_AM(F,t1,t2,U1,Up,U2,ierr)
+end subroutine
+subroutine set_ABM_IC_py(F,U0,t0,h,N_U0)
+procedure(ODES) :: F
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 real,dimension(N_U0), intent (in)  :: U0
 real, intent (in)  :: t0
 real, intent (in)  :: h
 integer, intent(in) :: N_U0
+<<<<<<< HEAD
 interface
 function ODES(i,U,t,N_U)
 integer :: i
@@ -689,10 +907,17 @@ end do
 end function
 end subroutine
 subroutine Initial_conditions_py(ODES,U0,t0,h,N_U0)
+=======
+call set_ABM_IC(F,U0,t0,h)
+end subroutine
+subroutine Initial_conditions_py(F,U0,t0,h,N_U0)
+procedure (ODES) :: F
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 real,dimension(N_U0), intent(in)  :: U0
 real, intent(in)  :: t0
 real, intent(in)  :: h
 integer, intent(in) :: N_U0
+<<<<<<< HEAD
 interface
 function ODES(i,U,t,N_U)
 integer :: i
@@ -739,6 +964,11 @@ real,dimension(0:degree, 0:size(xp)-1) :: Interpolant_py
 Interpolant_py = Interpolant(x,y,degree,xp)
 end function
 end module
+=======
+call Initial_conditions(F,U0,t0,h)
+end subroutine
+end module
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 module Temporal_Schemes_py
 use Temporal_Schemes
 implicit none
@@ -1021,12 +1251,22 @@ module Cauchy_Problem_py
 use Cauchy_Problem
 implicit none
 contains
+<<<<<<< HEAD
 subroutine Cauchy_ProblemS_py(Time_Domain,ODES,Solution,Temporal_Scheme,N_Time_Domain,N_Solution,N_Solutiont)
 real,dimension(N_Time_Domain), intent(in)  :: Time_Domain
 real,dimension(N_Solution,N_Solutiont), intent(out)  :: Solution
 integer, intent(in) :: N_Time_Domain
 integer, intent(in) :: N_Solution
 integer, intent(in) :: N_Solutiont
+=======
+subroutine Cauchy_ProblemS_py(Time_Domain,ODES,Solution,Scheme,N_Time_Domain,N_Solution,N_Solutionu)
+real,dimension(N_Time_Domain), intent(in)  :: Time_Domain
+real,dimension(N_Solution,N_Solutionu), intent(out)  :: Solution
+procedure (Temporal_Scheme), optional  :: Scheme
+integer, intent(in) :: N_Time_Domain
+integer, intent(in) :: N_Solution
+integer, intent(in) :: N_Solutionu
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 interface
 function ODES(i,U,t,N_U)
 integer :: i
@@ -1035,6 +1275,7 @@ real :: t
 integer, intent(in) :: N_U
 real :: ODES
 end function
+<<<<<<< HEAD
 subroutine Temporal_Scheme_py(F,t1,t2,U1,U2,ierr)
 procedure (ODES) :: F
 real, intent(in)     :: t1
@@ -1045,6 +1286,10 @@ integer, intent(out)  :: ierr
 end subroutine
 end interface
 call Cauchy_ProblemS(Time_Domain,ODES_py,Solution,Temporal_Scheme)
+=======
+end interface
+call Cauchy_ProblemS(Time_Domain,ODES_py,Solution,Scheme)
+>>>>>>> 2cfc6935cca058ab1cc9b660bae19d5d1f419b94
 contains
 function ODES_py(U,t)
 real,dimension(:) :: U

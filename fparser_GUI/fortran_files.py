@@ -140,7 +140,13 @@ def clear(self):
 def fortran_parser(self):
     self.terminal_text.add_line('Running fortran parser...')
     self.terminal_text.add_line('')
-    files=[self.main_dir+'/'+self.files[i] for i in range(0,len(self.files))]
+    files=[] 
+    for i in range(0,len(self.files)):
+        if self.files[i].endswith('.f'):
+            self.files_f.append(self.main_dir+'/'+self.files[i]) 
+        else:
+            files.append(self.main_dir+'/'+self.files[i])
+
     self.lib=fparser.library_maker(files,comment_style=self.fcomments,terminal=self.terminal_text)
     if self.lib==None:
         pass
