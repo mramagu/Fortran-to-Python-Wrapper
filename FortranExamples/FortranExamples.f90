@@ -17,15 +17,18 @@ program FortranExamples
 use test_module_1
 use test_module_2
 use test_module_3
+use test_module_4
 implicit none
 
 
 ! Variables
 real(8):: x, y
+real(8), dimension(0:10):: wyz
 ! Body of FortranExamples
 x = 3d0
 y = 4d0
 print *, test_function_1(x, y)
+print*, size(wyz(:))
 read *, x
 
 contains

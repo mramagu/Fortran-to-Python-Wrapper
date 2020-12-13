@@ -223,8 +223,9 @@ def tabing_tool(code):
     for i, line in enumerate(code):
         code[i] = ' '*4 + line
     return code
-    
-def remove_and_lists(code_line):
+
+
+def multiple_and_remover(code):
     """
         Function that finds the position of & in all the elements of a list and removes it
 
@@ -237,29 +238,50 @@ def remove_and_lists(code_line):
     list_ands_element =[]
     list_ands_position =[]
     counter = 0
+    x=0
     z=0
-    while counter + 1 <= len(code_line):
-     and_finder = fparsertools.find_and(code_line[counter])
+    while counter + 1 <= len(code): 
+     and_finder = find_and(code[counter]) #finds the position in the list where the & appears using the find_and function defined in fparsertools
      counter += 1
      list_ands_position.append(and_finder)
      if and_finder != None : 
-      list_ands_element.append(counter-1)
-     and_position = [] 
-     for val in list_ands_position: 
-      if val != None : 
-        and_position.append(val) 
-     counter2 = 0
-     clean_code=[]
-     while counter2+1 <= len(code_line):  
-      if counter2 not in list_ands_element:
-       clean_code.append(code_line[counter2])  
-     if counter2 in list_ands_element: 
-      x = 0+z     
-      clean_code.append(code_line[counter2][:and_position[x]] + code_line[counter2+1]) 
-      z=1
+      list_ands_element.append(counter-1) # vector with the numbers of the position of the element in the list where & appear
+    n=len(list_ands_element)
+    and_position = [] 
+    for val in list_ands_position: 
+        if val != None : 
+            and_position.append(val) # Position in each component of the list where & appears
+    counter2 = 0
+    clean_code=[]
+
+    while counter2+1 <= len(code):  
+      if counter2 not in list_ands_element: # if the component of the list doesn't have & it is appended
+       clean_code.append(code[counter2])  
+        
+      if counter2 in list_ands_element:      # if the component of the list has & 
+          index=list_ands_element.index(counter2)   # search the index in where the & appears in the vector
+          if index+1 < len(list_ands_element):  
+              x = 0+z
+              if abs(list_ands_element[index]-list_ands_element[index+1])!=1: # Checks if there are not two consecutive & on the list
+               clean_code.append(code[counter2][:and_position[x]] + code[counter2+1])  # if there are not two consecutive & keeps the code until the &, and adds the next line of the code/component of the list
+               z+=1
+               counter2+=1 # Jumps the next component because it was added to the previous one
+              if abs(list_ands_element[index]-list_ands_element[index+1])==1:# Checks if there are two consecutive & on the list
+               clean_code.append(code[counter2][:and_position[x]] + code[counter2+1]) # If two consecutive & appear it makes the same as the previous case
+               z+=2   # Jumps two lines in the and position vector because one & is included in the previous line
+               counter2+=1 # Jumps the next component because it was added to the previous one
+          elif index+1 == len(list_ands_element): # This option is defined for the last component in order to avoid problems with indexing 
+              clean_code.append(code[counter2][:and_position[-1]] + code[counter2+1]) 
+              z+=1
+              counter2+=1
       counter2+=1
-     counter2+=1
-    return clean_code
+    
+    if n==0: # Recursive call
+     return clean_code
+    if n!=0:
+      clean_code=(multiple_and_remover(clean_code))
+        
+    return clean_code 
 
 def dim_translator(dim):
     """
@@ -283,3 +305,27 @@ def dim_translator(dim):
 
     return size
 
+def parenthesis_splits(line, split_sign):
+    """
+        Function to split code at certain points but taking parenthesis into account.
+
+        Args:
+            line (string):: Line to split
+            split_sign (string):: Character with which to split
+
+        Returns:
+            Translated line
+    """    
+    split = list()
+    counter = 0
+    previous_split = 0
+    while counter + len(split_sign) <= len(line): # Studies each position in the line
+        if line[counter] == '(': # If fortran character is being written jumps to end of char
+            jump = find_closing_parenthesis(line, counter)
+            counter = jump
+        if line[counter:counter+len(split_sign)] == split_sign:
+            split.append(line[previous_split:counter])
+            previous_split = counter + len(split_sign)
+        counter += 1 # Adds 1 to the counter
+    split.append(line[previous_split:])
+    return split

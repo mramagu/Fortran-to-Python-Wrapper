@@ -2,7 +2,14 @@ MODULE test_module_3
 use test_module_2
 implicit none
 
-    contains
+interface
+     function FunctionRN_RN(x) result(F) 
+      real, intent(in) :: x(:) 
+      real :: F( size(x) ) 
+     end function 
+end interface 
+
+contains
 ! Test Function 3 description
 ! Additional lines
 real function test_function_3(x) result(M)

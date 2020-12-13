@@ -19,7 +19,7 @@ class Flibrary:
 
         self.solve_fake_names()
         self.module_reordering()
-
+        self.solve_procedures()
         self.files = self.filing()
 
     def module_reordering(self):
@@ -93,6 +93,40 @@ class Flibrary:
             interface += m.write_f2py_interface()
         return interface
 
+    def solve_procedures(self):
+        """
+            Method to adapt procedures in functionals to f2py comprehension.
+        """
+        # Searches all variables in all contents of all modules to check if any is a procedure
+        for im, m in enumerate(self.modules):
+            for ic, c in enumerate(m.contents):
+                for iv, v in enumerate(c.variables):
+                    if isinstance(v, Variable):
+                        if 'procedure' in v.type.lower():
+                            # If it is a procedure then it searches for said procedure in the rest of the library.
+                            # Finds out name of the procedure
+                            first_parenthesis = v.type.find('(')
+                            if first_parenthesis == -1:
+                                raise Exception('Could not find associated procedure in \'{}\' for {} in {} in module {}'.format(v.type, v.name, c.name, m.name))
+                            ending_parenthesis = fparsertools.find_closing_parenthesis(v.type, first_parenthesis)
+                            procedure = v.type[first_parenthesis+1:ending_parenthesis].strip()
+                            
+                            # Searches the rest of modules in the module's dependencies and itself for said procedure
+                            dependencies_names = self.find_dependencies(m)
+                            dependencies = [m2 for m2 in self.modules if m2.name in dependencies_names] + [m]
+                            breaker = False
+                            for i, m2 in enumerate(dependencies):
+                                for interface in m2.interfaces:
+                                    if interface.name.lower() == procedure.lower(): # Checks if the names of the procedures match
+                                        # Changes the value of the variable to the function
+                                        self.modules[im].contents[ic].variables[iv] = copy.deepcopy(interface) 
+                                        breaker = True
+                                        break
+                                if breaker:
+                                    break
+                                if i + 1 == len(dependencies_names) + 1: # If it cannot find it it raises an error
+                                    raise Exception('Could not find associated procedure to {} in library'.format(procedure))
+
 class Ffile:
     """
         Fortran File Class
@@ -140,6 +174,7 @@ class Module:
         self.fake_name = self.name + '_py'
         self.uses = self.find_uses(code)
         self.contents = self.find_functionals(code)
+        self.interfaces = self.find_interfaces(code)
         self.find_and_set_descriptions(code, comment_style)
         self.private_public_solver(code)
         self.solve_assume_shape()
@@ -192,16 +227,31 @@ class Module:
             Returns:
                 list of functionals of the module
         """
-        functions_str = fparsertools.section(code, 'function', ['subroutine', 'type']) # Sections all functions in the code
+        functions_str = fparsertools.section(code, 'function', ['subroutine', 'type', 'interface']) # Sections all functions in the code
         functions = [Function(f) for f in functions_str] # Processes all functions in the module
         del functions_str
 
-        subroutines_str = fparsertools.section(code, 'subroutine', ['function', 'type']) # Sections all subroutines in the code
+        subroutines_str = fparsertools.section(code, 'subroutine', ['function', 'type', 'interface']) # Sections all subroutines in the code
         subroutines = [Subroutine(s) for s in subroutines_str] # Processes all subroutines in the module
         del subroutines_str
 
         contents = functions + subroutines
         return contents
+
+    def find_interfaces(self, code):
+        """
+            Finds all the module functionals (subroutines or functions) within this module
+
+            Returns:
+                list of functionals of the module
+        """
+        interfaces_str = fparsertools.section(code, 'interface', ['subroutine', 'type', 'function']) # Sections all interfaces in the code
+        interface_functions = list()
+        for interface in interfaces_str:
+            functions_str = fparsertools.section(code, 'function', ['subroutine', 'type'])
+            interface_functions += [Function(f) for f in functions_str] # Processes all functions in the interface
+            del functions_str
+        return interface_functions
 
     def find_and_set_descriptions(self, code, description_format):
         """
@@ -262,7 +312,8 @@ class Module:
                 if fparsertools.find_command(line, 'public') !=None:
                     if fparsertools.identify_comment(line) != None:
                         line = line.replace(fparsertools.identify_comment(line), '')
-                    line = line[len('public'):].split(',')
+                    line = line.replace('::', '')
+                    line = line[len('public') + 1:].split(',')
                     public_functions += [i.strip() for i in line]
         else:
             public_functions = [c.name for c in self.contents]
@@ -423,6 +474,38 @@ class Ffunctional:
             else:
                 raise Exception('Cannot solve the shape of {} in function {}'.format(v.name, self.name))
 
+    def write_call_sizes(self):
+        """
+            Produces fortran code to find the sizes of the variables in the Functional.
+
+            Returns:
+                 A list of strings to be to the auxiliary function that calls the interface function.
+        """
+        sizes = list()
+        for v in self.variables: # Iterates thorugh all explicit function variables
+            if isinstance(v, Variable): # If instance is a variable it solves its shape
+                if v.dimensions != None: # If variable has dimension definition
+                    min_dims = list()
+                    for d in v.dimensions:
+                        if ':' in d: # If a sub-section has an interval in it proceeds to analyze it
+                             a = (d.strip()).split(':') # Subsection is split at interval and spaces are eliminated
+                             if not bool(a[0]): # If either side of the interval is empty then the shape will be assumed
+                                 min_dims.append(1)
+                             else:
+                                 min_dims.append(a[0])
+                        else:
+                            min_dims.append(1)
+
+                    for index, d in enumerate(v.dimensions):
+                        dim_info = '(' + ','.join(min_dims[:index] + [':'] + min_dims[index + 1:]) + ')'
+                        if ':' in d: # If a sub-section has an interval in it proceeds to analyze it
+                            a = (d.strip()).split(':') # Subsection is split at interval and spaces are eliminated
+                            if len(a) != 2: # All subsections should contain just 1 :, if more then raises error
+                                raise Exception('Error solving assume shape of variable {} in {}:\n {}'.format(self.name, v.name, v.dimensions))
+                            elif not bool(a[0]) or not bool(a[1]): # If either side of the interval is empty then the shape will be assumed
+                                sizes.append('size({}{})'.format(v.name, dim_info))
+        return sizes
+
 class Subroutine(Ffunctional):
     """
         Fortran Subrutine Class
@@ -469,7 +552,6 @@ class Subroutine(Ffunctional):
                 A list of strings to be added to the rest of the module interface.
         """
         interface = list()
-        inputs = list()
         interface.append('subroutine {}({})'.format(self.fake_name, ','.join(
             [v.name for v in self.variables + self.additional_variables])))
 
@@ -477,13 +559,11 @@ class Subroutine(Ffunctional):
         for v in self.variables:
             if isinstance(v, Variable):
                 interface += v.write_f2py_interface()
-                inputs.append(v.name)
             else:
                 procedures.append(v)
 
         for v in self.additional_variables:
             interface += v.write_f2py_interface()
-            inputs.append(v.name)
 
         aux_func = list()
         if bool(procedures):
@@ -492,13 +572,22 @@ class Subroutine(Ffunctional):
                 c = copy.deepcopy(v)
                 if c.result.dimensions != None:
                     aux_func += c.write_f2py_auxiliary_function()
-                    inputs.append(c.fake_name)
-                else:
-                    inputs.append(c.name)
                 c.solve_assume_shape()
                 c.solve_loops()
                 interface += c.write_interface()
             interface.append('end interface')
+
+        inputs = list()
+        for v in self.variables:
+            if isinstance(v, Variable) or isinstance(v, Subroutine):
+                inputs.append(v.name)
+            elif isinstance(v, Function):
+                if v.result.dimensions != None:
+                    inputs.append(v.fake_name)
+                else:
+                    inputs.append(v.name)
+            else:
+                raise Exceptions('Not supported input type for write f2py interface')
 
         interface.append('call {}({})'.format(self.name, ','.join(inputs)))
 
@@ -617,6 +706,19 @@ class Function(Ffunctional):
         else:
             return None
 
+    def reduce_result_dimensions(self, **kwargs):
+        """
+            Method to alter the dimensions of the result of the function to make it one dimensional.
+
+            Kwargs:
+                new_name (string): String to change the name of the result output.
+        """
+        if 'new_name' in kwargs:
+            name = kwargs['new_name']
+        else:
+            name = self.result.name
+        self.result = Variable(name, '{}::{}'.format(','.join([self.result.type] + self.result.other_def), name))
+
     def find_result(self, code):
         """
             Finds the result of the function type and dimensions
@@ -690,12 +792,38 @@ class Function(Ffunctional):
                     raise Exception('Program Does not admit more than 1 interval for dimension definition: \n' + i)
                 loop.append('do {}={},{}'.format(loop_int, start_loop, end_loop))
                 integers.append(loop_int)
-            loop.append('{}({}) = {}({})'.format(self.fake_name, ','.join(integers), self.name, ','.join( integers + [v.name for v in self.variables])))
+            loop.append('{}({}) = {}({})'.format(self.fake_name, ','.join(integers), self.name, ','.join( integers + [v.name for v in self.variables] + self.write_call_sizes())))
             for i in integers:
                 loop.append('end do')
-            interface = self.write_interface(add_variables=False)
-            interface = [interface[0].replace(self.name, self.fake_name)] + interface[1:len(interface)-2] + \
-                [interface[-2].replace(self.name, self.fake_name)] + ['integer::' + ','.join(integers)] + loop + [interface[-1]]
+
+            variables = self.variables
+
+            interface = list()
+            if self.func_type != None:
+                interface.append('{} function {}({})'.format(self.func_type, self.name, ','.join(
+                    [v.name for v in variables])))
+            else:
+                interface.append('function {}({})'.format(self.name, ','.join(
+                    [v.name for v in variables])))
+
+            for v in variables:
+                if isinstance(v, Variable):
+                    interface += v.write_f2py_interface()
+                else:
+                    raise Exception('Interface within interface is not supported for {}'.format(self.name))
+
+            c = Variable(self.fake_name, '{},dimension({})::{}'.format(','.join([self.result.type] + self.result.other_def),
+                                                                  ','.join(self.result.dimensions), self.fake_name))
+            if self.func_type != None:
+                if not any(var_type in self.func_type for var_type in Variable.types()): # If definition of function is included in func_type it does not write it
+                    interface += [('\n'.join(c.write_f2py_interface()))] # If not defines the output of the function
+            else:
+                interface += [('\n'.join(c.write_f2py_interface()))]
+
+            interface.append('end function') 
+
+            interface = [interface[0].replace(self.name, self.fake_name)] + interface[1:len(interface)-1] + \
+                ['integer::' + ','.join(integers)] + loop + [interface[-1]]
             return interface
         else:
             return interface
@@ -729,11 +857,14 @@ class Function(Ffunctional):
             else:
                 raise Exception('Interface within interface is not supported for {}'.format(self.name))
 
+        c = copy.deepcopy(self)
+        c.reduce_result_dimensions(new_name=self.name)
         if self.func_type != None:
             if not any(var_type in self.func_type for var_type in Variable.types()): # If definition of function is included in func_type it does not write it
-                interface += [('\n'.join(self.result.write_f2py_interface()))] # If not defines the output of the function
+                interface += [('\n'.join(c.result.write_f2py_interface()))] # If not defines the output of the function
         else:
-            interface += [('\n'.join(self.result.write_f2py_interface()))]
+            interface += [('\n'.join(c.result.write_f2py_interface()))]
+        del c
 
         interface.append('end function')       
         return interface
@@ -746,7 +877,6 @@ class Function(Ffunctional):
                 A list of strings to be added to the rest of the module interface.
         """
         interface = list()
-        inputs = list()
         if self.func_type != None:
             interface.append('{} function {}({})'.format(self.func_type, self.fake_name, ','.join(
                 [v.name for v in self.variables + self.additional_variables])))
@@ -758,13 +888,11 @@ class Function(Ffunctional):
         for v in self.variables:
             if isinstance(v, Variable):
                 interface += v.write_f2py_interface()
-                inputs.append(v.name)
             else:
                 procedures.append(v)
 
         for v in self.additional_variables:
             interface += v.write_f2py_interface()
-            inputs.append(v.name)
         
         if self.func_type != None:
             if not any(var_type in self.func_type for var_type in Variable.types()): # If definition of function is included in func_type it does not write it
@@ -776,15 +904,25 @@ class Function(Ffunctional):
         if bool(procedures):
             interface.append('interface')
             for i, v in enumerate(procedures):
+                c = copy.deepcopy(v)
                 if v.result.dimensions != None:
-                    aux_func += v.write_f2py_auxiliary_function()
+                    aux_func += c.write_f2py_auxiliary_function()
+                c.solve_assume_shape()
+                c.solve_loops()
+                interface += c.write_interface()
+            interface.append('end interface')
+
+        inputs = list()
+        for v in self.variables:
+            if isinstance(v, Variable) or isinstance(v, Subroutine):
+                inputs.append(v.name)
+            elif isinstance(v, Function):
+                if v.result.dimensions != None:
                     inputs.append(v.fake_name)
                 else:
                     inputs.append(v.name)
-                v.solve_assume_shape()
-                v.solve_loops()
-                interface += v.write_interface()
-            interface.append('end interface')
+            else:
+                raise Exceptions('Not supported input type for write f2py interface')
 
         interface.append('{} = {}({})'.format(self.fake_name, self.name, ','.join(inputs)))
         
@@ -886,10 +1024,10 @@ class Variable:
             Args:
                 code_line (string): Variable definition code
         """
-        if len(code_line.split("::")) == 2:
-            variable_definition = code_line.split("::")[0] # Extracts the definition of the variable before ::
-            written_variable = code_line.split("::")[1] # Extracts the definition of the variable after ::
-        elif len(code_line.split("::")) == 1:
+        if len(fparsertools.parenthesis_splits(code_line, '::')) == 2:
+            variable_definition = fparsertools.parenthesis_splits(code_line, '::')[0] # Extracts the definition of the variable before ::
+            written_variable = fparsertools.parenthesis_splits(code_line, '::')[1] # Extracts the definition of the variable after ::
+        elif len(fparsertools.parenthesis_splits(code_line, "::")) == 1:
             var_pos = fparsertools.find_command(code_line, self.name)
             variable_definition = code_line[0:var_pos]
             written_variable = code_line[var_pos:]
@@ -954,8 +1092,9 @@ class Variable:
             dim_def_start = variable_definition[dim_position + len('dimension'):].lower().find('(')
             dim_def_end = fparsertools.find_closing_parenthesis(variable_definition + written_variable, 
                             dim_position + len('dimension') + dim_def_start)
-            dimension += variable_definition[dim_position + len('dimension') + dim_def_start + 1: dim_def_end].strip().split(',')
+            dimension += fparsertools.parenthesis_splits(variable_definition[dim_position + len('dimension') + dim_def_start + 1: dim_def_end].strip(), ',')
 
+        # Additional dimensions in line rewrite previous declarations
         vposition = fparsertools.find_command(written_variable, self.name)  # Finds variable name in line
         if vposition == None:
             raise Exception('Variable {} not found in expected line: \n{}'.format(self.name, code_line))
@@ -966,7 +1105,7 @@ class Variable:
                     dim_def_end = fparsertools.find_closing_parenthesis(variable_definition + written_variable, 
                                     len(variable_definition) + vposition + len(self.name) + dim_def_start + dim_def_start) \
                                        - len(variable_definition)
-                    dimension += written_variable[vposition + len(self.name) + dim_def_start + 1:dim_def_end].strip().split(',')
+                    dimension = fparsertools.parenthesis_splits(written_variable[vposition + len(self.name) + dim_def_start + 1:dim_def_end].strip(), ',')
 
         if not bool(dimension): # If no dimensions have been declared returns None
             return None
@@ -984,7 +1123,7 @@ class Variable:
                 list of strings with additional code definitions.
         """
         variable_definition = self.var_splitter(code_line)[0] # Extracts the definition of the variable before ::
-        definitions = variable_definition.split(",") # Divides it into smaller sections
+        definitions = fparsertools.parenthesis_splits(variable_definition, ',') # Divides it into smaller sections
         other_def = list()
         for d in definitions:
             if not self.type.lower() in d.lower() and 'dimension' not in d.lower():
