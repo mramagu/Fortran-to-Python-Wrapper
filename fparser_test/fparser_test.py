@@ -4,6 +4,7 @@ import os
 
 import fobjects
 import fparser
+import fparsertools
 
 #%% Helper Functions
 def path_joining(file_dir):
@@ -37,7 +38,7 @@ def file_reader(file_dir):
     for i, line in enumerate(file_code):
         file_code[i] = line.replace('\n', '')
     file.close()
-    return file_code
+    return fparsertools.multiple_and_remover(file_code)
 
 #%% Tests for fparser objects
 @pytest.mark.parametrize('file,module_names', [

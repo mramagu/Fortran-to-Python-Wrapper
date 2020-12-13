@@ -19,7 +19,7 @@ class Flibrary:
 
         self.solve_fake_names()
         self.module_reordering()
-
+        self.solve_procedures()
         self.files = self.filing()
 
     def module_reordering(self):
@@ -93,6 +93,40 @@ class Flibrary:
             interface += m.write_f2py_interface()
         return interface
 
+    def solve_procedures(self):
+        """
+            Method to adapt procedures in functionals to f2py comprehension.
+        """
+        # Searches all variables in all contents of all modules to check if any is a procedure
+        for im, m in enumerate(self.modules):
+            for ic, c in enumerate(m.contents):
+                for iv, v in enumerate(c.variables):
+                    if isinstance(v, Variable):
+                        if 'procedure' in v.type.lower():
+                            # If it is a procedure then it searches for said procedure in the rest of the library.
+                            # Finds out name of the procedure
+                            first_parenthesis = v.type.find('(')
+                            if first_parenthesis == -1:
+                                raise Exception('Could not find associated procedure in \'{}\' for {} in {} in module {}'.format(v.type, v.name, c.name, m.name))
+                            ending_parenthesis = fparsertools.find_closing_parenthesis(v.type, first_parenthesis)
+                            procedure = v.type[first_parenthesis+1:ending_parenthesis].strip()
+                            
+                            # Searches the rest of modules in the module's dependencies and itself for said procedure
+                            dependencies_names = self.find_dependencies(m)
+                            dependencies = [m2 for m2 in self.modules if m2.name in dependencies_names] + [m]
+                            breaker = False
+                            for i, m2 in enumerate(dependencies):
+                                for interface in m2.interfaces:
+                                    if interface.name.lower() == procedure.lower(): # Checks if the names of the procedures match
+                                        # Changes the value of the variable to the function
+                                        self.modules[im].contents[ic].variables[iv] = copy.deepcopy(interface) 
+                                        breaker = True
+                                        break
+                                if breaker:
+                                    break
+                                if i + 1 == len(dependencies_names) + 1: # If it cannot find it it raises an error
+                                    raise Exception('Could not find associated procedure to {} in library'.format(procedure))
+
 class Ffile:
     """
         Fortran File Class
@@ -140,6 +174,7 @@ class Module:
         self.fake_name = self.name + '_py'
         self.uses = self.find_uses(code)
         self.contents = self.find_functionals(code)
+        self.interfaces = self.find_interfaces(code)
         self.find_and_set_descriptions(code, comment_style)
         self.private_public_solver(code)
         self.solve_assume_shape()
@@ -192,16 +227,31 @@ class Module:
             Returns:
                 list of functionals of the module
         """
-        functions_str = fparsertools.section(code, 'function', ['subroutine', 'type']) # Sections all functions in the code
+        functions_str = fparsertools.section(code, 'function', ['subroutine', 'type', 'interface']) # Sections all functions in the code
         functions = [Function(f) for f in functions_str] # Processes all functions in the module
         del functions_str
 
-        subroutines_str = fparsertools.section(code, 'subroutine', ['function', 'type']) # Sections all subroutines in the code
+        subroutines_str = fparsertools.section(code, 'subroutine', ['function', 'type', 'interface']) # Sections all subroutines in the code
         subroutines = [Subroutine(s) for s in subroutines_str] # Processes all subroutines in the module
         del subroutines_str
 
         contents = functions + subroutines
         return contents
+
+    def find_interfaces(self, code):
+        """
+            Finds all the module functionals (subroutines or functions) within this module
+
+            Returns:
+                list of functionals of the module
+        """
+        interfaces_str = fparsertools.section(code, 'interface', ['subroutine', 'type', 'function']) # Sections all interfaces in the code
+        interface_functions = list()
+        for interface in interfaces_str:
+            functions_str = fparsertools.section(code, 'function', ['subroutine', 'type'])
+            interface_functions += [Function(f) for f in functions_str] # Processes all functions in the interface
+            del functions_str
+        return interface_functions
 
     def find_and_set_descriptions(self, code, description_format):
         """
@@ -763,9 +813,9 @@ class Function(Ffunctional):
 
         if self.func_type != None:
             if not any(var_type in self.func_type for var_type in Variable.types()): # If definition of function is included in func_type it does not write it
-                interface += [('\n'.join(self.result.write_f2py_interface()))] # If not defines the output of the function
+                interface += [('\n'.join(self.result.write_f2py_interface())).replace(self.result.name, self.name)] # If not defines the output of the function
         else:
-            interface += [('\n'.join(self.result.write_f2py_interface()))]
+            interface += [('\n'.join(self.result.write_f2py_interface())).replace(self.result.name, self.name)]
 
         interface.append('end function')       
         return interface

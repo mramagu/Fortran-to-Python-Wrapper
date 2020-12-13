@@ -1,4 +1,5 @@
 MODULE test_module_4
+use test_module_3
 use test_module_2
 implicit none
 
@@ -38,4 +39,22 @@ subroutine test_multiple_dimensions(x, y, Solution, interface_function)
     end interface
     Solution = interface_function(x, y)
 end subroutine
+
+function test_procedures(F, x) result(U)
+  procedure (FunctionRN_RN) :: F 
+  real, intent(in) :: x(:)
+  real :: U( size(x), size(x) ) 
+
+   integer ::  j, N  
+   real :: xj( size(x) ) 
+
+    N = size(X) 
+  
+    do j = 1, N 
+       xj = 0
+       xj(j) = 1d-3
+       U(:,j) =  ( F(x + xj) - F(x - xj) )/norm2(2*xj);
+    enddo 
+
+end function 
 end module
