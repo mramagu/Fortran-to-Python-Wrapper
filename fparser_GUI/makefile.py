@@ -137,14 +137,52 @@ class Makefile():
         for flag in flags:
             run_comp.append(flag)
 
-        subprocess.run(run_comp)
-        # comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        # print(comp.stdout.decode('utf-8'))
-        # self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'),number=2)
+        #Run f2py 
+        comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'),number=2)
+        #Move library to the new folder 
+        if self.os=='Linux':
+            pwd=subprocess.run(['pwd'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            lib_dir=pwd.stdout.decode('utf-8')
+            end='.so'
+        else:
+            chdir=subprocess.run(['chdir'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            lib_dir=chdir.stdout.decode('utf-8')
+            end='.dll'
+
+        lib_dir=lib_dir.strip('\n')
+        with os.scandir(lib_dir) as files:
+            for f in files:
+                if f.is_file():
+                    file_name=f.name
+                    if file_name.startswith(self.lib+'f') and file_name.endswith(end):
+                        lib_name=file_name
+                        break
+        try:
+            os.rename(lib_dir+'/'+lib_name,self.self_fparser.folder_path+'/'+lib_name)
+            self.self_fparser.terminal_text.add_line('Success: Python library Generated',number=2)
+        except:
+            self.self_fparser.terminal_text.add_line(comp.stderr.decode('utf-8'))
+            self.self_fparser.terminal_text.add_line('Error: Python library generation Failed',number=2)
+
 
 
 
 if __name__ == "__main__":
 
-    p=subprocess.run(['pwd'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-    print(p.stdout.decode('utf-8'))
+    # p=subprocess.run(['pwd'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    # print(p.stdout.decode('utf-8'))
+    dir1=os.path.dirname(os.path.abspath(__file__))
+    print(dir1)
+    pwd=subprocess.run(['pwd'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    lib_dir=pwd.stdout.decode('utf-8')
+    # print(lib_dir)
+    lib_dir=lib_dir.strip('\n')
+    print(lib_dir)
+    with os.scandir(lib_dir) as files:
+        for f in files:
+            if f.is_file():
+                if f.name.startswith('test_interface'+'f') and f.name.endswith('.so'):
+                    lib_name=f.name
+                    break
+    print(lib_name)
