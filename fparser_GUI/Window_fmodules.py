@@ -113,7 +113,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Selection of Fortran modules"))
         self.label_fmod.setText(_translate("MainWindow", "Fortran modules"))
         self.label_select.setText(_translate("MainWindow", "Select Fortran modules"))
         self.label_selfmod.setText(_translate("MainWindow", "Selected Fortran modules"))

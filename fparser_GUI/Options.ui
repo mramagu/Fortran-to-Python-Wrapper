@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>754</height>
+    <height>842</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Options</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_7">

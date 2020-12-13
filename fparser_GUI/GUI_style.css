@@ -4,4 +4,6 @@ background-color:white;
 QPlainTextEdit#plainTextEdit_terminal{
 background-color:black;
 color:white;
+font:Ubuntu Mono;
+font-size:12px;
 }
