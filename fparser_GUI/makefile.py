@@ -146,5 +146,5 @@ class Makefile():
 
 if __name__ == "__main__":
 
-    p=subprocess.run(['python','--version'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-    print(p.stdout)
+    p=subprocess.run(['pwd'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    print(p.stdout.decode('utf-8'))
