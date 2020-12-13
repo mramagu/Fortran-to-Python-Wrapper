@@ -552,7 +552,6 @@ class Subroutine(Ffunctional):
                 A list of strings to be added to the rest of the module interface.
         """
         interface = list()
-        inputs = list()
         interface.append('subroutine {}({})'.format(self.fake_name, ','.join(
             [v.name for v in self.variables + self.additional_variables])))
 
@@ -560,7 +559,6 @@ class Subroutine(Ffunctional):
         for v in self.variables:
             if isinstance(v, Variable):
                 interface += v.write_f2py_interface()
-                inputs.append(v.name)
             else:
                 procedures.append(v)
 
@@ -574,13 +572,22 @@ class Subroutine(Ffunctional):
                 c = copy.deepcopy(v)
                 if c.result.dimensions != None:
                     aux_func += c.write_f2py_auxiliary_function()
-                    inputs.append(c.fake_name)
-                else:
-                    inputs.append(c.name)
                 c.solve_assume_shape()
                 c.solve_loops()
                 interface += c.write_interface()
             interface.append('end interface')
+
+        inputs = list()
+        for v in self.variables:
+            if isinstance(v, Variable) or isinstance(v, Subroutine):
+                inputs.append(v.name)
+            elif isinstance(v, Function):
+                if v.result.dimensions != None:
+                    inputs.append(v.fake_name)
+                else:
+                    inputs.append(v.name)
+            else:
+                raise Exceptions('Not supported input type for write f2py interface')
 
         interface.append('call {}({})'.format(self.name, ','.join(inputs)))
 
@@ -828,7 +835,6 @@ class Function(Ffunctional):
                 A list of strings to be added to the rest of the module interface.
         """
         interface = list()
-        inputs = list()
         if self.func_type != None:
             interface.append('{} function {}({})'.format(self.func_type, self.fake_name, ','.join(
                 [v.name for v in self.variables + self.additional_variables])))
@@ -840,7 +846,6 @@ class Function(Ffunctional):
         for v in self.variables:
             if isinstance(v, Variable):
                 interface += v.write_f2py_interface()
-                inputs.append(v.name)
             else:
                 procedures.append(v)
 
@@ -857,15 +862,25 @@ class Function(Ffunctional):
         if bool(procedures):
             interface.append('interface')
             for i, v in enumerate(procedures):
+                c = copy.deepcopy(v)
                 if v.result.dimensions != None:
-                    aux_func += v.write_f2py_auxiliary_function()
+                    aux_func += c.write_f2py_auxiliary_function()
+                c.solve_assume_shape()
+                c.solve_loops()
+                interface += c.write_interface()
+            interface.append('end interface')
+
+        inputs = list()
+        for v in self.variables:
+            if isinstance(v, Variable) or isinstance(v, Subroutine):
+                inputs.append(v.name)
+            elif isinstance(v, Function):
+                if v.result.dimensions != None:
                     inputs.append(v.fake_name)
                 else:
                     inputs.append(v.name)
-                v.solve_assume_shape()
-                v.solve_loops()
-                interface += v.write_interface()
-            interface.append('end interface')
+            else:
+                raise Exceptions('Not supported input type for write f2py interface')
 
         interface.append('{} = {}({})'.format(self.fake_name, self.name, ','.join(inputs)))
         
