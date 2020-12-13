@@ -82,7 +82,14 @@ def interface_writer(lib, modules, **kwargs):
             print('Selected Modules: ' + ' ,'.join(modules))
         writing_modules = [m for m in lib.modules if m.name in modules]
         for m in writing_modules:
-            interface += m.write_f2py_interface()
+            add_interface = m.write_f2py_interface()
+            if len(add_interface) > 5:
+                interface += add_interface
+            else:
+                if terminal_present:
+                    terminal.add_line('Warning: Not generating interface for module {}. Empty contents.'.format(m.name))
+                else:
+                    print('Warning: Not generating interface for module {}. Empty contents.'.format(m.name))       
         if terminal_present:
             terminal.add_line('Success: f2py Interface Generated', number=2)
         else:
@@ -127,7 +134,14 @@ def py_interface_writer(lib, modules, lib_name, **kwargs):
         interface.append('import {}'.format(lib_name))
         writing_modules = [m for m in lib.modules if m.name in modules]
         for m in writing_modules:
-            interface += m.write_py_interface(lib_name)
+            add_interface = m.write_py_interface(lib_name)
+            if len(add_interface) > 1:
+                interface += add_interface
+            else:
+                if terminal_present:
+                    terminal.add_line('Warning: Not generating interface for module {}. Empty contents.'.format(m.name))
+                else:
+                    print('Warning: Not generating interface for module {}. Empty contents.'.format(m.name))     
         if terminal_present:
             terminal.add_line('Success: Python Interface Generated', number=2)
         else:

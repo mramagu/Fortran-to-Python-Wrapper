@@ -112,20 +112,20 @@ class Flibrary:
                             procedure = v.type[first_parenthesis+1:ending_parenthesis].strip()
                             
                             # Searches the rest of modules in the module's dependencies and itself for said procedure
-                            dependencies_names = self.find_dependencies(m)
-                            dependencies = [m2 for m2 in self.modules if m2.name in dependencies_names] + [m]
+                            dependencies_names = [name.lower() for name in self.find_dependencies(m)]
+                            dependencies = [m2 for m2 in self.modules if m2.name.lower() in dependencies_names] + [m]
                             breaker = False
                             for i, m2 in enumerate(dependencies):
                                 for interface in m2.interfaces:
                                     if interface.name.lower() == procedure.lower(): # Checks if the names of the procedures match
                                         # Changes the value of the variable to the function
-                                        self.modules[im].contents[ic].variables[iv] = copy.deepcopy(interface) 
+                                        self.modules[im].contents[ic].variables[iv] = copy.deepcopy(interface)
                                         breaker = True
                                         break
                                 if breaker:
                                     break
-                                if i + 1 == len(dependencies_names) + 1: # If it cannot find it it raises an error
-                                    raise Exception('Could not find associated procedure to {} in library'.format(procedure))
+                                if i + 1 == len(dependencies): # If it cannot find it it raises an error
+                                    raise Exception('Could not find associated procedure to {} in {} in module {} in library'.format(procedure, c.name, m.name))
 
 class Ffile:
     """
@@ -213,7 +213,7 @@ class Module:
             if use != None:
                 line_no_comment = code[counter].split('!')[0] # Separates code in two fragments where a comment migh be declared and stores the first one
                 pure_use = line_no_comment.split(',')[0] # Separates code into two fragments in case a use only is being declared and stores the first one
-                uses.append(pure_use[use + len('use'):].strip()) # Line from first instance onwards and space deletion
+                uses.append(pure_use[use + len('use'):].strip().lower()) # Line from first instance onwards and space deletion
             elif fparsertools.find_command(code[counter], 'contains') != None or \
                 fparsertools.find_command(code[counter], 'implicit') != None: # Once one of these commands has been declared no more uses will appear
                 break 
@@ -246,12 +246,16 @@ class Module:
                 list of functionals of the module
         """
         interfaces_str = fparsertools.section(code, 'interface', ['subroutine', 'type', 'function']) # Sections all interfaces in the code
-        interface_functions = list()
+        interface_contents = list()
         for interface in interfaces_str:
-            functions_str = fparsertools.section(code, 'function', ['subroutine', 'type'])
-            interface_functions += [Function(f) for f in functions_str] # Processes all functions in the interface
+            functions_str = fparsertools.section(interface, 'function', ['subroutine', 'type'])
+            interface_contents += [Function(f) for f in functions_str] # Processes all functions in the interface
             del functions_str
-        return interface_functions
+
+            subroutines_str = fparsertools.section(interface, 'subroutine', ['function', 'type']) # Sections all subroutines in the code
+            interface_contents += [Subroutine(s) for s in subroutines_str] # Processes all subroutines in the module
+            del subroutines_str
+        return interface_contents
 
     def find_and_set_descriptions(self, code, description_format):
         """
@@ -535,13 +539,26 @@ class Subroutine(Ffunctional):
         variable_def_position = first_line[subr_position + len('subroutine'):].lower().find('(') # Subroutine name stops when variables are defined
         return first_line[subr_position + len('subroutine'): subr_position + len('subroutine') + variable_def_position].strip() # Subroutine name and space deletion
 
-    def write_interface(self):
+    def write_interface(self, add_variables=True):
         """
             Method to write the subroutine as part of a fortran interface.
         """
-        interface = self.write_f2py_interface()
-        interface[0].replace(self.fake_name, self.name)
-        interface.pop(-2)
+        if add_variables:
+            variables = self.variables + self.additional_variables
+        else:
+            variables = self.variables
+
+        interface = list()
+
+        interface.append('Subroutine {}({})'.format(self.name, ','.join([v.name for v in variables])))
+
+        for v in variables:
+            if isinstance(v, Variable):
+                interface += v.write_f2py_interface()
+            else:
+                raise Exception('Interface within interface is not supported for {}'.format(self.name))
+
+        interface.append('end subroutine')       
         return interface
     
     def write_f2py_interface(self):
@@ -570,10 +587,11 @@ class Subroutine(Ffunctional):
             interface.append('interface')
             for i, v in enumerate(procedures):
                 c = copy.deepcopy(v)
-                if c.result.dimensions != None:
-                    aux_func += c.write_f2py_auxiliary_function()
-                c.solve_assume_shape()
-                c.solve_loops()
+                if isinstance(v, Function):
+                    if v.result.dimensions != None:
+                        aux_func += c.write_f2py_auxiliary_function()
+                    c.solve_assume_shape()
+                    c.solve_loops()
                 interface += c.write_interface()
             interface.append('end interface')
 
@@ -905,10 +923,11 @@ class Function(Ffunctional):
             interface.append('interface')
             for i, v in enumerate(procedures):
                 c = copy.deepcopy(v)
-                if v.result.dimensions != None:
-                    aux_func += c.write_f2py_auxiliary_function()
-                c.solve_assume_shape()
-                c.solve_loops()
+                if isinstance(v, Function):
+                    if v.result.dimensions != None:
+                        aux_func += c.write_f2py_auxiliary_function()
+                    c.solve_assume_shape()
+                    c.solve_loops()
                 interface += c.write_interface()
             interface.append('end interface')
 

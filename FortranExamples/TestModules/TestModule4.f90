@@ -6,7 +6,7 @@ implicit none
 contains
 ! Test Subroutine 4 description
 ! Additional lines
-subroutine test_subroutine_4(x, y, Solution, interface_function)
+subroutine test_subroutine_4(x, y, Solution, interface_function, interface_subroutine)
     real(8), intent(in):: x(0:) ! Description of x
     real(8), intent(in) :: y(0:) ! Description of y
     real(8), intent(inout) :: Solution(0:size(x)-1, 0:size(y)-1) ! Description of output
@@ -16,6 +16,10 @@ subroutine test_subroutine_4(x, y, Solution, interface_function)
             real(8):: y(0:)
             real(8):: interface_function(0:size(x)-1, 0:size(y)-1)
         end function
+        subroutine interface_subroutine(x, F)
+        procedure (FunctionRN_RN) :: F 
+        real::x
+        end subroutine
     end interface
     Solution = interface_function(x, y)
 end subroutine
