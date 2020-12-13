@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1076</width>
-    <height>781</height>
+    <height>782</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -268,6 +268,9 @@
               </property>
               <property name="lineWidth">
                <number>1</number>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
               </property>
               <property name="selectionMode">
                <enum>QAbstractItemView::ExtendedSelection</enum>
@@ -777,6 +780,12 @@
        </property>
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextSelectableByMouse</set>
+       </property>
+       <property name="centerOnScroll">
+        <bool>false</bool>
        </property>
       </widget>
      </item>

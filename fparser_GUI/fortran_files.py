@@ -332,6 +332,7 @@ class Terminal():
                 n=n+' \n'
         previous_text=self.self_fparser.ui.plainTextEdit_terminal.toPlainText()
         self.self_fparser.ui.plainTextEdit_terminal.setPlainText(previous_text+n+text)
+        self.self_fparser.ui.plainTextEdit_terminal.verticalScrollBar().setValue(self.self_fparser.ui.plainTextEdit_terminal.verticalScrollBar().maximum())
     def clear(self):
         self.self_fparser.ui.plainTextEdit_terminal.clear()
 
@@ -350,9 +351,8 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             self.setFormat(0, len(text), self.successFormat)
         
 if __name__ == "__main__":
-    # print(sys.path)
-    p=subprocess.run(['python','--version'],stdout=subprocess.PIPE)
-    print(p.stdout.decode('utf-8'))
+    print(sys.path)
+
 
 
     

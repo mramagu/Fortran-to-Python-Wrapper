@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1076, 781)
+        MainWindow.resize(1076, 782)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -127,6 +127,7 @@ class Ui_MainWindow(object):
         self.treeWidget_fsummary.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.treeWidget_fsummary.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.treeWidget_fsummary.setLineWidth(1)
+        self.treeWidget_fsummary.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.treeWidget_fsummary.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.treeWidget_fsummary.setAnimated(True)
         self.treeWidget_fsummary.setWordWrap(False)
@@ -327,6 +328,8 @@ class Ui_MainWindow(object):
         self.plainTextEdit_terminal.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.plainTextEdit_terminal.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.plainTextEdit_terminal.setReadOnly(True)
+        self.plainTextEdit_terminal.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
+        self.plainTextEdit_terminal.setCenterOnScroll(False)
         self.plainTextEdit_terminal.setObjectName("plainTextEdit_terminal")
         self.verticalLayout_9.addWidget(self.plainTextEdit_terminal)
         self.dockWidget_terminal.setWidget(self.dockWidgetContents)
