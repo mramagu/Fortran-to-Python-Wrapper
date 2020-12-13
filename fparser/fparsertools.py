@@ -282,8 +282,6 @@ def multiple_and_remover(code):
       clean_code=(multiple_and_remover(clean_code))
         
     return clean_code 
-    
-
 
 def dim_translator(dim):
     """
@@ -307,3 +305,27 @@ def dim_translator(dim):
 
     return size
 
+def parenthesis_splits(line, split_sign):
+    """
+        Function to split code at certain points but taking parenthesis into account.
+
+        Args:
+            line (string):: Line to split
+            split_sign (string):: Character with which to split
+
+        Returns:
+            Translated line
+    """    
+    split = list()
+    counter = 0
+    previous_split = 0
+    while counter + len(split_sign) <= len(line): # Studies each position in the line
+        if line[counter] == '(': # If fortran character is being written jumps to end of char
+            jump = find_closing_parenthesis(line, counter)
+            counter = jump
+        if line[counter:counter+len(split_sign)] == split_sign:
+            split.append(line[previous_split:counter])
+            previous_split = counter + len(split_sign)
+        counter += 1 # Adds 1 to the counter
+    split.append(line[previous_split:])
+    return split

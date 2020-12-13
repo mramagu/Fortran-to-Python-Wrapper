@@ -706,6 +706,19 @@ class Function(Ffunctional):
         else:
             return None
 
+    def reduce_result_dimensions(self, **kwargs):
+        """
+            Method to alter the dimensions of the result of the function to make it one dimensional.
+
+            Kwargs:
+                new_name (string): String to change the name of the result output.
+        """
+        if 'new_name' in kwargs:
+            name = kwargs['new_name']
+        else:
+            name = self.result.name
+        self.result = Variable(name, '{}::{}'.format(','.join([self.result.type] + self.result.other_def), name))
+
     def find_result(self, code):
         """
             Finds the result of the function type and dimensions
@@ -782,9 +795,35 @@ class Function(Ffunctional):
             loop.append('{}({}) = {}({})'.format(self.fake_name, ','.join(integers), self.name, ','.join( integers + [v.name for v in self.variables] + self.write_call_sizes())))
             for i in integers:
                 loop.append('end do')
-            interface = self.write_interface(add_variables=False)
-            interface = [interface[0].replace(self.name, self.fake_name)] + interface[1:len(interface)-2] + \
-                [interface[-2].replace(self.name, self.fake_name)] + ['integer::' + ','.join(integers)] + loop + [interface[-1]]
+
+            variables = self.variables
+
+            interface = list()
+            if self.func_type != None:
+                interface.append('{} function {}({})'.format(self.func_type, self.name, ','.join(
+                    [v.name for v in variables])))
+            else:
+                interface.append('function {}({})'.format(self.name, ','.join(
+                    [v.name for v in variables])))
+
+            for v in variables:
+                if isinstance(v, Variable):
+                    interface += v.write_f2py_interface()
+                else:
+                    raise Exception('Interface within interface is not supported for {}'.format(self.name))
+
+            c = Variable(self.fake_name, '{},dimension({})::{}'.format(','.join([self.result.type] + self.result.other_def),
+                                                                  ','.join(self.result.dimensions), self.fake_name))
+            if self.func_type != None:
+                if not any(var_type in self.func_type for var_type in Variable.types()): # If definition of function is included in func_type it does not write it
+                    interface += [('\n'.join(c.write_f2py_interface()))] # If not defines the output of the function
+            else:
+                interface += [('\n'.join(c.write_f2py_interface()))]
+
+            interface.append('end function') 
+
+            interface = [interface[0].replace(self.name, self.fake_name)] + interface[1:len(interface)-1] + \
+                ['integer::' + ','.join(integers)] + loop + [interface[-1]]
             return interface
         else:
             return interface
@@ -818,11 +857,14 @@ class Function(Ffunctional):
             else:
                 raise Exception('Interface within interface is not supported for {}'.format(self.name))
 
+        c = copy.deepcopy(self)
+        c.reduce_result_dimensions(new_name=self.name)
         if self.func_type != None:
             if not any(var_type in self.func_type for var_type in Variable.types()): # If definition of function is included in func_type it does not write it
-                interface += [('\n'.join(self.result.write_f2py_interface())).replace(self.result.name, self.name)] # If not defines the output of the function
+                interface += [('\n'.join(c.result.write_f2py_interface()))] # If not defines the output of the function
         else:
-            interface += [('\n'.join(self.result.write_f2py_interface())).replace(self.result.name, self.name)]
+            interface += [('\n'.join(c.result.write_f2py_interface()))]
+        del c
 
         interface.append('end function')       
         return interface
@@ -982,10 +1024,10 @@ class Variable:
             Args:
                 code_line (string): Variable definition code
         """
-        if len(code_line.split("::")) == 2:
-            variable_definition = code_line.split("::")[0] # Extracts the definition of the variable before ::
-            written_variable = code_line.split("::")[1] # Extracts the definition of the variable after ::
-        elif len(code_line.split("::")) == 1:
+        if len(fparsertools.parenthesis_splits(code_line, '::')) == 2:
+            variable_definition = fparsertools.parenthesis_splits(code_line, '::')[0] # Extracts the definition of the variable before ::
+            written_variable = fparsertools.parenthesis_splits(code_line, '::')[1] # Extracts the definition of the variable after ::
+        elif len(fparsertools.parenthesis_splits(code_line, "::")) == 1:
             var_pos = fparsertools.find_command(code_line, self.name)
             variable_definition = code_line[0:var_pos]
             written_variable = code_line[var_pos:]
@@ -1050,7 +1092,7 @@ class Variable:
             dim_def_start = variable_definition[dim_position + len('dimension'):].lower().find('(')
             dim_def_end = fparsertools.find_closing_parenthesis(variable_definition + written_variable, 
                             dim_position + len('dimension') + dim_def_start)
-            dimension += variable_definition[dim_position + len('dimension') + dim_def_start + 1: dim_def_end].strip().split(',')
+            dimension += fparsertools.parenthesis_splits(variable_definition[dim_position + len('dimension') + dim_def_start + 1: dim_def_end].strip(), ',')
 
         # Additional dimensions in line rewrite previous declarations
         vposition = fparsertools.find_command(written_variable, self.name)  # Finds variable name in line
@@ -1063,7 +1105,7 @@ class Variable:
                     dim_def_end = fparsertools.find_closing_parenthesis(variable_definition + written_variable, 
                                     len(variable_definition) + vposition + len(self.name) + dim_def_start + dim_def_start) \
                                        - len(variable_definition)
-                    dimension = written_variable[vposition + len(self.name) + dim_def_start + 1:dim_def_end].strip().split(',')
+                    dimension = fparsertools.parenthesis_splits(written_variable[vposition + len(self.name) + dim_def_start + 1:dim_def_end].strip(), ',')
 
         if not bool(dimension): # If no dimensions have been declared returns None
             return None
@@ -1081,7 +1123,7 @@ class Variable:
                 list of strings with additional code definitions.
         """
         variable_definition = self.var_splitter(code_line)[0] # Extracts the definition of the variable before ::
-        definitions = variable_definition.split(",") # Divides it into smaller sections
+        definitions = fparsertools.parenthesis_splits(variable_definition, ',') # Divides it into smaller sections
         other_def = list()
         for d in definitions:
             if not self.type.lower() in d.lower() and 'dimension' not in d.lower():
