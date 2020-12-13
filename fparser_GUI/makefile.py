@@ -142,9 +142,9 @@ class Makefile():
             run_comp.append(flag)
 
         #Run f2py 
-        #comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        #self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'),number=2)
-        subprocess.run(run_comp)
+        comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'),number=2)
+
         #Move library to the new folder 
         if self.os=='Linux':
             pwd=subprocess.run(['pwd'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
