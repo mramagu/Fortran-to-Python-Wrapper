@@ -4,8 +4,8 @@ file=open(os.path.dirname(os.path.abspath(__file__))+'/GUI_style.css','w+')
 QMainWindow={'name':'QMainWindow','background-color': 'white'}
 terminal={'name':'QPlainTextEdit#plainTextEdit_terminal','background-color': 'black','color':'white',
 'font-family':'Consolas','font-size':'13px'} 
-tree_widget={'name':'QTreeWidget','font-size':'13px'} 
-list_widget={'name':'QListWidget','font-size':'13px'} 
+tree_widget={'name':'QTreeWidget','font-size':'14px'} 
+list_widget={'name':'QListWidget','font-size':'14px'} 
 menu={'name':'QMenuBar','font-family':'Georgia','font-size':'14px'} 
 dock={'name':'QDockWidget','font-family':'Georgia','font-size':'13px'} 
 label={'name':'QLabel','font-family':'Palatino','font-size':'14px'} 
@@ -16,7 +16,7 @@ lineedit={'name':'QLineEdit','font-size':'14px'}
 combobox={'name':'QComboBox','font-size':'14px'}
 
 
-objetos=[QMainWindow,terminal,label,button,tabs,radiobutton,lineedit,combobox,menu,dock,tree_widget] 
+objetos=[QMainWindow,terminal,label,button,tabs,radiobutton,lineedit,combobox,menu,dock,tree_widget,list_widget] 
 
 #Creación del archivo .css
 for widget in objetos:

@@ -129,7 +129,7 @@ def clear(self):
     self.ui.treeWidget_ffiles.setHeaderLabel('')
     self.ui.treeWidget_ffiles.clear()
     self.ui.treeWidget_fsummary.clear()
-    self.ui.treeWidget_fparserfiles.clear()
+    self.ui.listWidget_orderffiles.clear()
     self.ui.listWidget_selffiles.clear()
     self.window_fmodule.ui.listWidget_fmod.clear()
     self.window_fmodule.ui.listWidget_selfmod.clear()
@@ -219,6 +219,10 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow_fmodules):
                     else:
                         QtWidgets.QTreeWidgetItem(module_tree[module.name+'_fun'],[x.name])           
         self.close()
+        #Ordered fortran files
+        for item in self.self_fparser.files_order:
+            item='/'.join(item.split('\\')).split('/')[-1] 
+            self.self_fparser.ui.listWidget_orderffiles.addItem(item) 
     
     def reject_selection(self):
         self.ui.listWidget_fmod.clear()

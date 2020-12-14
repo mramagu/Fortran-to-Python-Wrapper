@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1076</width>
-    <height>956</height>
+    <height>836</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -209,7 +209,7 @@
             <item>
              <widget class="QLabel" name="label_fparserfiles">
               <property name="text">
-               <string>Converted Fortran files</string>
+               <string>Fortran files dependence order</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -217,7 +217,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QTreeWidget" name="treeWidget_fparserfiles">
+             <widget class="QListWidget" name="listWidget_orderffiles">
               <property name="sizePolicy">
                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -227,14 +227,6 @@
               <property name="selectionMode">
                <enum>QAbstractItemView::ExtendedSelection</enum>
               </property>
-              <property name="animated">
-               <bool>true</bool>
-              </property>
-              <column>
-               <property name="text">
-                <string>Main directory</string>
-               </property>
-              </column>
              </widget>
             </item>
            </layout>
@@ -315,22 +307,6 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
-         <spacer name="verticalSpacer_13">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>25</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <property name="leftMargin">
            <number>50</number>
@@ -392,40 +368,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>25</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_12">
-          <property name="leftMargin">
-           <number>50</number>
-          </property>
-          <property name="rightMargin">
-           <number>50</number>
-          </property>
-          <item>
-           <widget class="Line" name="line_5">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_8">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>25</height>
+            <height>50</height>
            </size>
           </property>
          </spacer>
@@ -492,40 +435,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>25</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_13">
-          <property name="leftMargin">
-           <number>50</number>
-          </property>
-          <property name="rightMargin">
-           <number>50</number>
-          </property>
-          <item>
-           <widget class="Line" name="line_6">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_9">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>25</height>
+            <height>50</height>
            </size>
           </property>
          </spacer>
@@ -591,40 +501,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>25</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_14">
-          <property name="leftMargin">
-           <number>50</number>
-          </property>
-          <property name="rightMargin">
-           <number>50</number>
-          </property>
-          <item>
-           <widget class="Line" name="line_7">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_10">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>25</height>
+            <height>50</height>
            </size>
           </property>
          </spacer>
@@ -696,39 +573,6 @@
          </spacer>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_15">
-          <property name="leftMargin">
-           <number>50</number>
-          </property>
-          <property name="rightMargin">
-           <number>50</number>
-          </property>
-          <item>
-           <widget class="Line" name="line_8">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_11">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>25</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_8">
           <property name="spacing">
            <number>7</number>
@@ -752,7 +596,7 @@
                <bool>false</bool>
               </property>
               <property name="text">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;NOTE:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;You can execute &amp;quot;f2py -c --help-fcompiler&amp;quot; in your command window&lt;/p&gt;&lt;p&gt;to see which fortran compilers are available in your computer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;NOTE:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;You can execute &amp;quot;f2py -c --help-fcompiler&amp;quot; in your command window to see &lt;/p&gt;&lt;p&gt;which fortran compilers are available in your computer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="textFormat">
                <enum>Qt::AutoText</enum>
@@ -797,40 +641,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>25</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_16">
-          <property name="leftMargin">
-           <number>50</number>
-          </property>
-          <property name="rightMargin">
-           <number>50</number>
-          </property>
-          <item>
-           <widget class="Line" name="line_9">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_12">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>25</height>
+            <height>50</height>
            </size>
           </property>
          </spacer>
@@ -956,7 +767,7 @@
      <x>0</x>
      <y>0</y>
      <width>1076</width>
-     <height>26</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
