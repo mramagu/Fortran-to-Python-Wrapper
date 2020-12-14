@@ -169,6 +169,9 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow_fmodules):
         icon.addPixmap(QtGui.QPixmap(arrow), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         icon.addPixmap(QtGui.QPixmap(arrow), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.ui.toolButton_arrow.setIcon(icon)
+        #Set style 
+        with open(os.path.dirname(os.path.abspath(__file__))+'/GUI_style.css') as f:
+            self.setStyleSheet(f.read())
         #Properties
         self.self_fparser=self_fparser 
         #Signals 
@@ -228,6 +231,9 @@ class Window_options(QtWidgets.QMainWindow, Ui_MainWindow_options):
         QtWidgets.QMainWindow.__init__(self) #Inheritance
         self.ui=Ui_MainWindow_options() #Initiate GUI window 
         self.ui.setupUi(self)
+        #Set style 
+        with open(os.path.dirname(os.path.abspath(__file__))+'/GUI_style.css') as f:
+            self.setStyleSheet(f.read())
         #Properties
         self.self_fparser=self_fparser 
         self.terminal=False
