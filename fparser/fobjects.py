@@ -243,9 +243,6 @@ class Module:
                 line_no_comment = code[counter].split('!')[0] # Separates code in two fragments where a comment migh be declared and stores the first one
                 pure_use = line_no_comment.split(',')[0] # Separates code into two fragments in case a use only is being declared and stores the first one
                 uses.append(pure_use[use + len('use'):].strip().lower()) # Line from first instance onwards and space deletion
-            elif fparsertools.find_command(code[counter], 'contains') != None or \
-                fparsertools.find_command(code[counter], 'implicit') != None: # Once one of these commands has been declared no more uses will appear
-                break 
             counter += 1
         return uses
 
