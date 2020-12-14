@@ -237,7 +237,7 @@ class Module:
         """
         uses = list()
         counter = 1 # Starts search at the second line of the code
-        while counter <= len(code): # Studies line of the code
+        while counter + 1 <= len(code): # Studies line of the code
             use = fparsertools.find_command(code[counter], 'use')
             if use != None:
                 line_no_comment = code[counter].split('!')[0] # Separates code in two fragments where a comment migh be declared and stores the first one
