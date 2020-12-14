@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1076</width>
-    <height>782</height>
+    <height>836</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -328,8 +328,8 @@
              <widget class="QLabel" name="label_make_OS">
               <property name="font">
                <font>
-                <family>Abyssinica SIL</family>
-                <pointsize>11</pointsize>
+                <family>Verdana</family>
+                <pointsize>10</pointsize>
                </font>
               </property>
               <property name="text">
@@ -395,7 +395,7 @@
              <widget class="QLabel" name="label_make_precission">
               <property name="font">
                <font>
-                <family>Tibetan Machine Uni</family>
+                <family>Palatino Linotype</family>
                 <pointsize>10</pointsize>
                </font>
               </property>
@@ -462,8 +462,8 @@
              <widget class="QLabel" name="label_make_lib">
               <property name="font">
                <font>
-                <family>Nakula</family>
-                <pointsize>11</pointsize>
+                <family>Tahoma</family>
+                <pointsize>10</pointsize>
                </font>
               </property>
               <property name="text">
@@ -528,9 +528,10 @@
              <widget class="QLabel" name="label_make_FC">
               <property name="font">
                <font>
-                <family>DejaVu Sans</family>
-                <weight>75</weight>
-                <bold>true</bold>
+                <family>Georgia</family>
+                <pointsize>10</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
                </font>
               </property>
               <property name="text">
@@ -594,6 +595,11 @@
            <layout class="QVBoxLayout" name="verticalLayout_12">
             <item>
              <widget class="QLabel" name="label_f2py">
+              <property name="font">
+               <font>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
               <property name="autoFillBackground">
                <bool>false</bool>
               </property>
@@ -764,7 +770,7 @@
      <x>0</x>
      <y>0</y>
      <width>1076</width>
-     <height>20</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
