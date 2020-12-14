@@ -142,9 +142,9 @@ class Makefile():
             run_comp.append(flag)
 
         #Run f2py 
-        comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'),number=2)
-
+        #comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        #self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'),number=2)
+        subprocess.run(run_comp)
         #Move library to the new folder 
         if self.os=='Linux':
             pwd=subprocess.run(['pwd'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -168,7 +168,7 @@ class Makefile():
             os.rename(lib_dir+'/'+lib_name,self.self_fparser.folder_path+'/'+lib_name)
             self.self_fparser.terminal_text.add_line('Success: Python library Generated',number=2)
         except:
-            self.self_fparser.terminal_text.add_line(comp.stderr.decode('utf-8'))
+            #self.self_fparser.terminal_text.add_line(comp.stderr.decode('utf-8'))
             self.self_fparser.terminal_text.add_line('Error: Python library generation Failed',number=2)
 
 
@@ -176,7 +176,7 @@ class Makefile():
 
 if __name__ == "__main__":
 
-    p=subprocess.run(['chdir'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    p=subprocess.run(['pwd'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     print(p.stdout.decode('utf-8'))
     #dir1=os.path.dirname(os.path.abspath(__file__))
     #print(dir1)

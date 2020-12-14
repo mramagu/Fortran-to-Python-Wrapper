@@ -129,7 +129,7 @@ def clear(self):
     self.ui.treeWidget_ffiles.setHeaderLabel('')
     self.ui.treeWidget_ffiles.clear()
     self.ui.treeWidget_fsummary.clear()
-    self.ui.treeWidget_fparserfiles.clear()
+    self.ui.listWidget_orderffiles.clear()
     self.ui.listWidget_selffiles.clear()
     self.window_fmodule.ui.listWidget_fmod.clear()
     self.window_fmodule.ui.listWidget_selfmod.clear()
@@ -169,6 +169,9 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow_fmodules):
         icon.addPixmap(QtGui.QPixmap(arrow), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         icon.addPixmap(QtGui.QPixmap(arrow), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.ui.toolButton_arrow.setIcon(icon)
+        #Set style 
+        with open(os.path.dirname(os.path.abspath(__file__))+'/GUI_style.css') as f:
+            self.setStyleSheet(f.read())
         #Properties
         self.self_fparser=self_fparser 
         #Signals 
@@ -216,6 +219,10 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow_fmodules):
                     else:
                         QtWidgets.QTreeWidgetItem(module_tree[module.name+'_fun'],[x.name])           
         self.close()
+        #Ordered fortran files
+        for item in self.self_fparser.files_order:
+            item='/'.join(item.split('\\')).split('/')[-1] 
+            self.self_fparser.ui.listWidget_orderffiles.addItem(item) 
     
     def reject_selection(self):
         self.ui.listWidget_fmod.clear()
@@ -228,6 +235,9 @@ class Window_options(QtWidgets.QMainWindow, Ui_MainWindow_options):
         QtWidgets.QMainWindow.__init__(self) #Inheritance
         self.ui=Ui_MainWindow_options() #Initiate GUI window 
         self.ui.setupUi(self)
+        #Set style 
+        with open(os.path.dirname(os.path.abspath(__file__))+'/GUI_style.css') as f:
+            self.setStyleSheet(f.read())
         #Properties
         self.self_fparser=self_fparser 
         self.terminal=False
