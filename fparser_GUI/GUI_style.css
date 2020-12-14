@@ -9,5 +9,13 @@ font-size:12px;
 }
 QLabel{
 font-family:Palatino;
-font-size:12px;
+font-size:13px;
+}
+QPushButton{
+font-weight:bold;
+}
+QTabWidget{
+font-family:Georgia;
+font-weight:bold;
+font-size:13px;
 }
