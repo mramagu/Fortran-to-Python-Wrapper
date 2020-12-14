@@ -19,3 +19,17 @@ font-family:Georgia;
 font-weight:bold;
 font-size:13px;
 }
+QMenuBar{
+font-family:Georgia;
+font-size:12px;
+}
+QDockWidget{
+font-family:Georgia;
+font-size:12px;
+}
+QTreeWidget{
+font-size:12px;
+}
+QDialogButtonBox{
+font-weight:normal;
+}

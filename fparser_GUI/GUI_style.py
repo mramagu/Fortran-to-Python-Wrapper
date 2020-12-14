@@ -8,7 +8,10 @@ tree_widget={'name':'QTreeWidget'}
 label={'name':'QLabel','font-family':'Palatino','font-size':'13px'} 
 button={'name':'QPushButton','font-weight':'bold'} 
 tabs={'name':'QTabWidget','font-family':'Georgia','font-weight':'bold','font-size':'13px'} 
-
+menu={'name':'QMenuBar','font-family':'Georgia','font-size':'12px'} 
+dock={'name':'QDockWidget','font-family':'Georgia','font-size':'12px'} 
+tree={'name':'QTreeWidget','font-size':'12px'} 
+# ,menu,dock,tree]
 
 objetos=[QMainWindow,terminal,label,button,tabs] 
 
