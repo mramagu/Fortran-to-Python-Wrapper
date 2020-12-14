@@ -328,7 +328,7 @@
              <widget class="QLabel" name="label_make_OS">
               <property name="font">
                <font>
-                <family>Verdana</family>
+                <family>Sans Serif</family>
                 <pointsize>10</pointsize>
                </font>
               </property>
@@ -395,7 +395,7 @@
              <widget class="QLabel" name="label_make_precission">
               <property name="font">
                <font>
-                <family>Palatino Linotype</family>
+                <family>Sans Serif</family>
                 <pointsize>10</pointsize>
                </font>
               </property>
@@ -462,7 +462,7 @@
              <widget class="QLabel" name="label_make_lib">
               <property name="font">
                <font>
-                <family>Tahoma</family>
+                <family>Sans Serif</family>
                 <pointsize>10</pointsize>
                </font>
               </property>
@@ -528,7 +528,7 @@
              <widget class="QLabel" name="label_make_FC">
               <property name="font">
                <font>
-                <family>Georgia</family>
+                <family>Sans Serif</family>
                 <pointsize>10</pointsize>
                 <weight>50</weight>
                 <bold>false</bold>
@@ -666,6 +666,11 @@
            <layout class="QVBoxLayout" name="verticalLayout_22">
             <item>
              <widget class="QLabel" name="label_complib">
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>Select the compiler library (necessary if intel compiler is selected).</string>
               </property>
@@ -770,7 +775,7 @@
      <x>0</x>
      <y>0</y>
      <width>1076</width>
-     <height>26</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

@@ -4,6 +4,10 @@ background-color:white;
 QPlainTextEdit#plainTextEdit_terminal{
 background-color:black;
 color:white;
-font:Ubuntu Mono;
+font-family:Consolas;
+font-size:12px;
+}
+QLabel{
+font-family:Palatino;
 font-size:12px;
 }
