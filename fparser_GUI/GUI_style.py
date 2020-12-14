@@ -5,10 +5,12 @@ QMainWindow={'name':'QMainWindow','background-color': 'white'}
 terminal={'name':'QPlainTextEdit#plainTextEdit_terminal','background-color': 'black','color':'white',
 'font-family':'Consolas','font-size':'12px'} 
 tree_widget={'name':'QTreeWidget'} 
-label={'name':'QLabel','font-family':'Palatino','font-size':'12px'} 
+label={'name':'QLabel','font-family':'Palatino','font-size':'13px'} 
+button={'name':'QPushButton','font-weight':'bold'} 
+tabs={'name':'QTabWidget','font-family':'Georgia','font-weight':'bold','font-size':'13px'} 
 
 
-objetos=[QMainWindow,terminal,label] 
+objetos=[QMainWindow,terminal,label,button,tabs] 
 
 #Creación del archivo .css
 for widget in objetos:
