@@ -93,6 +93,56 @@ class Flibrary:
             interface += m.write_f2py_interface()
         return interface
 
+    def find_procedure(self, module, procedure):
+        """
+            Method that finds the Functional associated with a certain procedure.
+            Recuersively solves for procedures within the procedures.
+
+            Args:
+                module (Module): Module containing the function that contains the procedure.
+                procedure (Variable): Variable with type procedure
+
+            Returns:
+                Functional associated with the procedure.
+        """
+        # Finds out name of the procedure
+        first_parenthesis = procedure.type.find('(')
+        if first_parenthesis == -1:
+            raise Exception('Could not find associated procedure name in \'{}\' module {}'.format(procedure.type, m.name))
+        ending_parenthesis = fparsertools.find_closing_parenthesis(procedure.type, first_parenthesis)
+        procedure_name = procedure.type[first_parenthesis+1:ending_parenthesis].strip()
+
+        # Searches the rest of modules in the module's dependencies and itself for said procedure
+        dependencies_names = [name.lower() for name in self.find_dependencies(module)]
+        dependencies = [m for m in self.modules if m.name.lower() in dependencies_names] + [module]
+        breaker = False
+        names = list()
+        names.append(procedure_name)
+        for i, m in enumerate(dependencies):
+            names += [m.fake_name, m.name]
+            for ic, c in enumerate(m.contents):
+                names += [c.name, c.fake_name]
+                for iv, v in enumerate(c.variables):
+                    names.append(v.name)
+            for interface in m.interfaces:
+                names += [interface.name, interface.fake_name]
+                if interface.name.lower() == procedure_name.lower(): # Checks if the names of the procedures match
+                    # Changes the value of the variable to the function
+                    for j, v in enumerate(interface.variables):
+                        if isinstance(v, Variable):
+                            if 'procedure' in v.type.lower(): # If there is another procedure within it it also searches for it
+                                interface.variables[j] = self.find_procedure(m, v)
+                    functional = copy.deepcopy(interface)
+                    breaker = True
+                    break
+            if breaker:
+                break
+            if i + 1 == len(dependencies): # If it cannot find it it raises an error
+                raise Exception('Could not find associated procedure to {} in {} in module {} in library'.format(procedure, c.name, m.name))
+        functional.change_name(fparsertools.name_generator(functional.name, names))
+        return functional
+
+
     def solve_procedures(self):
         """
             Method to adapt procedures in functionals to f2py comprehension.
@@ -104,28 +154,7 @@ class Flibrary:
                     if isinstance(v, Variable):
                         if 'procedure' in v.type.lower():
                             # If it is a procedure then it searches for said procedure in the rest of the library.
-                            # Finds out name of the procedure
-                            first_parenthesis = v.type.find('(')
-                            if first_parenthesis == -1:
-                                raise Exception('Could not find associated procedure in \'{}\' for {} in {} in module {}'.format(v.type, v.name, c.name, m.name))
-                            ending_parenthesis = fparsertools.find_closing_parenthesis(v.type, first_parenthesis)
-                            procedure = v.type[first_parenthesis+1:ending_parenthesis].strip()
-                            
-                            # Searches the rest of modules in the module's dependencies and itself for said procedure
-                            dependencies_names = [name.lower() for name in self.find_dependencies(m)]
-                            dependencies = [m2 for m2 in self.modules if m2.name.lower() in dependencies_names] + [m]
-                            breaker = False
-                            for i, m2 in enumerate(dependencies):
-                                for interface in m2.interfaces:
-                                    if interface.name.lower() == procedure.lower(): # Checks if the names of the procedures match
-                                        # Changes the value of the variable to the function
-                                        self.modules[im].contents[ic].variables[iv] = copy.deepcopy(interface)
-                                        breaker = True
-                                        break
-                                if breaker:
-                                    break
-                                if i + 1 == len(dependencies): # If it cannot find it it raises an error
-                                    raise Exception('Could not find associated procedure to {} in {} in module {} in library'.format(procedure, c.name, m.name))
+                            self.modules[im].contents[ic].variables[iv] = self.find_procedure(m, v)
 
 class Ffile:
     """
@@ -387,6 +416,16 @@ class Ffunctional:
         self.additional_variables = list()
         # self.solve_assume_shape()
 
+    def change_name(self, new_name):
+        """
+            Method to change the function's name and fake name
+            
+            Args:
+                new_fake_name (str): New fake name
+        """
+        self.name = new_name
+        self.change_fake_name('aux_'+new_name)
+
     def change_fake_name(self, new_fake_name):
         """
             Method to change the function's fake name
@@ -455,6 +494,23 @@ class Ffunctional:
                         raise Exception('Could not find variable definition {} in Ffunctional {}: \n{}'.format(entry, self.name, '\n'.join(code)))
         return variables
 
+    def is_dim_problem(self):
+        """
+            Method to find out if this functional has a dimensional problem.
+
+            Returns:
+                A boolean
+        """
+        answer = False
+        for v in self.variables: # Iterates thorugh all explicit function variables
+            if isinstance(v, Variable): # If instance is a variable it solves its shape
+                if v.dimensions != None: # If variable has dimension definition
+                    for index, d in enumerate(v.dimensions):
+                        if ':' in d: # If a sub-section has an interval in it proceeds to analyze it
+                            answer = True
+        return answer
+
+
     def solve_assume_shape(self):
         """
             Method to identify variables that have a assume shape definition and altering them to fit f2py.
@@ -477,6 +533,65 @@ class Ffunctional:
                 pass
             else:
                 raise Exception('Cannot solve the shape of {} in function {}'.format(v.name, self.name))
+
+    def write_f2py_common_interface(self, solve_assume_shape=True, add_variables=True, fake_name=True, next_assume_shape=True):
+        """
+            Produces fortran code common for both Subroutines and Functions
+
+            Returns:
+                 A list of strings that contain the common Fortran variable definitions.
+                 A list of strings that contain the common Fortran Interface definition.
+                 A list of strings containing the Inputs to the function.
+                 A list of strings that contain the information of the Fortran Contains.
+        """
+        inputs = list()
+        var_def = list()
+        procedures = list()
+        # Initial Variations
+        if add_variables:
+            variables = self.variables + self.additional_variables
+        else:
+            variables = self.variables
+
+        # Start of definitions
+        for v in variables: # Variable Definitions
+            if isinstance(v, Variable):
+                var_def += v.write_f2py_interface()
+            else:
+                procedures.append(v)
+
+        finterface = list() # Interface definitions
+        contains = list()
+        if bool(procedures):
+            finterface.append('interface')
+            for i, v in enumerate(procedures):
+                c = copy.deepcopy(v)
+                if v.is_dim_problem():
+                    contains += v.write_f2py_auxiliary(fake_name=True) # Contains writer
+                    if isinstance(v, Function):
+                        if v.result.dimensions != None and solve_assume_shape:
+                            c.solve_loops()
+                    if solve_assume_shape:
+                        c.solve_assume_shape()
+                finterface += c.write_f2py_interface(action=False, fake_name=False, solve_assume_shape=next_assume_shape, next_assume_shape=False)
+            finterface.append('end interface')
+
+        if bool(contains):
+            contains.insert(0, 'contains')
+
+        inputs = list() # Inputs to secondary function
+        for v in self.variables:
+            if isinstance(v, Variable):
+                inputs.append(v.name)
+            elif isinstance(v, Function) or isinstance(v, Subroutine):
+                if v.is_dim_problem():
+                    inputs.append(v.fake_name)
+                else:
+                    inputs.append(v.name)
+            else:
+                raise Exceptions('Not supported input type for write f2py interface')
+        return var_def, finterface, inputs, contains
+
 
     def write_call_sizes(self):
         """
@@ -539,29 +654,35 @@ class Subroutine(Ffunctional):
         variable_def_position = first_line[subr_position + len('subroutine'):].lower().find('(') # Subroutine name stops when variables are defined
         return first_line[subr_position + len('subroutine'): subr_position + len('subroutine') + variable_def_position].strip() # Subroutine name and space deletion
 
-    def write_interface(self, add_variables=True):
+    def write_f2py_auxiliary(self, fake_name=True):
         """
-            Method to write the subroutine as part of a fortran interface.
-        """
-        if add_variables:
-            variables = self.variables + self.additional_variables
-        else:
-            variables = self.variables
+            Method to write an auxiliary function for f2py.
 
+            Returns:
+                 A list of strings to be added to the rest of the function interface.
+        """
         interface = list()
 
-        interface.append('Subroutine {}({})'.format(self.name, ','.join([v.name for v in variables])))
+        if fake_name:
+            name1 = self.fake_name
+            name2 = self.name
+        else:
+            name1 = self.name
+            name2 = self.fake_name
+        
+        print(name1, name2)
+        interface.append('subroutine {}({})'.format(name1, ','.join(
+            [v.name for v in self.variables + self.additional_variables])))
 
-        for v in variables:
-            if isinstance(v, Variable):
-                interface += v.write_f2py_interface()
-            else:
-                raise Exception('Interface within interface is not supported for {}'.format(self.name))
+        (var_def, finterface, inputs, contains) = self.write_f2py_common_interface(solve_assume_shape=False,add_variables=False)
 
-        interface.append('end subroutine')       
+        interface += var_def + finterface
+        interface.append('call {}({})'.format(name2, ','.join([v.name for v in self.variables] + self.write_call_sizes())))
+        interface.append('end subroutine')
+
         return interface
     
-    def write_f2py_interface(self):
+    def write_f2py_interface(self, action=True, fake_name=True, solve_assume_shape=True, next_assume_shape=True):
         """
             Generates the code for the interface of the subroutine.
 
@@ -569,49 +690,24 @@ class Subroutine(Ffunctional):
                 A list of strings to be added to the rest of the module interface.
         """
         interface = list()
-        interface.append('subroutine {}({})'.format(self.fake_name, ','.join(
+
+        if fake_name:
+            name1 = self.fake_name
+            name2 = self.name
+        else:
+            name1 = self.name
+            name2 = self.fake_name
+
+        interface.append('subroutine {}({})'.format(name1, ','.join(
             [v.name for v in self.variables + self.additional_variables])))
 
-        procedures = list()
-        for v in self.variables:
-            if isinstance(v, Variable):
-                interface += v.write_f2py_interface()
-            else:
-                procedures.append(v)
+        (var_def, finterface, inputs, contains) = self.write_f2py_common_interface(fake_name=fake_name, solve_assume_shape=solve_assume_shape, next_assume_shape=next_assume_shape)
 
-        for v in self.additional_variables:
-            interface += v.write_f2py_interface()
+        interface += var_def + finterface
 
-        aux_func = list()
-        if bool(procedures):
-            interface.append('interface')
-            for i, v in enumerate(procedures):
-                c = copy.deepcopy(v)
-                if isinstance(v, Function):
-                    if v.result.dimensions != None:
-                        aux_func += c.write_f2py_auxiliary_function()
-                    c.solve_assume_shape()
-                    c.solve_loops()
-                interface += c.write_interface()
-            interface.append('end interface')
-
-        inputs = list()
-        for v in self.variables:
-            if isinstance(v, Variable) or isinstance(v, Subroutine):
-                inputs.append(v.name)
-            elif isinstance(v, Function):
-                if v.result.dimensions != None:
-                    inputs.append(v.fake_name)
-                else:
-                    inputs.append(v.name)
-            else:
-                raise Exceptions('Not supported input type for write f2py interface')
-
-        interface.append('call {}({})'.format(self.name, ','.join(inputs)))
-
-        if bool(aux_func):
-            interface.append('contains')
-            interface += aux_func
+        if action:
+            interface.append('call {}({})'.format(name2, ','.join(inputs)))
+            interface += contains
 
         interface.append('end subroutine')
         return interface
@@ -786,7 +882,7 @@ class Function(Ffunctional):
                 new_integer = fparsertools.name_generator('i', [self.name] + [v.name for v in self.variables + self.additional_variables])
                 self.variables.insert(0, Variable(new_integer, 'integer :: {}'.format(new_integer)))
 
-    def write_f2py_auxiliary_function(self):
+    def write_f2py_auxiliary(self, fake_name=True):
         """
             Method to write an auxiliary function for f2py.
 
@@ -816,6 +912,8 @@ class Function(Ffunctional):
 
             variables = self.variables
 
+            (var_def, finterface, inputs, contains) = self.write_f2py_common_interface(solve_assume_shape=False,add_variables=False)
+
             interface = list()
             if self.func_type != None:
                 interface.append('{} function {}({})'.format(self.func_type, self.name, ','.join(
@@ -824,11 +922,7 @@ class Function(Ffunctional):
                 interface.append('function {}({})'.format(self.name, ','.join(
                     [v.name for v in variables])))
 
-            for v in variables:
-                if isinstance(v, Variable):
-                    interface += v.write_f2py_interface()
-                else:
-                    raise Exception('Interface within interface is not supported for {}'.format(self.name))
+            interface += var_def
 
             c = Variable(self.fake_name, '{},dimension({})::{}'.format(','.join([self.result.type] + self.result.other_def),
                                                                   ','.join(self.result.dimensions), self.fake_name))
@@ -838,6 +932,8 @@ class Function(Ffunctional):
             else:
                 interface += [('\n'.join(c.write_f2py_interface()))]
 
+            interface += finterface
+
             interface.append('end function') 
 
             interface = [interface[0].replace(self.name, self.fake_name)] + interface[1:len(interface)-1] + \
@@ -846,48 +942,7 @@ class Function(Ffunctional):
         else:
             return interface
 
-    def write_interface(self, add_variables=True):
-        """
-            Method to write the function as part of a fortran interface.
-
-            Args:
-                add_variables (bool): Optional argument on wether to write auxiliary input or not.
-
-            Returns:
-                 A list of strings to be added to the rest of the function interface.
-        """
-        if add_variables:
-            variables = self.variables + self.additional_variables
-        else:
-            variables = self.variables
-
-        interface = list()
-        if self.func_type != None:
-            interface.append('{} function {}({})'.format(self.func_type, self.name, ','.join(
-                [v.name for v in variables])))
-        else:
-            interface.append('function {}({})'.format(self.name, ','.join(
-                [v.name for v in variables])))
-
-        for v in variables:
-            if isinstance(v, Variable):
-                interface += v.write_f2py_interface()
-            else:
-                raise Exception('Interface within interface is not supported for {}'.format(self.name))
-
-        c = copy.deepcopy(self)
-        c.reduce_result_dimensions(new_name=self.name)
-        if self.func_type != None:
-            if not any(var_type in self.func_type for var_type in Variable.types()): # If definition of function is included in func_type it does not write it
-                interface += [('\n'.join(c.result.write_f2py_interface()))] # If not defines the output of the function
-        else:
-            interface += [('\n'.join(c.result.write_f2py_interface()))]
-        del c
-
-        interface.append('end function')       
-        return interface
-
-    def write_f2py_interface(self):
+    def write_f2py_interface(self, action=True, fake_name=True, solve_assume_shape=True, next_assume_shape=True):
         """
             Generates the code for the interface of the function.
 
@@ -895,59 +950,37 @@ class Function(Ffunctional):
                 A list of strings to be added to the rest of the module interface.
         """
         interface = list()
+
+        if fake_name:
+            name1 = self.fake_name
+            name2 = self.name
+        else:
+            name1 = self.name
+            name2 = self.fake_name
+        self.result.change_name(name1)
+
         if self.func_type != None:
-            interface.append('{} function {}({})'.format(self.func_type, self.fake_name, ','.join(
+            interface.append('{} function {}({})'.format(self.func_type, name1, ','.join(
                 [v.name for v in self.variables + self.additional_variables])))
         else:
-            interface.append('function {}({})'.format(self.fake_name, ','.join(
+            interface.append('function {}({})'.format(name1, ','.join(
                 [v.name for v in self.variables + self.additional_variables])))
 
-        procedures = list()
-        for v in self.variables:
-            if isinstance(v, Variable):
-                interface += v.write_f2py_interface()
-            else:
-                procedures.append(v)
-
-        for v in self.additional_variables:
-            interface += v.write_f2py_interface()
+        (var_def, finterface, inputs, contains) = self.write_f2py_common_interface(fake_name = fake_name, solve_assume_shape=solve_assume_shape, next_assume_shape=next_assume_shape)
+        
+        interface += var_def
         
         if self.func_type != None:
             if not any(var_type in self.func_type for var_type in Variable.types()): # If definition of function is included in func_type it does not write it
-                interface += [('\n'.join(self.result.write_f2py_interface())).replace(self.result.name, self.fake_name)] # If not defines the output of the function
+                interface += [('\n'.join(self.result.write_f2py_interface()))] # If not defines the output of the function
         else:
-            interface += [('\n'.join(self.result.write_f2py_interface())).replace(self.result.name, self.fake_name)]
+            interface += [('\n'.join(self.result.write_f2py_interface()))]
 
-        aux_func = list()
-        if bool(procedures):
-            interface.append('interface')
-            for i, v in enumerate(procedures):
-                c = copy.deepcopy(v)
-                if isinstance(v, Function):
-                    if v.result.dimensions != None:
-                        aux_func += c.write_f2py_auxiliary_function()
-                    c.solve_assume_shape()
-                    c.solve_loops()
-                interface += c.write_interface()
-            interface.append('end interface')
+        interface += finterface
 
-        inputs = list()
-        for v in self.variables:
-            if isinstance(v, Variable) or isinstance(v, Subroutine):
-                inputs.append(v.name)
-            elif isinstance(v, Function):
-                if v.result.dimensions != None:
-                    inputs.append(v.fake_name)
-                else:
-                    inputs.append(v.name)
-            else:
-                raise Exceptions('Not supported input type for write f2py interface')
-
-        interface.append('{} = {}({})'.format(self.fake_name, self.name, ','.join(inputs)))
-        
-        if bool(aux_func):
-            interface.append('contains')
-            interface += aux_func
+        if action:
+            interface.append('{} = {}({})'.format(name1, name2, ','.join(inputs)))
+            interface += contains
 
         interface.append('end function')
         return interface
@@ -1035,6 +1068,12 @@ class Variable:
             Returns a list of accepted variable types
         """
         return ['integer', 'real', 'complex', 'logical', 'character', 'procedure']
+
+    def change_name(self, new_name):
+        """
+            Method to change the name of the variable
+        """
+        self.name = new_name
 
     def var_splitter(self, code_line):
         """

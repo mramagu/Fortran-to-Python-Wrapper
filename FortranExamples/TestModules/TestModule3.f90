@@ -3,7 +3,7 @@ use test_module_2
 implicit none
 
 interface
-     function FunctionRN_RN(x) result(F) 
+     function procedure_function(x) result(F) 
       real, intent(in) :: x(:) 
       real :: F( size(x) ) 
      end function 
