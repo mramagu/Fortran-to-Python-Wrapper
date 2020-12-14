@@ -568,6 +568,7 @@ class Ffunctional:
                     if isinstance(v, Function):
                         if v.result.dimensions != None and solve_assume_shape:
                             c.solve_loops()
+                            c.reduce_result_dimensions()
                     if solve_assume_shape:
                         c.solve_assume_shape()
                 finterface += c.write_f2py_interface(action=False, fake_name=False, solve_assume_shape=next_assume_shape, next_assume_shape=False)
@@ -679,7 +680,7 @@ class Subroutine(Ffunctional):
 
         return interface
     
-    def write_f2py_interface(self, action=True, fake_name=True, solve_assume_shape=True, next_assume_shape=True):
+    def write_f2py_interface(self, action=True, fake_name=True, solve_assume_shape=True, next_assume_shape=False):
         """
             Generates the code for the interface of the subroutine.
 
@@ -941,7 +942,7 @@ class Function(Ffunctional):
         else:
             return interface
 
-    def write_f2py_interface(self, action=True, fake_name=True, solve_assume_shape=True, next_assume_shape=True):
+    def write_f2py_interface(self, action=True, fake_name=True, solve_assume_shape=True, next_assume_shape=False):
         """
             Generates the code for the interface of the function.
 
