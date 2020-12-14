@@ -526,6 +526,13 @@
            <layout class="QVBoxLayout" name="verticalLayout_19">
             <item>
              <widget class="QLabel" name="label_make_FC">
+              <property name="font">
+               <font>
+                <family>DejaVu Sans</family>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
               <property name="text">
                <string>Select your fortran compiler.</string>
               </property>
