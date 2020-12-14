@@ -40,6 +40,10 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         self.window_options=ffiles.Window_options(self_fparser=self)
         self.terminal_text=ffiles.Terminal(self_fparser=self)
         self.makefile=make.Makefile(self_fparser=self)
+        self.ui.actionOpen_Directory.setShortcut("Ctrl+O")
+        self.ui.actionOpen_Files.setShortcut("Ctrl+F")
+        self.ui.actionOptions.setShortcut("Ctrl+T")
+        self.ui.actionClear.setShortcut("Ctrl+W")
 
         #Connect signals
         #Use .connect(lambda: function(args)) to send extra arguments through the function 
