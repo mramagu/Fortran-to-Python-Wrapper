@@ -24,7 +24,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -218,6 +218,12 @@
             </item>
             <item>
              <widget class="QTreeWidget" name="treeWidget_fparserfiles">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="selectionMode">
                <enum>QAbstractItemView::ExtendedSelection</enum>
               </property>
@@ -260,6 +266,12 @@
             </item>
             <item>
              <widget class="QTreeWidget" name="treeWidget_fsummary">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
@@ -314,6 +326,12 @@
            <layout class="QVBoxLayout" name="verticalLayout_11">
             <item>
              <widget class="QLabel" name="label_make_OS">
+              <property name="font">
+               <font>
+                <family>Abyssinica SIL</family>
+                <pointsize>11</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>Choose your operating system.</string>
               </property>
@@ -375,8 +393,14 @@
            <layout class="QVBoxLayout" name="verticalLayout_16">
             <item>
              <widget class="QLabel" name="label_make_precission">
+              <property name="font">
+               <font>
+                <family>Tibetan Machine Uni</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
               <property name="text">
-               <string>Choose the precission you want to work with.</string>
+               <string>Choose the precision you want to work with.</string>
               </property>
              </widget>
             </item>
@@ -390,7 +414,7 @@
             <item>
              <widget class="QRadioButton" name="radioButton_makeSP">
               <property name="text">
-               <string>Simple precission.</string>
+               <string>Simple precision.</string>
               </property>
               <property name="checked">
                <bool>true</bool>
@@ -400,7 +424,7 @@
             <item>
              <widget class="QRadioButton" name="radioButton_makeDP">
               <property name="text">
-               <string>Double precission.</string>
+               <string>Double precision.</string>
               </property>
              </widget>
             </item>
@@ -436,6 +460,12 @@
            <layout class="QVBoxLayout" name="verticalLayout_14">
             <item>
              <widget class="QLabel" name="label_make_lib">
+              <property name="font">
+               <font>
+                <family>Nakula</family>
+                <pointsize>11</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>Write the name of the fortran library.</string>
               </property>
