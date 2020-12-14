@@ -750,14 +750,16 @@ class Subroutine(Ffunctional):
                         integers.append(new_integer)
                     interface.append('def {}({}):'.format(v.fake_name, ','.join(integers + [w.name for w in v.variables])))
                     interface.append('    global ' + global_var)
+                    min_vals = list()
                     for i, d in enumerate(v.result.dimensions):
-                        if len(d.split(':')) == 1:
+                        if len(fparsertools.parenthesis_splits(d, ':')) == 1:
                             start = '1'
-                        elif len(d.split(':')) == 2:
-                            start = fparsertools.dim_translator((d.split(':'))[0])
+                        elif len(fparsertools.parenthesis_splits(d, ':')) == 2:
+                            start = fparsertools.dim_translator(fparsertools.parenthesis_splits(d, ':')[0])
                         interface.append('    '*(i + 1) + 'if {} == {}:'.format(integers[i], start))
+                        min_vals.append(start)
                     interface.append('    '*(i + 2) + '{} = {}({})'.format(global_var, v.name, ','.join([w.name for w in v.variables])))
-                    interface.append('    ' + 'return {}[{}]'.format(global_var, ','.join(integers)))
+                    interface.append('    ' + 'return {}[{}]'.format(global_var, ','.join(i + '-' + m for i, m in zip(integers, min_vals))))
                 else:
                     inputs.append(v.name)
             elif isinstance(v, Subroutine):
@@ -1023,14 +1025,16 @@ class Function(Ffunctional):
                         integers.append(new_integer)
                     interface.append('def {}({}):'.format(v.fake_name, ','.join(integers + [w.name for w in v.variables])))
                     interface.append('    global ' + global_var)
+                    min_vals = list()
                     for i, d in enumerate(v.result.dimensions):
-                        if len(d.split(':')) == 1:
+                        if len(fparsertools.parenthesis_splits(d, ':')) == 1:
                             start = '1'
-                        elif len(d.split(':')) == 2:
-                            start = fparsertools.dim_translator((d.split(':'))[0])
+                        elif len(fparsertools.parenthesis_splits(d, ':')) == 2:
+                            start = fparsertools.dim_translator(fparsertools.parenthesis_splits(d, ':')[0])
                         interface.append('    '*(i + 1) + 'if {} == {}:'.format(integers[i], start))
+                        min_vals.append(start)
                     interface.append('    '*(i + 2) + '{} = {}({})'.format(global_var, v.name, ','.join([w.name for w in v.variables])))
-                    interface.append('    ' + 'return {}[{}]'.format(global_var, ','.join(integers)))
+                    interface.append('    ' + 'return {}[{}]'.format(global_var, ','.join(i + '-' + m for i, m in zip(integers, min_vals))))
                 else:
                     inputs.append(v.name)
             elif isinstance(v, Subroutine):
