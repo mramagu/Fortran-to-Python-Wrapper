@@ -5,12 +5,15 @@ QMainWindow={'name':'QMainWindow','background-color': 'white'}
 terminal={'name':'QPlainTextEdit#plainTextEdit_terminal','background-color': 'black','color':'white',
 'font-family':'Consolas','font-size':'12px'} 
 tree_widget={'name':'QTreeWidget'} 
-label={'name':'QLabel','font-family':'Palatino','font-size':'13px'} 
-button={'name':'QPushButton','font-weight':'bold'} 
-tabs={'name':'QTabWidget','font-family':'Georgia','font-weight':'bold','font-size':'13px'} 
+label={'name':'QLabel','font-family':'Palatino','font-size':'14px'} 
+button={'name':'QPushButton','font-weight':'bold','font-size':'14px'} 
+tabs={'name':'QTabWidget','font-family':'Georgia','font-weight':'bold','font-size':'13px'}
+radiobutton={'name':'QRadioButton','font-family':'Palatino','font-size':'14px'} 
+lineedit={'name':'QLineEdit','font-size':'14px'}
+combobox={'name':'QComboBox','font-size':'14px'}
 
 
-objetos=[QMainWindow,terminal,label,button,tabs] 
+objetos=[QMainWindow,terminal,label,button,tabs,radiobutton,lineedit,combobox] 
 
 #Creación del archivo .css
 for widget in objetos:
