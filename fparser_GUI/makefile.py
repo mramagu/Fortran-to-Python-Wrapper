@@ -116,6 +116,7 @@ class Makefile():
         f.close()
 
         run_comp=[]
+        make_bat='CALL f2py -c '
 
         if self.FC=='intelvem':
             flags=['--fcompiler='+self.FC,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64','-L'+'"'+self.complib+'"']
@@ -130,25 +131,38 @@ class Makefile():
         run_comp.append('-c')
         # run_comp.append(self.self_fparser.folder_path+'/Interface.pyf')
         run_comp.append('Interface.pyf')
+        make_bat=make_bat+'Interface.pyf '
 
         #*.f Files 
         for f in self.self_fparser.files_f:
             f='/'.join(f.split('\\')).split('/')[-1] 
             run_comp.append(f)
+            make_bat=make_bat+f+' '
         #*.f90 Files 
         for f in self.self_fparser.files_order:
             f='/'.join(f.split('\\')).split('/')[-1] 
             run_comp.append(f)
+            make_bat=make_bat+f+' '
         # run_comp.append(self.self_fparser.folder_path+'/Interface.f90')
         run_comp.append('Interface.f90')
+        make_bat=make_bat+'Interface.f90 '
         #Flags 
         for flag in flags:
             run_comp.append(flag)
+            make_bat=make_bat+flag+' '
+
 
         #Run f2py 
-        #comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        #self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'),number=2)
-        subprocess.run(run_comp,cwd=self.self_fparser.folder_path)
+        if self.os=='Windows':
+            #Create Makefile.bat
+            f=open(self.self_fparser.folder_path+'/Makefile.bat','w+')
+            f.write(make_bat)
+            f.close()
+            comp=subprocess.run(['Makefile.bat'],cwd=self.self_fparser.folder_path)
+        else:
+            comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,cwd=self.self_fparser.folder_path)
+            self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'),number=2)
+        # subprocess.run(run_comp,cwd=self.self_fparser.folder_path)
         #Move library to the new folder 
         # if self.os=='Linux':
         #     pwd=subprocess.run(['pwd'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
