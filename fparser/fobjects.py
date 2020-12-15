@@ -388,8 +388,10 @@ class Module:
         if self.name in keyword.kwlist: # Changes the name of the module if needed
             self.name = fparsertools.name_generator(self.name, keyword.kwlist)
         # Solves any keyword problems
+        forbidden_names = [self.name, self.fake_name]
         for i, c in enumerate(self.contents):
-            self.contents[i].solve_keywords()
+            self.contents[i].solve_keywords(other_forbidden_names=forbidden_names)
+        print(forbidden_names)
 
     def write_py_interface(self, lib_name):
         """
@@ -637,7 +639,10 @@ class Ffunctional:
 
     def solve_keywords(self, other_forbidden_names=list()):
         """
-            Solves interactions with python keywords by changing the names of variables, modules and functionals.
+            Solves interactions with python keywords by changing the names of variables and functionals.
+
+            Args:
+                other_forbidden_names (list): List of other forbidden strings from the library.
         """
         if self.name in keyword.kwlist:
             self.name = fparsertools.name_generator(self.name, keyword.kwlist+other_forbidden_names)
