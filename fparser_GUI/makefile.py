@@ -128,15 +128,19 @@ class Makefile():
 
         run_comp.append(self.f2py)
         run_comp.append('-c')
-        run_comp.append(self.self_fparser.folder_path+'/Interface.pyf')
+        # run_comp.append(self.self_fparser.folder_path+'/Interface.pyf')
+        run_comp.append('Interface.pyf')
 
         #*.f Files 
         for f in self.self_fparser.files_f:
+            f='/'.join(f.split('\\')).split('/')[-1] 
             run_comp.append(f)
         #*.f90 Files 
         for f in self.self_fparser.files_order:
+            f='/'.join(f.split('\\')).split('/')[-1] 
             run_comp.append(f)
-        run_comp.append(self.self_fparser.folder_path+'/Interface.f90')
+        # run_comp.append(self.self_fparser.folder_path+'/Interface.f90')
+        run_comp.append('Interface.f90')
         #Flags 
         for flag in flags:
             run_comp.append(flag)
@@ -144,32 +148,32 @@ class Makefile():
         #Run f2py 
         #comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         #self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'),number=2)
-        subprocess.run(run_comp)
+        subprocess.run(run_comp,cwd=self.self_fparser.folder_path)
         #Move library to the new folder 
-        if self.os=='Linux':
-            pwd=subprocess.run(['pwd'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-            lib_dir=pwd.stdout.decode('utf-8')
-            end='.so'
-            lib_dir=lib_dir.strip('\n')
-        else:
-            chdir=subprocess.run(['chdir'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
-            lib_dir=chdir.stdout.decode('utf-8')
-            end='.pyd'
-            lib_dir=lib_dir.strip('\n').strip('\r')
+        # if self.os=='Linux':
+        #     pwd=subprocess.run(['pwd'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        #     lib_dir=pwd.stdout.decode('utf-8')
+        #     end='.so'
+        #     lib_dir=lib_dir.strip('\n')
+        # else:
+        #     chdir=subprocess.run(['chdir'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
+        #     lib_dir=chdir.stdout.decode('utf-8')
+        #     end='.pyd'
+        #     lib_dir=lib_dir.strip('\n').strip('\r')
 
-        try:
-            with os.scandir(lib_dir) as files:
-                for f in files:
-                    if f.is_file():
-                        file_name=f.name
-                        if file_name.startswith(self.lib+'f') and file_name.endswith(end):
-                            lib_name=file_name
-                            break
-            os.rename(lib_dir+'/'+lib_name,self.self_fparser.folder_path+'/'+lib_name)
-            self.self_fparser.terminal_text.add_line('Success: Python library Generated',number=2)
-        except:
-            #self.self_fparser.terminal_text.add_line(comp.stderr.decode('utf-8'))
-            self.self_fparser.terminal_text.add_line('Error: Python library generation Failed',number=2)
+        # try:
+        #     with os.scandir(lib_dir) as files:
+        #         for f in files:
+        #             if f.is_file():
+        #                 file_name=f.name
+        #                 if file_name.startswith(self.lib+'f') and file_name.endswith(end):
+        #                     lib_name=file_name
+        #                     break
+        #     os.rename(lib_dir+'/'+lib_name,self.self_fparser.folder_path+'/'+lib_name)
+        #     self.self_fparser.terminal_text.add_line('Success: Python library Generated',number=2)
+        # except:
+        #     #self.self_fparser.terminal_text.add_line(comp.stderr.decode('utf-8'))
+        #     self.self_fparser.terminal_text.add_line('Error: Python library generation Failed',number=2)
 
 
 
