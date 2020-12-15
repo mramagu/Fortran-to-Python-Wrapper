@@ -1,4 +1,6 @@
 import fparsertools
+
+import keyword
 import copy
 
 class Flibrary:
@@ -379,6 +381,16 @@ class Module:
         interface.append('end module')
         return interface
 
+    def solve_keywords(self):
+        """
+            Solves interactions with python keywords by changing the names of variables, modules and functionals.
+        """
+        if self.name in keyword.kwlist: # Changes the name of the module if needed
+            self.name = fparsertools.name_generator(self.name, keyword.kwlist)
+        # Solves any keyword problems
+        for i, c in enumerate(self.contents):
+            self.contents[i].solve_keywords()
+
     def write_py_interface(self, lib_name):
         """
             Generates the code for the module python interface 
@@ -392,7 +404,7 @@ class Module:
         interface = list()
         interface.append('class {}:'.format(self.name))
         for c in self.contents:
-            interface += fparsertools.tabing_tool(c.write_py_interface(lib_name, self.fake_name))
+            interface += fparsertools.tabing_tool(c.write_py_interface(lib_name.lower(), self.fake_name.lower()))
         return interface
 
 
@@ -623,6 +635,25 @@ class Ffunctional:
                                 sizes.append('size({}{})'.format(v.name, dim_info))
         return sizes
 
+    def solve_keywords(self, other_forbidden_names=list()):
+        """
+            Solves interactions with python keywords by changing the names of variables, modules and functionals.
+        """
+        if self.name in keyword.kwlist:
+            self.name = fparsertools.name_generator(self.name, keyword.kwlist+other_forbidden_names)
+        other_forbidden_names.append(self.name)
+        if self.fake_name in keyword.kwlist:
+            self.fake_name = fparsertools.name_generator(self.fake_name, keyword.kwlist+other_forbidden_names)
+        other_forbidden_names.append(self.fake_name)
+        temp_forbidden_var_names = list()
+        # Solves any keyword problems
+        for i, v in enumerate(self.variables):
+            if isinstance(v, Function) or isinstance(v, Subroutine):
+                self.variables[i].solve_keywords(keyword.kwlist+other_forbidden_names)
+            elif v.name in keyword.kwlist:
+                self.variables[i].name = fparsertools.name_generator(v.name, keyword.kwlist+other_forbidden_names+temp_forbidden_var_names)
+            temp_forbidden_var_names.append(v.name)
+
 class Subroutine(Ffunctional):
     """
         Fortran Subrutine Class
@@ -768,7 +799,7 @@ class Subroutine(Ffunctional):
             else:
                 raise Exception('Py interface writing only supports Subroutines, Variables and Functions')
 
-        interface.append('{}.{}.{}({})'.format(lib_name, module_name, self.fake_name, ','.join(inputs)))
+        interface.append('{}.{}.{}({})'.format(lib_name, module_name, self.fake_name.lower(), ','.join(inputs)))
         interface = fparsertools.tabing_tool(interface)
         interface.insert(0, 'def {}({}):'.format(self.name, ','.join([v.name for v in self.variables])))
         return interface
@@ -1043,7 +1074,7 @@ class Function(Ffunctional):
             else:
                 raise Exception('Py interface writing only supports Subroutines, Variables and Functions')
 
-        interface.append('return {}.{}.{}({})'.format(lib_name, module_name, self.fake_name, ','.join(inputs)))
+        interface.append('return {}.{}.{}({})'.format(lib_name, module_name, self.fake_name.lower(), ','.join(inputs)))
         interface = fparsertools.tabing_tool(interface)
         interface.insert(0, 'def {}({}):'.format(self.name, ','.join([v.name for v in self.variables])))
         return interface
