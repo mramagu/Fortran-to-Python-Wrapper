@@ -165,12 +165,12 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow_fmodules):
         self.ui.setupUi(self)
         #Arrow
         icon = QtGui.QIcon()
-        arrow=os.path.dirname(os.path.abspath(__file__))+'/Arrow.jpg'
+        arrow=self_fparser.real_path+'/Arrow.jpg'
         icon.addPixmap(QtGui.QPixmap(arrow), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         icon.addPixmap(QtGui.QPixmap(arrow), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.ui.toolButton_arrow.setIcon(icon)
         #Set style 
-        with open(os.path.dirname(os.path.abspath(__file__))+'/GUI_style.css') as f:
+        with open(self_fparser.real_path+'/GUI_style.css') as f:
             self.setStyleSheet(f.read())
         #Properties
         self.self_fparser=self_fparser 
@@ -197,10 +197,14 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow_fmodules):
             module_list.append(item.text())
         self.self_fparser.module_list=module_list
         #Crete folder
-        self.self_fparser.folder_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),self.self_fparser.new_folder) 
+        # self.self_fparser.folder_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),self.self_fparser.new_folder) 
+        # exec_path='/'.join('/'.join(os.path.dirname(sys.executable).split('\\')).split('/')[0:-1])
+        # exec_path=os.path.dirname(sys.executable)
+        self.self_fparser.folder_path=os.path.join(self.self_fparser.real_path,self.self_fparser.new_folder)
         try:
             os.mkdir(self.self_fparser.folder_path)
-            self.self_fparser.terminal_text.add_line('Success: Folder Created',number=2)
+            self.self_fparser.terminal_text.add_line('Folder path: '+self.self_fparser.folder_path,number=2)
+            self.self_fparser.terminal_text.add_line('Success: Folder Created')
         except OSError as error: 
             self.self_fparser.terminal_text.add_line('Warning: ',number=2)
             self.self_fparser.terminal_text.add_text(str(error))
@@ -236,7 +240,7 @@ class Window_options(QtWidgets.QMainWindow, Ui_MainWindow_options):
         self.ui=Ui_MainWindow_options() #Initiate GUI window 
         self.ui.setupUi(self)
         #Set style 
-        with open(os.path.dirname(os.path.abspath(__file__))+'/GUI_style.css') as f:
+        with open(self_fparser.real_path+'/GUI_style.css') as f:
             self.setStyleSheet(f.read())
         #Properties
         self.self_fparser=self_fparser 
@@ -372,6 +376,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         
 if __name__ == "__main__":
     print(sys.path)
+    print(os.path.dirname(sys.executable))
 
 
 

@@ -1055,7 +1055,7 @@ class Function(Ffunctional):
             name1 = self.name
             name2 = self.fake_name
 
-        print(self.result.name)
+        # print(self.result.name)
         self.result.change_name(fparsertools.name_generator(name1,  [v.name for v in self.variables + self.additional_variables] + [self.name, self.fake_name]))
         
 

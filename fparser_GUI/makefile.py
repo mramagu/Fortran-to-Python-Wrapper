@@ -24,31 +24,31 @@ class Makefile():
         
     def selectOS(self):
         self.os=self.ui.comboBox_makeOS.currentText()
-        print(self.os)
+        # print(self.os)
 
     def select_precission(self):
         if self.ui.radioButton_makeSP.isChecked() == True:
             self.precission=self.ui.radioButton_makeSP.text()
-            print(self.precission)
+            # print(self.precission)
         elif self.ui.radioButton_makeDP.isChecked() == True:
             self.precission=self.ui.radioButton_makeDP.text()
-            print(self.precission)
+            # print(self.precission)
 
     def writeLib(self):
         self.lib=self.ui.lineEdit_makeFlib.text()
-        print(self.lib)
+        # print(self.lib)
 
     def fcompiler(self):
         if self.ui.comboBox_makeFC.currentIndex() == 0:
             self.FC='intelvem'
             self.ui.lineEdit_lib.setReadOnly(False)
             self.ui.lineEdit_lib.setStyleSheet('background-color:rgb(255,255,255)')
-            print(self.FC)
+            # print(self.FC)
         elif self.ui.comboBox_makeFC.currentIndex() == 1:
             self.FC='gfortran'
             self.ui.lineEdit_lib.setReadOnly(True)
             self.ui.lineEdit_lib.setStyleSheet('background-color:rgb(150,150,150)')
-            print(self.FC)
+            # print(self.FC)
 
     def searchFC(self):
         p=subprocess.run(['f2py','-c','--help-fcompiler'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -167,7 +167,7 @@ class Makefile():
         # else:
         #     comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,cwd=self.self_fparser.folder_path)
         #     self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'),number=2)
-        subprocess.run(run_comp,cwd=self.self_fparser.folder_path)
+        comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,cwd=self.self_fparser.folder_path)
 
         #Check if the library has been successfully generated
         ct=0
@@ -180,6 +180,7 @@ class Makefile():
                         ct=1
                         break
         if ct==0:
+            self.self_fparser.terminal_text.add_line(comp.stderr.decode('utf-8'),number=2)
             self.self_fparser.terminal_text.add_line('Error: Python library generation Failed',number=2)
 
         #Move library to the new folder 

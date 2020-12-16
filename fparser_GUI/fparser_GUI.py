@@ -11,16 +11,21 @@ class Mainwindow(QtWidgets.QMainWindow, Ui_MainWindow): #Ventana principal de la
         QtWidgets.QMainWindow.__init__(self, *args, **kwargs) #Inicializar clases heredadas
         self.ui=Ui_MainWindow() #Inicializamos la ventanan de la GUI 
         self.ui.setupUi(self)
+        #Set style 
+        try:
+            self.real_path=os.path.dirname(os.path.abspath(__file__))
+            with open(self.real_path+'/GUI_style.css') as f:
+                self.setStyleSheet(f.read())  
+        except:
+            self.real_path=os.path.dirname(sys.executable)
+            with open(self.real_path+'/GUI_style.css') as f:
+                self.setStyleSheet(f.read())  
         #Arrow
         icon = QtGui.QIcon()
-        arrow=os.path.dirname(os.path.abspath(__file__))+'/Arrow.jpg'
+        arrow=self.real_path+'/Arrow.jpg'
         icon.addPixmap(QtGui.QPixmap(arrow), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         icon.addPixmap(QtGui.QPixmap(arrow), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.ui.toolButton_arrow.setIcon(icon)
-        
-        #Set style 
-        with open(os.path.dirname(os.path.abspath(__file__))+'/GUI_style.css') as f:
-            self.setStyleSheet(f.read())
 
         #Properties 
         self.main_dir=''
