@@ -22,11 +22,14 @@ def section(code, command, not_read = []):
     times_end=[]
     count_times_end=0
     for i, line in enumerate(code):
-        if find_command(line.lower(), command) != None and find_command(line.lower(), 'end') == None and not avoid:
+        if  find_command(line.lower(), command) != None and find_command(line.lower(), 'end') == None and not avoid:
+
             present = True
             count_times=count_times+1
             times.append(count_times)
-        elif find_command(line.lower(), command) != None and find_command(line.lower(), 'end') != None and not avoid:
+        elif ((find_command(line.lower(), command) != None and find_command(line.lower(), 'end') != None) or \
+            find_command(line.lower(), 'end'+command) != None) and not avoid:
+
             present = True
             count_times_end=count_times_end+1
             times_end.append(count_times_end)         
@@ -37,11 +40,14 @@ def section(code, command, not_read = []):
               section_str = list()
         elif not present and any(find_command(line.lower(), avoid_command) != None for avoid_command in not_read) and \
             find_command(line.lower(), 'end') == None:
+
             avoid = True
             count_times=count_times+1
             times.append(count_times)
-        elif not present and any(find_command(line.lower(), avoid_command) != None for avoid_command in not_read) and \
-            find_command(line.lower(), 'end') != None:
+        elif not present and ((any(find_command(line.lower(), avoid_command) != None for avoid_command in not_read) and \
+            find_command(line.lower(), 'end') != None) or \
+            any(find_command(line.lower(), 'end'+avoid_command) != None for avoid_command in not_read)):
+
             avoid = True
             count_times_end=count_times_end+1
             times_end.append(count_times_end)         

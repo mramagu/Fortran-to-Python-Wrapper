@@ -367,6 +367,8 @@ class Module:
         for i in range(len(self.contents)):
             if isinstance(self.contents[i], Subroutine) or isinstance(self.contents[i], Function):
                 self.contents[i].solve_assume_shape()
+                if isinstance(self.contents[i], Function):
+                    self.contents[i].define_result()
 
     def write_f2py_interface(self):
         """
@@ -395,7 +397,6 @@ class Module:
         forbidden_names = [self.name, self.fake_name]
         for i, c in enumerate(self.contents):
             self.contents[i].solve_keywords(other_forbidden_names=forbidden_names)
-        print(forbidden_names)
 
     def write_py_interface(self, lib_name):
         """
@@ -543,12 +544,16 @@ class Ffunctional:
                                     [self.name] + [w.name for w in self.variables + self.additional_variables]) 
                                 v.change_dimension(d, index)
                                 self.add_additional_variables(d, 'integer')
+                            else:
+                                v.define_variable(self.variables)
             elif isinstance(v,Function) or isinstance(v, Subroutine): # If instance is another functional it solves the shape of the function too
                 # v.solve_assume_shape()
                 pass
             else:
                 raise Exception('Cannot solve the shape of {} in function {}'.format(v.name, self.name))
-
+        for v in self.variables: # Finally it tries to set all remaining variable definitions
+            if isinstance(v, Variable):
+                v.define_variable(self.variables)
     def write_f2py_common_interface(self, solve_assume_shape=True, add_variables=True, fake_name=True, next_assume_shape=True):
         """
             Produces fortran code common for both Subroutines and Functions
@@ -708,7 +713,6 @@ class Subroutine(Ffunctional):
             name1 = self.name
             name2 = self.fake_name
         
-        print(name1, name2)
         interface.append('subroutine {}({})'.format(name1, ','.join(
             [v.name for v in self.variables + self.additional_variables])))
 
@@ -921,6 +925,13 @@ class Function(Ffunctional):
             for i in self.result.dimensions:
                 new_integer = fparsertools.name_generator('i', [self.name] + [v.name for v in self.variables + self.additional_variables])
                 self.variables.insert(0, Variable(new_integer, 'integer :: {}'.format(new_integer)))
+
+    def define_result(self):
+        """
+            Method to re-adjust the size of the function result if it is defined.
+        """
+        self.result.define_variable(self.variables)
+
 
     def write_f2py_auxiliary(self, fake_name=True):
         """
@@ -1135,6 +1146,40 @@ class Variable:
             raise Exception('Error in variable {} definition in code: \n    {}'.format(self.name, code_line))
         return (variable_definition, written_variable)
 
+    def find_size(self, size):
+        """
+            Method to find out the size a variable.
+
+            Args:
+                size to determine.
+
+            Returns:
+                Either the size of the variable if it could provide further information or the same input argument.
+        """
+        content = copy.deepcopy(size)
+        dim_available = True
+
+        if '(' in content:
+            components = list()
+            start_parenthesis = content.find('(')
+            end = fparsertools.find_closing_parenthesis(content, start)
+            for i, spl in enumerate(fparsertools.parenthesis_splits(content, ',')):
+                if 'size(' in spl.lower():
+                    dim_available = False
+                if ':' in spl:
+                    dim_available = False
+                components.append(v.dimensions[i])
+
+        else:
+            components = ['({})'.format(d) for d in self.dimensions]
+        for d in components:
+                if ':' in d:
+                    dim_available = False
+        if dim_available:
+            return '*'.join(components)
+        else:
+            return size
+
     def change_dimension(self, new_dim, index):
         """
             Fortran Variable class initiator
@@ -1211,6 +1256,27 @@ class Variable:
             return None
         else: # If not it returns the string of dimensions
             return dimension
+
+    def define_variable(self, other_variables):
+        """
+            Method to change the dimension of a variable to another that may already be defined.
+
+            Args:
+                other_variables (list): List of other variables that may include the definition
+        """
+        if self.dimensions != None:
+            for counter_d, d in enumerate(self.dimensions):
+                new_d = copy.deepcopy(d)
+                if len(d) > len('size('):
+                    for i in range(len(d)-len('size(')):
+                        if d[i:i+len('size(')].lower() == 'size(':
+                            close = fparsertools.find_closing_parenthesis(d, i+len('size('))
+                            content = d[i+len('size('):close]
+                            for v in other_variables:
+                                if isinstance(v, Variable):
+                                    if v.name.strip() == content.split('(')[0].strip():
+                                        new_d = new_d.replace(d[i:close+1], v.find_size(content))
+                self.dimensions[counter_d] = new_d
 
     def identify_other_def(self, code_line):
         """

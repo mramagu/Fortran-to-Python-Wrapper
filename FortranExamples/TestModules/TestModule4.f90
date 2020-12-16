@@ -57,4 +57,4 @@ subroutine test_multiple_dimensions(x, y, Solution, interface_function)
     end interface
     Solution = interface_function(x, y)
 end subroutine
-end module
+endmodule
