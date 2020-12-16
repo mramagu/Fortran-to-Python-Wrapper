@@ -438,7 +438,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuFile.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -459,7 +459,7 @@ class Ui_MainWindow(object):
         self.label_make_precission.setText(_translate("MainWindow", "Choose the precision you want to work with."))
         self.radioButton_makeSP.setText(_translate("MainWindow", "Simple precision."))
         self.radioButton_makeDP.setText(_translate("MainWindow", "Double precision."))
-        self.label_make_lib.setText(_translate("MainWindow", "Write the name of the fortran library."))
+        self.label_make_lib.setText(_translate("MainWindow", "Write the name of the python library."))
         self.label_make_FC.setText(_translate("MainWindow", "Select your fortran compiler."))
         self.comboBox_makeFC.setItemText(0, _translate("MainWindow", "Intel Visual Fortran Compiler for 64-bit apps (intelvem)"))
         self.comboBox_makeFC.setItemText(1, _translate("MainWindow", "GNU Fortran 95 compiler (gfortran)"))

@@ -24,7 +24,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -541,7 +541,7 @@
                </font>
               </property>
               <property name="text">
-               <string>Write the name of the fortran library.</string>
+               <string>Write the name of the python library.</string>
               </property>
              </widget>
             </item>
