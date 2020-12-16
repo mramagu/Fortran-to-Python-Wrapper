@@ -153,16 +153,16 @@ class Makefile():
 
 
         #Run f2py 
-        if self.os=='Windows':
-            #Create Makefile.bat
-            f=open(self.self_fparser.folder_path+'/Makefile.bat','w+')
-            f.write(make_bat)
-            f.close()
-            comp=subprocess.run(['Makefile.bat'],cwd=self.self_fparser.folder_path)
-        else:
-            comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,cwd=self.self_fparser.folder_path)
-            self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'),number=2)
-        # subprocess.run(run_comp,cwd=self.self_fparser.folder_path)
+        # if self.os=='Windows':
+        #     #Create Makefile.bat
+        #     f=open(self.self_fparser.folder_path+'/Makefile.bat','w+')
+        #     f.write(make_bat)
+        #     f.close()
+        #     comp=subprocess.run(['Makefile.bat'],cwd=self.self_fparser.folder_path)
+        # else:
+        #     comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,cwd=self.self_fparser.folder_path)
+        #     self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'),number=2)
+        subprocess.run(run_comp,cwd=self.self_fparser.folder_path)
         #Move library to the new folder 
         # if self.os=='Linux':
         #     pwd=subprocess.run(['pwd'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
