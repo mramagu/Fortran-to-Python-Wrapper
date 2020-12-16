@@ -202,7 +202,7 @@ class Window_fmodule(QtWidgets.QMainWindow, Ui_MainWindow_fmodules):
             os.mkdir(self.self_fparser.folder_path)
             self.self_fparser.terminal_text.add_line('Success: Folder Created',number=2)
         except OSError as error: 
-            self.self_fparser.terminal_text.add_line('Error: ',number=2)
+            self.self_fparser.terminal_text.add_line('Warning: ',number=2)
             self.self_fparser.terminal_text.add_text(str(error))
         #Create fortran interface 
         self.self_fparser.interface=fparser.interface_writer(self.self_fparser.lib,module_list,terminal=self.self_fparser.terminal_text)
