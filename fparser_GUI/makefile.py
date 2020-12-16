@@ -122,7 +122,7 @@ class Makefile():
         make_bat='CALL f2py -c '
 
         if self.FC=='intelvem':
-            flags=['--fcompiler='+self.FC,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64','-L'+'"'+self.complib+'"']
+            flags=['--fcompiler='+self.FC,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=/real-size:64','-L'+''+self.complib+'']
         else:
             flags=['--fcompiler='+self.FC,'--f90flags=-O3','--f90flags=-Wno-conversion','--f90flags=-std=f95','--f90flags=-fdefault-real-8']
 
@@ -132,29 +132,29 @@ class Makefile():
 
         run_comp.append(self.f2py)
         run_comp.append('-c')
-        # run_comp.append(self.self_fparser.folder_path+'/Interface.pyf')
-        run_comp.append('Interface.pyf')
-        make_bat=make_bat+'Interface.pyf '
+        run_comp.append(self.self_fparser.folder_path+'/Interface.pyf')
+        # run_comp.append('Interface.pyf')
+        # make_bat=make_bat+'Interface.pyf '
 
         #*.f Files 
         for f in self.self_fparser.files_f:
-            f2='/'.join(f.split('\\')).split('/')[-1] 
-            shutil.copy(f,self.self_fparser.folder_path+'/'+f2)
-            run_comp.append(f2)
-            make_bat=make_bat+f2+' '
+            # f2='/'.join(f.split('\\')).split('/')[-1] 
+            # shutil.copy(f,self.self_fparser.folder_path+'/'+f2)
+            run_comp.append(f)
+            # make_bat=make_bat+f2+' '
         #*.f90 Files 
         for f in self.self_fparser.files_order:
-            f2='/'.join(f.split('\\')).split('/')[-1] 
-            shutil.copy(f,self.self_fparser.folder_path+'/'+f2)
-            run_comp.append(f2)
-            make_bat=make_bat+f2+' '
-        # run_comp.append(self.self_fparser.folder_path+'/Interface.f90')
-        run_comp.append('Interface.f90')
-        make_bat=make_bat+'Interface.f90 '
+            # f2='/'.join(f.split('\\')).split('/')[-1] 
+            # shutil.copy(f,self.self_fparser.folder_path+'/'+f2)
+            run_comp.append(f)
+            # make_bat=make_bat+f2+' '
+        run_comp.append(self.self_fparser.folder_path+'/Interface.f90')
+        # run_comp.append('Interface.f90')
+        # make_bat=make_bat+'Interface.f90 '
         #Flags 
         for flag in flags:
             run_comp.append(flag)
-            make_bat=make_bat+flag+' '
+            # make_bat=make_bat+flag+' '
 
 
         #Run f2py 
