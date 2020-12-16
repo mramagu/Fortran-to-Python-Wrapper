@@ -2,6 +2,7 @@ import fparsertools
 
 import keyword
 import copy
+import os
 
 class Flibrary:
     """
@@ -184,8 +185,11 @@ class Ffile:
         """
         modules_str = fparsertools.section(code, 'module', ['program'])
         modules = list()
-        for m in modules_str:
-            modules.append(Module(self.filename, m, self.comment_style))
+        if bool(modules_str):
+            for m in modules_str:
+                modules.append(Module(self.filename, m, self.comment_style))
+        else:
+            modules.append(Module(self.filename, ['module {}'.format(os.path.basename(self.filename).replace('.f90', '')), 'end module'], self.comment_style))
         return modules
 
 class Module:
@@ -1223,7 +1227,13 @@ class Variable:
         other_def = list()
         for d in definitions:
             if not self.type.lower() in d.lower() and 'dimension' not in d.lower():
-                other_def.append(d)
+                if 'intent' in d.lower():
+                    if 'out' in d.lower():
+                        other_def.append('intent(inout)')
+                    else:
+                        other_def.append(d)
+                else:
+                    other_def.append(d)
         return other_def
 
     def write_f2py_interface(self):
