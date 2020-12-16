@@ -28,31 +28,31 @@ def library_maker(files, comment_style='before', **kwargs):
     else:
         print('Generating Library...')
     fortran_files = list()
-    #try:
-    for file_dir in files:
-        if terminal_present:
-            terminal.add_line('Reading file {}'.format(file_dir))
-        else:
-            print('Reading file {}'.format(file_dir))
-        file = open(file_dir, 'r') 
-        file_code = file.readlines() 
-        for i, line in enumerate(file_code):
-            file_code[i] = line.replace('\n', '')
-        file.close()
-        fortran_files.append(fobjects.Ffile(file_dir, fparsertools.multiple_and_remover(file_code), comment_style=comment_style))
+    try:
+        for file_dir in files:
+            if terminal_present:
+                terminal.add_line('Reading file {}'.format(file_dir))
+            else:
+                print('Reading file {}'.format(file_dir))
+            file = open(file_dir, 'r') 
+            file_code = file.readlines() 
+            for i, line in enumerate(file_code):
+                file_code[i] = line.replace('\n', '')
+            file.close()
+            fortran_files.append(fobjects.Ffile(file_dir, fparsertools.multiple_and_remover(file_code), comment_style=comment_style))
 
-    Lib=fobjects.Flibrary(fortran_files)
-    if terminal_present:
-        terminal.add_line('Success: Library Generated')
-    else:
-        print('Success: Library Generated')
-    return Lib
-    #except Exception as e:
-    #    if terminal_present:
-    #        terminal.add_line('Error: ' + str(e), number=2)
-    #    else:
-    #        print(e)
-    #    return None
+        Lib=fobjects.Flibrary(fortran_files)
+        if terminal_present:
+            terminal.add_line('Success: Library Generated')
+        else:
+            print('Success: Library Generated')
+        return Lib
+    except Exception as e:
+        if terminal_present:
+            terminal.add_line('Error: ' + str(e), number=2)
+        else:
+            print(e)
+        return None
 
 def interface_writer(lib, modules, **kwargs):
     """
@@ -74,34 +74,34 @@ def interface_writer(lib, modules, **kwargs):
         terminal = kwargs['terminal']
         terminal.add_line('')
     interface = list()
-    #try:
-    if terminal_present:
-        terminal.add_line('Generating f2py Interface...', number=2)
-        terminal.add_line('Selected Modules: ' + ' ,'.join(modules))
-    else:
-        print('Generating f2py Interface...')
-        print('Selected Modules: ' + ' ,'.join(modules))
-    writing_modules = [m for m in lib.modules if m.name in modules]
-    for m in writing_modules:
-        add_interface = m.write_f2py_interface()
-        if len(add_interface) > 5:
-            interface += add_interface
+    try:
+        if terminal_present:
+            terminal.add_line('Generating f2py Interface...', number=2)
+            terminal.add_line('Selected Modules: ' + ' ,'.join(modules))
         else:
-            if terminal_present:
-                terminal.add_line('Warning: Not generating interface for module {}. Empty contents.'.format(m.name))
+            print('Generating f2py Interface...')
+            print('Selected Modules: ' + ' ,'.join(modules))
+        writing_modules = [m for m in lib.modules if m.name in modules]
+        for m in writing_modules:
+            add_interface = m.write_f2py_interface()
+            if len(add_interface) > 5:
+                interface += add_interface
             else:
-                print('Warning: Not generating interface for module {}. Empty contents.'.format(m.name))       
-    if terminal_present:
-        terminal.add_line('Success: f2py Interface Generated', number=2)
-    else:
-        print('Success: f2py Interface Generated')
-    return '\n'.join(interface)
-    #except Exception as e:
-    #    if terminal_present:
-    #        terminal.add_line('Error: ' + str(e), number=2)
-    #    else:
-    #        print(e)
-    #    return None
+                if terminal_present:
+                    terminal.add_line('Warning: Not generating interface for module {}. Empty contents.'.format(m.name))
+                else:
+                    print('Warning: Not generating interface for module {}. Empty contents.'.format(m.name))       
+        if terminal_present:
+            terminal.add_line('Success: f2py Interface Generated', number=2)
+        else:
+            print('Success: f2py Interface Generated')
+        return '\n'.join(interface)
+    except Exception as e:
+        if terminal_present:
+            terminal.add_line('Error: ' + str(e), number=2)
+        else:
+            print(e)
+        return None
 
 
 def py_interface_writer(lib, modules, lib_name, **kwargs):
