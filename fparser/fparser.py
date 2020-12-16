@@ -74,34 +74,34 @@ def interface_writer(lib, modules, **kwargs):
         terminal = kwargs['terminal']
         terminal.add_line('')
     interface = list()
-    try:
-        if terminal_present:
-            terminal.add_line('Generating f2py Interface...', number=2)
-            terminal.add_line('Selected Modules: ' + ' ,'.join(modules))
+    #try:
+    if terminal_present:
+        terminal.add_line('Generating f2py Interface...', number=2)
+        terminal.add_line('Selected Modules: ' + ' ,'.join(modules))
+    else:
+        print('Generating f2py Interface...')
+        print('Selected Modules: ' + ' ,'.join(modules))
+    writing_modules = [m for m in lib.modules if m.name in modules]
+    for m in writing_modules:
+        add_interface = m.write_f2py_interface()
+        if len(add_interface) > 5:
+            interface += add_interface
         else:
-            print('Generating f2py Interface...')
-            print('Selected Modules: ' + ' ,'.join(modules))
-        writing_modules = [m for m in lib.modules if m.name in modules]
-        for m in writing_modules:
-            add_interface = m.write_f2py_interface()
-            if len(add_interface) > 5:
-                interface += add_interface
+            if terminal_present:
+                terminal.add_line('Warning: Not generating interface for module {}. Empty contents.'.format(m.name))
             else:
-                if terminal_present:
-                    terminal.add_line('Warning: Not generating interface for module {}. Empty contents.'.format(m.name))
-                else:
-                    print('Warning: Not generating interface for module {}. Empty contents.'.format(m.name))       
-        if terminal_present:
-            terminal.add_line('Success: f2py Interface Generated', number=2)
-        else:
-            print('Success: f2py Interface Generated')
-        return '\n'.join(interface)
-    except Exception as e:
-        if terminal_present:
-            terminal.add_line('Error: ' + str(e), number=2)
-        else:
-            print(e)
-        return None
+                print('Warning: Not generating interface for module {}. Empty contents.'.format(m.name))       
+    if terminal_present:
+        terminal.add_line('Success: f2py Interface Generated', number=2)
+    else:
+        print('Success: f2py Interface Generated')
+    return '\n'.join(interface)
+    #except Exception as e:
+    #    if terminal_present:
+    #        terminal.add_line('Error: ' + str(e), number=2)
+    #    else:
+    #        print(e)
+    #    return None
 
 
 def py_interface_writer(lib, modules, lib_name, **kwargs):

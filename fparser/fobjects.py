@@ -367,8 +367,8 @@ class Module:
         for i in range(len(self.contents)):
             if isinstance(self.contents[i], Subroutine) or isinstance(self.contents[i], Function):
                 self.contents[i].solve_assume_shape()
-                if isinstance(self.contents[i], Function):
-                    self.contents[i].define_result()
+                #if isinstance(self.contents[i], Function):
+                #    self.contents[i].define_result()
 
     def write_f2py_interface(self):
         """
@@ -383,7 +383,12 @@ class Module:
         interface.append('implicit none')
         interface.append('contains')
         for c in self.contents:
-            interface += c.write_f2py_interface()
+            if isinstance(c, Subroutine):
+                interface += c.write_f2py_interface()
+            elif isinstance(c, Function):
+                interface += c.write_f2py_subroutine_interface()
+            else:
+                raise Exception('Module contents should be only Functions or Subroutines')
         interface.append('end module')
         return interface
 
@@ -526,7 +531,6 @@ class Ffunctional:
                             answer = True
         return answer
 
-
     def solve_assume_shape(self):
         """
             Method to identify variables that have a assume shape definition and altering them to fit f2py.
@@ -544,16 +548,12 @@ class Ffunctional:
                                     [self.name] + [w.name for w in self.variables + self.additional_variables]) 
                                 v.change_dimension(d, index)
                                 self.add_additional_variables(d, 'integer')
-                            else:
-                                v.define_variable(self.variables)
             elif isinstance(v,Function) or isinstance(v, Subroutine): # If instance is another functional it solves the shape of the function too
                 # v.solve_assume_shape()
                 pass
             else:
                 raise Exception('Cannot solve the shape of {} in function {}'.format(v.name, self.name))
-        for v in self.variables: # Finally it tries to set all remaining variable definitions
-            if isinstance(v, Variable):
-                v.define_variable(self.variables)
+
     def write_f2py_common_interface(self, solve_assume_shape=True, add_variables=True, fake_name=True, next_assume_shape=True):
         """
             Produces fortran code common for both Subroutines and Functions
@@ -771,7 +771,7 @@ class Subroutine(Ffunctional):
         interface += fparsertools.tabing_tool(self.commentary)
         for v in self.variables:
             if isinstance(v, Variable):
-                interface += fparsertools.tabing_tool(['{} ({}): {}'.format(v.name, v.type, v.comment)])
+                interface += fparsertools.tabing_tool(['{}, {}, dimension({}): {}'.format(v.name, v.type, v.dimensions, v.comment)])
             elif isinstance(v, Function):
                 interface += fparsertools.tabing_tool(['{} (Function): {}'.format(v.name, v.result.comment)])
             elif isinstance(v, Subroutine):
@@ -912,6 +912,7 @@ class Function(Ffunctional):
                     break
                 if i == len(code[1:]):
                     raise Exception('Could not find function definition in Function {}: \n{}'.format(self.name, '\n'.join(code)))
+        result.change_intent('out')
         return result
 
     def solve_loops(self):
@@ -965,6 +966,7 @@ class Function(Ffunctional):
 
             (var_def, finterface, inputs, contains) = self.write_f2py_common_interface(solve_assume_shape=False,add_variables=False)
 
+            self.result.del_intent()
             interface = list()
             if self.func_type != None:
                 interface.append('{} function {}({})'.format(self.func_type, self.name, ','.join(
@@ -1021,6 +1023,7 @@ class Function(Ffunctional):
         
         interface += var_def
         
+        self.result.del_intent()
         if self.func_type != None:
             if not any(var_type in self.func_type for var_type in Variable.types()): # If definition of function is included in func_type it does not write it
                 interface += [('\n'.join(self.result.write_f2py_interface()))] # If not defines the output of the function
@@ -1034,6 +1037,44 @@ class Function(Ffunctional):
             interface += contains
 
         interface.append('end function')
+        return interface
+
+    def write_f2py_subroutine_interface(self, action=True, fake_name=True, solve_assume_shape=True, next_assume_shape=False):
+        """
+            Generates the code for the interface of the function.
+
+            Returns:
+                A list of strings to be added to the rest of the module interface.
+        """
+        interface = list()
+
+        if fake_name:
+            name1 = self.fake_name
+            name2 = self.name
+        else:
+            name1 = self.name
+            name2 = self.fake_name
+
+        print(self.result.name)
+        self.result.change_name(fparsertools.name_generator(name1,  [v.name for v in self.variables + self.additional_variables] + [self.name, self.fake_name]))
+        
+
+        interface.append('subroutine {}({})'.format(name1, ','.join(
+                [v.name for v in self.variables + [self.result] + self.additional_variables])))
+
+        (var_def, finterface, inputs, contains) = self.write_f2py_common_interface(fake_name = fake_name, solve_assume_shape=solve_assume_shape, next_assume_shape=next_assume_shape)
+        
+        interface += var_def
+        
+        interface += [('\n'.join(self.result.write_f2py_interface()))] 
+
+        interface += finterface
+
+        if action:
+            interface.append('{} = {}({})'.format(self.result.name, name2, ','.join(inputs)))
+            interface += contains
+
+        interface.append('end subroutine')
         return interface
 
     def write_py_interface(self, lib_name, module_name):
@@ -1180,9 +1221,24 @@ class Variable:
         else:
             return size
 
+    def change_intent(self, new_intent):
+        """
+            Mehtod to change the intent of a variable.
+
+            Args:
+                new_dim (string): New value for the dimension
+                index (integer): Dimension position index
+        """
+        for i, definition in enumerate(self.other_def):
+            if 'intent' in definition.lower():
+                self.other_def.pop(i)
+                break
+        self.other_def.append('intent({})'.format(new_intent))
+
+
     def change_dimension(self, new_dim, index):
         """
-            Fortran Variable class initiator
+            Fortran method to find the dimensions of a variable
 
             Args:
                 new_dim (string): New value for the dimension
@@ -1256,6 +1312,14 @@ class Variable:
             return None
         else: # If not it returns the string of dimensions
             return dimension
+
+    def del_intent(self):
+        """
+            Method to delete the intent of 
+        """
+        for i, definition in enumerate(self.other_def):
+            if 'intent' in definition:
+                self.other_def.pop(i)
 
     def define_variable(self, other_variables):
         """
