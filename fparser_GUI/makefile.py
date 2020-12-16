@@ -1,6 +1,7 @@
 import subprocess
 import os
 import sys
+import shutil
 from PyQt5 import QtCore, QtGui, QtWidgets
 try:
     sys.path.insert(1, '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[0:-1])+'/fparser')
@@ -82,8 +83,10 @@ class Makefile():
 
         if self.os=='Windows':
             self.f2py='f2py'
+            end='.pyd'
         else:
             self.f2py='f2py3'
+            end='.so'
         run.append(self.f2py)
 
         run.append(self.self_fparser.folder_path+'/Interface.f90')
@@ -135,14 +138,16 @@ class Makefile():
 
         #*.f Files 
         for f in self.self_fparser.files_f:
-            f='/'.join(f.split('\\')).split('/')[-1] 
-            run_comp.append(f)
-            make_bat=make_bat+f+' '
+            f2='/'.join(f.split('\\')).split('/')[-1] 
+            shutil.copy(f,self.self_fparser.folder_path+'/'+f2)
+            run_comp.append(f2)
+            make_bat=make_bat+f2+' '
         #*.f90 Files 
         for f in self.self_fparser.files_order:
-            f='/'.join(f.split('\\')).split('/')[-1] 
-            run_comp.append(f)
-            make_bat=make_bat+f+' '
+            f2='/'.join(f.split('\\')).split('/')[-1] 
+            shutil.copy(f,self.self_fparser.folder_path+'/'+f2)
+            run_comp.append(f2)
+            make_bat=make_bat+f2+' '
         # run_comp.append(self.self_fparser.folder_path+'/Interface.f90')
         run_comp.append('Interface.f90')
         make_bat=make_bat+'Interface.f90 '
@@ -163,6 +168,20 @@ class Makefile():
         #     comp=subprocess.run(run_comp,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,cwd=self.self_fparser.folder_path)
         #     self.self_fparser.terminal_text.add_line(comp.stdout.decode('utf-8'),number=2)
         subprocess.run(run_comp,cwd=self.self_fparser.folder_path)
+
+        #Check if the library has been successfully generated
+        ct=0
+        with os.scandir(self.self_fparser.folder_path) as files:
+            for f in files:
+                if f.is_file():
+                    file_name=f.name
+                    if file_name.startswith(self.lib+'f') and file_name.endswith(end):
+                        self.self_fparser.terminal_text.add_line('Success: Python library Generated',number=2)
+                        ct=1
+                        break
+        if ct==0:
+            self.self_fparser.terminal_text.add_line('Error: Python library generation Failed',number=2)
+
         #Move library to the new folder 
         # if self.os=='Linux':
         #     pwd=subprocess.run(['pwd'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
