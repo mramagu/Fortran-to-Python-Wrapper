@@ -10,3 +10,4 @@ dependencies:
   - qt
   - pip:
     - pyqt5
+    - pyinstaller
